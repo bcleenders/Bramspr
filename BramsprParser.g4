@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-parser grammar Bramspr;
+parser grammar BramsprParser;
 
 program: (declarations statement)*;
 
@@ -20,8 +20,13 @@ ifstatement : IF expression LEFT_CURLY_BRACKET statements RIGHT_CURLY_BRACKET
 
 assignment: IDENTIFIER BECOMES expression;
 
-expression: orexpression;
-orexpression: andexpression (OR andexpression)*;
-andexpression: compareexpression (AND compareexpression)*;
-compareexpression: sumexpression (comparator sumexpression)*;
-sumexpression: productexpression (() productexpression)*;
+expression: orexpr;
+orexpr: andexpr (OR andexpr)*;
+andexpr: compareexpr (AND compareexpr)*;
+compareexpr: sumexpr (COMPARATOR sumexpr)*;
+sumexpr: productexpr ( productexpr)*;
+productexpr: unaryexpr ((MULTIPLICATION | DIVISION | MODULUS) unaryexpr)*;
+unaryexpr: (PLUS | MINUS | NOT) operand;
+
+operand : IDENTIFIER (BECOMES expression)?
+        | NUMBER;
