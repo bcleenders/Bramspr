@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-lexer grammar Bramspr;
+lexer grammar BramsprLexer;
 
 /* Operators. */
 BECOMES:                '?'     |   ':=' ;
