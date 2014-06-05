@@ -1,0 +1,10 @@
+var x: int;
+var y, z: int;
+
+x := 1;
+z := 10;
+
+while (x <= y <= z) {
+	y := y+1;
+	print(y); // 1,2,...11
+}
