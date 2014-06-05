@@ -39,6 +39,8 @@ ELSE:                   'else';
 WHILE:                  'while';
 FUNCTION:               'function';
 TYPE:                   'type';
+PRINT:                  'print';
+ENUM:                   'enum';
     
 /* Symbols. */
 COLON:                  ':'     ;

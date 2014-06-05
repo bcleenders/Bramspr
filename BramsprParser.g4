@@ -6,6 +6,7 @@ program: (declaration | statement )*;
 declaration : variabledeclaration SEMICOLON
             | functiondeclaration
             | typedeclaration
+            | enumdeclaration
             ;
 
 // x, y: integer
@@ -25,6 +26,9 @@ primitiveType: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 functiondeclaration: FUNCTION IDENTIFIER LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
                       LEFT_BRACE (variabledeclaration | statement)* RIGHT_BRACE;
 
+// enum days { FRIDAY, SATURDAY, SUNDAY }
+enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT_BRACE;
+
 // foo(x+1, y)
 functioncall: IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS;
 
@@ -32,12 +36,16 @@ statement: ifstatement
          | whilestatement
          | assignment SEMICOLON
          | expression SEMICOLON
+         | printstatement SEMICOLON
          ;
 
 ifstatement : IF expression LEFT_BRACE statement* RIGHT_BRACE 
               (ELSE LEFT_BRACE statement* RIGHT_BRACE)?;
 
 whilestatement: WHILE expression LEFT_BRACE statement* RIGHT_BRACE;
+
+// print("x = ", x);
+printstatement: PRINT LEFT_PARENTHESIS expression (COMMA expression)* RIGHT_PARENTHESIS;
 
 assignment: (IDENTIFIER BECOMES)+ expression;
 
@@ -62,7 +70,9 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS       # parenthesisExp
           | expression OR expression                            # orExpression
           | assignment                                          # assignExpression
           | IDENTIFIER                                          # variableExpression
-          | (NUMBER | CHARACTER | STRING)                       # literalExpression
+          | NUMBER                                              # intLiteralExpression
+          | CHARACTER                                           # charLiteralExpression
+          | STRING                                              # stringLiteralExpression
           | functioncall                                        # functionExpression
           ;
             
