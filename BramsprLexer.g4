@@ -51,14 +51,16 @@ IF:                     'if';
 THEN:                   'then';
 ELSE:                   'else';
 WHILE:                  'while';
+FUNCTION:               'function';
+PROCEDURE:              'procedure';
     
 /* Symbols. */
 COLON:                  ':'     ;
 SEMICOLON:              ';'     ;
 LEFT_PARENTHESIS:       '('     ;
 RIGHT_PARENTHESIS:      ')'     ;
-LEFT_CURLY_BRACKET:     '{'     ;
-RIGHT_CURLY_BRACKET:    '}'     ;
+LEFT_BRACE:     '{'     ;
+RIGHT_BRACE:    '}'     ;
 COMMA:                  ','     ;
 
 /* Literals. */
