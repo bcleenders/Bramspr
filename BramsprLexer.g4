@@ -1,14 +1,21 @@
 lexer grammar BramsprLexer;
 
-/* Operators. */
+/* Assigners. */
 BECOMES:                ':=';
 SWAP:                   '<>';
 
-MULTIPLICATION:         '*';
+/* Operators. */
 PLUS:                   '+';
 MINUS:                  '-';
+MULTIPLICATION:         '*';
 DIVISION:               '/';
 MODULUS:                '%';
+
+OPERATOR: PLUS
+        | MINUS
+        | MULTIPLICATION
+        | DIVISION
+        | MODULUS;
 
 /* Comparators. */
 SMALLER_THAN:           '>';
@@ -29,9 +36,14 @@ COMPARATOR: SMALLER_THAN
 
 /* Logic. */
 NOT:                    '!';
+
 AND:                    '^' ;
 OR:                     'v' ;
 XOR:                    '!&' ;
+
+LOGIC: AND
+     | OR
+     | XOR;
 
 /* Keywords. */
 IF:                    'if';
@@ -46,6 +58,7 @@ RIGHT_PARENTHESIS:      ')'     ;
 LEFT_CURLY_BRACKET:     '{'     ;
 RIGHT_CURLY_BRACKET:    '}'     ;
 
+/* Trivials. */
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 LETTER: ('a'..'z');
 NUMBER: DIGIT+;

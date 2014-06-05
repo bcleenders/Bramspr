@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-parser grammar BramsprParser;
+grammar BramsprParser;
+options { tokenVocab=BramsprLexer; }
+program: (declaration SEMICOLON | statement SEMICOLON)*;
 
-program: (declarations statement)*;
-
-declarations: (declaration SEMICOLON)*;
 declaration : VAR IDENTIFIER TYPE;
     
-statements : statement*;
-
 statement: ifstatement
          | assignment SEMICOLON;
 
@@ -20,6 +12,7 @@ ifstatement : IF expression LEFT_CURLY_BRACKET statements RIGHT_CURLY_BRACKET
 
 assignment: IDENTIFIER BECOMES expression;
 
+/*
 expression: orexpr;
 orexpr: andexpr (OR andexpr)*;
 andexpr: compareexpr (AND compareexpr)*;
@@ -27,6 +20,11 @@ compareexpr: sumexpr (COMPARATOR sumexpr)*;
 sumexpr: productexpr ( productexpr)*;
 productexpr: unaryexpr ((MULTIPLICATION | DIVISION | MODULUS) unaryexpr)*;
 unaryexpr: (PLUS | MINUS | NOT) operand;
+*/
+
+expression: expression OPERATOR expression          # arithmeticExpression
+          | expression LOGIC expression             # logicExpression
+          | expression COMPARATOR expression;       # compareExpression
 
 operand : IDENTIFIER (BECOMES expression)?
         | NUMBER;
