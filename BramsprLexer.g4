@@ -50,8 +50,8 @@ LOGIC: AND
 IF:                     'if';
 THEN:                   'then';
 ELSE:                   'else';
-VAR:                    'var';
-
+WHILE:                  'while';
+    
 /* Symbols. */
 COLON:                  ':'     ;
 SEMICOLON:              ';'     ;
@@ -59,10 +59,17 @@ LEFT_PARENTHESIS:       '('     ;
 RIGHT_PARENTHESIS:      ')'     ;
 LEFT_CURLY_BRACKET:     '{'     ;
 RIGHT_CURLY_BRACKET:    '}'     ;
+COMMA:                  ','     ;
 
-/* Trivials. */
+/* Literals. */
+STRING : '"' ( '\\"' | ~('\n'|'\r') )*? '"';
+CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
-LETTER: ('a'..'z');
 NUMBER: DIGIT+;
-DIGIT: ('0'..'9');
+
+/* Miscellaneous. */
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
+
+/* Fragments. */
+fragment DIGIT: ('0'..'9');
+fragment LETTER: ('a'..'z'|'A'..'Z');
