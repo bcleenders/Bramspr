@@ -1,39 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 lexer grammar BramsprLexer;
 
 /* Operators. */
-BECOMES:                '?'     |   ':=' ;
+BECOMES:                ':=';
+SWAP:                   '<>';
 
 MULTIPLICATION:         '*';
 PLUS:                   '+';
 MINUS:                  '-';
-DIVISION:               '÷'     |   '/' ;
+DIVISION:               '/';
 MODULUS:                '%';
 
 /* Comparators. */
-SMALLER_THAN:           '>' ;
-SMALLER_THAN_EQUALS_TO: '?'     |   '<=' ;
-GREATER_THAN:           '>' ;
-GREATER_THAN_EQUALS_TO: '?'     |   '>=' ;
+SMALLER_THAN:           '>';
+SMALLER_THAN_EQUALS_TO: '<=';
+GREATER_THAN:           '>';
+GREATER_THAN_EQUALS_TO: '>=';
 EQUALS_TO:              '=';
-NOT_EQUALS_TO:          '?'     |   '!=' ;
+NOT_EQUALS_TO:          '=/=';
+PLUSMINUS:              '+-';
 
 COMPARATOR: SMALLER_THAN
           | SMALLER_THAN_EQUALS_TO
           | GREATER_THAN
           | GREATER_THAN_EQUALS_TO
           | EQUALS_TO
-          | NOT_EQUALS_TO;
+          | NOT_EQUALS_TO
+          | PLUSMINUS;
 
 /* Logic. */
-NOT:                                 '!';
-AND:                    '?'      |   '&&' ;
-OR:                     '?'      |   '||' ;
-XOR:                    '?'      |   '!&' ;
+NOT:                    '!';
+AND:                    '^' ;
+OR:                     'v' ;
+XOR:                    '!&' ;
 
 /* Keywords. */
 IF:                    'if';
