@@ -25,6 +25,15 @@ expression: PLUS expression                             # positiveExpression
           | expression MODULUS expression               # modulusExpression
           | expression PLUS expression                  # plusExpression
           | expression MINUS expression                 # minusExpression
+          | expression SMALLER_THAN expression          # smallerThanExpression        
+          | expression SMALLER_THAN_EQUALS_TO expression # smallerThanEqualsToExpression                   
+          | expression GREATER_THAN expression          # greaterThanExpression        
+          | expression GREATER_THAN_EQUALS_TO expression # greaterThanEqualsToExpression                    
+          | expression EQUALS_TO expression             # equalsToExpression        
+          | expression NOT_EQUALS_TO expression         # notEqualsToExpression            
+          | expression PLUSMINUS expression             # plusExpression        
+          | expression AND expression                   # andExpression
+          | expression OR expression                    # orExpression
           | assignment                                  # assignExpression
           | IDENTIFIER                                  # variableExpression
           | (NUMBER | CHARACTER | STRING)               # literalExpression
