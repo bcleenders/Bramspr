@@ -37,8 +37,8 @@ COMPARATOR: SMALLER_THAN
 /* Logic. */
 NOT:                    '!';
 
-AND:                    '^' ;
-OR:                     'v' ;
+AND:                    '&' ;
+OR:                     '|' ;
 XOR:                    '!&' ;
 
 LOGIC: AND
