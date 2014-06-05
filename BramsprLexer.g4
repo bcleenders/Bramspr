@@ -25,6 +25,7 @@ GREATER_THAN_EQUALS_TO: '>=';
 EQUALS_TO:              '=';
 NOT_EQUALS_TO:          '=/=';
 PLUSMINUS:              '+-';
+POWER:                  '^';
 
 COMPARATOR: SMALLER_THAN
           | SMALLER_THAN_EQUALS_TO
@@ -46,9 +47,10 @@ LOGIC: AND
      | XOR;
 
 /* Keywords. */
-IF:                    'if';
-THEN:                  'then';
-ELSE:                  'else';
+IF:                     'if';
+THEN:                   'then';
+ELSE:                   'else';
+VAR:                    'var';
 
 /* Symbols. */
 COLON:                  ':'     ;
