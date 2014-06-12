@@ -4,7 +4,9 @@ TODO's;
 - Checker uitwerken
 - nette error reporting maken
 	- error count?
+	- waar zit de fout in? ("1 < true")
 	- errors printen ("int value expected")
 	- linenumber printen ("on line 12")
 	- System.exit(1); bij > N fouten? Als commandline argument geven?
 - grammar refactor met ANTLR4 prag. guide pp. 100
+- enums moeten voor mogen komen in vergelijkingen (ze kunnen nu alleen gedeclareerd worden)
