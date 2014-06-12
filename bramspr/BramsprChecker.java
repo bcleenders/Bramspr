@@ -151,7 +151,7 @@ public class BramsprChecker extends
 					+ ": int expected.");
 		}
 
-		return Type.VOID;
+		return Type.INT;
 	}
 
 	@Override
@@ -164,6 +164,7 @@ public class BramsprChecker extends
 	public bramspr.BramsprChecker.Type visitFunctiondeclaration(
 			FunctiondeclarationContext ctx) {
 		// TODO Auto-generated method stub
+		// functienaam mag niet overeenkomen met andere functienaam (wel met variabele)
 		return Type.VOID;
 	}
 
@@ -171,6 +172,7 @@ public class BramsprChecker extends
 	public bramspr.BramsprChecker.Type visitAssignExpression(
 			AssignExpressionContext ctx) {
 		// TODO Auto-generated method stub
+		// variabele moet al gedeclareerd zijn, en types moeten matchen
 		return Type.VOID;
 	}
 
@@ -178,6 +180,7 @@ public class BramsprChecker extends
 	public bramspr.BramsprChecker.Type visitTypedeclaration(
 			TypedeclarationContext ctx) {
 		// TODO Auto-generated method stub
+		// Typenaam mag nog niet bezet zijn! (dus geen restricted keyword!)
 		return Type.VOID;
 	}
 
