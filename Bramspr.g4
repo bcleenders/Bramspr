@@ -22,8 +22,8 @@ typedeclaration: TYPE IDENTIFIER LEFT_BRACE variabledeclaration (COMMA variabled
 // [2][9]integer
 primitiveType: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 
-// function foo(a,b: integer, z:char) { ... }
-functiondeclaration: FUNCTION IDENTIFIER LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
+// function integer foo(a,b: integer, z:char) { ... }
+functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
                       LEFT_BRACE (variabledeclaration | statement)* RIGHT_BRACE;
 
 // enum days { FRIDAY, SATURDAY, SUNDAY }
