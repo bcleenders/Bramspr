@@ -2,10 +2,12 @@ package bramspr;
 
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
+import bramspr.BramsprParser.ArrayAccessExpressionContext;
 import bramspr.BramsprParser.AssignExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.BoolLiteralExpressionContext;
@@ -13,6 +15,7 @@ import bramspr.BramsprParser.CharLiteralExpressionContext;
 import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
+import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionExpressionContext;
 import bramspr.BramsprParser.FunctiondeclarationContext;
@@ -41,23 +44,64 @@ import bramspr.BramsprParser.UnaryExpressionContext;
 import bramspr.BramsprParser.VariableExpressionContext;
 import bramspr.BramsprParser.VariabledeclarationContext;
 import bramspr.BramsprParser.WhilestatementContext;
+import bramspr.symboltable.Entry;
+import bramspr.symboltable.SymbolTable;
+import bramspr.symboltable.SymbolTableException;
 
 /**
- * BramsprChecker controleert of een gegeven ParseTree voldoet aan de contextuele eisen van Bramspr.
+ * BramsprChecker controleert of een gegeven ParseTree voldoet aan de
+ * contextuele eisen van Bramspr.
  * 
  * @author Bram&Jasper
- *
- * Deze klasse implementeert BramsprVisitor (impliciet) en extend BramsprBaseVisitor dus ook AbstractParseTreeVisitor.
- * Iedere functie geeft het (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
+ * 
+ *         Deze klasse implementeert BramsprVisitor (impliciet) en extend
+ *         BramsprBaseVisitor dus ook AbstractParseTreeVisitor. Iedere functie
+ *         geeft het (primitieve) type terug dat de bijbehorende programmacode
+ *         terug zou geven.
  */
 public class BramsprChecker extends
 		BramsprBaseVisitor<bramspr.BramsprChecker.Type> {
-	
+//public class BramsprChecker implements
+//	 BramsprVisitor<bramspr.BramsprChecker.Type> {
+
 	/**
 	 * Type bevat de vier soorten primitieve waardes.
 	 */
 	public enum Type {
 		INT, BOOL, CHAR, VOID
+	}
+
+	private SymbolTable<Entry> variableSymtab;
+	private SymbolTable<Entry> functionSymtab;
+	private SymbolTable<Entry> typeSymtab;
+
+	public BramsprChecker() {
+		this.variableSymtab = new SymbolTable<Entry>();
+		this.functionSymtab = new SymbolTable<Entry>();
+
+		try {
+			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
+			// niet door de user gedefined worden.
+			Entry reservedType = new Entry("Reserved type");
+			this.typeSymtab.enter("int", reservedType);
+			this.typeSymtab.enter("bool", reservedType);
+			this.typeSymtab.enter("char", reservedType);
+			this.typeSymtab.enter("string", reservedType);
+
+			// Een aantal functies zijn op een lager niveau gedefinieerd; deze
+			// mogen niet door de user gedefined worden.
+			Entry getint = new Entry("int");
+			Entry getchar = new Entry("char");
+			Entry getbool = new Entry("bool");
+			this.functionSymtab.enter("getint", getint);
+			this.functionSymtab.enter("getchar", getchar);
+			this.functionSymtab.enter("getbool", getbool);
+		} catch (SymbolTableException se) {
+			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de
+			// catch is verplicht.
+			System.err.println("New SymbolTable contains reserved name.");
+			System.exit(1); // Als het zo erg misgaat, laat dan maar zitten...
+		}
 	}
 
 	@Override
@@ -73,22 +117,22 @@ public class BramsprChecker extends
 	 * Bezoekt een error node, maar geeft geen return type terug (want error nodes hebben geen type).
 	 */
 	public bramspr.BramsprChecker.Type visitErrorNode(ErrorNode arg0) {
-		super.visit(arg0);
-		
 		// Een error node heeft geen return type
 		return Type.VOID;
 	}
 
 	@Override
 	public bramspr.BramsprChecker.Type visitTerminal(TerminalNode arg0) {
-		// TODO Auto-generated method stub
+		// Volgens mij hoeven we hier niet echt iets mee...
 		return Type.VOID;
 	}
 
 	@Override
 	public bramspr.BramsprChecker.Type visitEnumdeclaration(
 			EnumdeclarationContext ctx) {
-		// TODO Auto-generated method stub
+		for(int i = 0; i < ctx.getChildCount(); i++) {
+			System.out.println("enum decl; " + i + " " + ctx.getChild(i).getText());
+		}
 		return Type.VOID;
 	}
 
@@ -106,29 +150,31 @@ public class BramsprChecker extends
 	 * Als het eerste kind een + of - is, moet het tweede kind een int zijn. De return type is dan ook een int.
 	 * Als het eerste kind een ! is, moet het tweede kind een bool zijn. De return type is dan ook een bool.
 	 */
-	public bramspr.BramsprChecker.Type visitUnaryExpression(UnaryExpressionContext ctx) {
+	public bramspr.BramsprChecker.Type visitUnaryExpression(
+			UnaryExpressionContext ctx) {
 		// Vraag het type op van de int/bool node
 		Type argType = visit(ctx.getChild(1));
-		
-		if(ctx.getChild(0).getText().equals("!")) {
-			if(argType == Type.BOOL) {
+
+		if (ctx.getChild(0).getText().equals("!")) {
+			if (argType == Type.BOOL) {
 				return Type.BOOL; // De negatie van kind 2 is een boolean
-			} 
-			else {
-				System.out.println("error on line; " + ctx.getStart().getLine() + ": bool expected.");
+			} else {
+				System.out.println("error on line; " + ctx.getStart().getLine()
+						+ ": bool expected.");
 			}
 		}
-		
-		if(ctx.getChild(1).getText().equals("-") ||
-		   ctx.getChild(1).getText().equals("+") ) {
-			if(argType == Type.INT) {
-				return Type.INT; // Kind 2 (of de negatieve waarde daarvan) is een int
-			}
-			else {
-				System.out.println("error on line; " + ctx.getStart().getLine() + ": int expected.");
+
+		if (ctx.getChild(1).getText().equals("-")
+				|| ctx.getChild(1).getText().equals("+")) {
+			if (argType == Type.INT) {
+				return Type.INT; // Kind 2 (of de negatieve waarde daarvan) is
+									// een int
+			} else {
+				System.out.println("error on line; " + ctx.getStart().getLine()
+						+ ": int expected.");
 			}
 		}
-		
+
 		return Type.VOID;
 	}
 
@@ -164,7 +210,8 @@ public class BramsprChecker extends
 	public bramspr.BramsprChecker.Type visitFunctiondeclaration(
 			FunctiondeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		// functienaam mag niet overeenkomen met andere functienaam (wel met variabele)
+		// functienaam mag niet overeenkomen met andere functienaam (wel met
+		// variabele)
 		return Type.VOID;
 	}
 
@@ -379,6 +426,25 @@ public class BramsprChecker extends
 			BoolLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
+	}
+
+	@Override
+	public Type visitChildren(RuleNode arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Type visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Type visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		// Check of dit een enum of een record is!
+		return null;
 	}
 
 }

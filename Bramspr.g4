@@ -23,17 +23,22 @@ typedeclaration: TYPE IDENTIFIER LEFT_BRACE variabledeclaration (COMMA variabled
 primitiveType: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 
 // function integer foo(a,b: integer, z:char) { ... }
-functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
-                      LEFT_BRACE (variabledeclaration | statement)* RIGHT_BRACE;
+functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER 
+                        LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
+                        LEFT_BRACE
+                            (variabledeclaration | statement)* 
+                            (RETURN expression)?
+                        RIGHT_BRACE;
 
 // enum days { FRIDAY, SATURDAY, SUNDAY }
 enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT_BRACE;
 
 // foo(x+1, y)
-functioncall: IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
-            | GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpression
+functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpression
             | GETCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getCharExpression
             | GETBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getBoolExpression
+            // Deze moet als laatste, anders matchen de bovenstaande er al op!
+            | IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
             ;
 
 statement: ifstatement
@@ -72,6 +77,9 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisEx
           | expression OR expression                             # orExpression
           | assignment                                           # assignExpression
           | functioncall                                         # functionExpression
+          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE) # arrayAccessExpression
+          // Let op; dit matcht zowel records als enums! Opletten in de checker.
+          | expression DOT IDENTIFIER                            # fieldAccessExpression
           | IDENTIFIER                                           # variableExpression
           | NUMBER                                               # intLiteralExpression
           | BOOL                                                 # boolLiteralExpression

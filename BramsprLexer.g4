@@ -44,6 +44,7 @@ GETINT:                 'getint';
 GETCHAR:                'getchar';
 GETBOOL:                'getbool';
 ENUM:                   'enum';
+RETURN:                 'return';
     
 /* Symbols. */
 COLON:                  ':'     ;
@@ -55,6 +56,7 @@ RIGHT_BRACE:            '}'     ;
 LEFT_BLOCKBRACE:        '['     ;
 RIGHT_BLOCKBRACE:       ']'     ;
 COMMA:                  ','     ;
+DOT:                    '.'     ;
 
 /* Literals. */
 // Een apostrof, gevolgd door geescapete apostrofes en niet-specialchars. 

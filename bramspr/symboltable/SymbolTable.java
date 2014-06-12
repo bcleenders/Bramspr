@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Stack;
 
 
-public class SymbolTable {
-	private HashMap<String, Stack<Entry>> symbols;
+public class SymbolTable<E extends Entry> {
+	private HashMap<String, Stack<E>> symbols;
 	private Stack<HashSet<String>> symbolsInLevel;
 	private int currentLevel;
 
@@ -14,7 +14,7 @@ public class SymbolTable {
 	 * @ensures this.currentLevel() == -1
 	 */
 	public SymbolTable() {
-		this.symbols = new HashMap<String, Stack<Entry>>();
+		this.symbols = new HashMap<String, Stack<E>>();
 		this.symbolsInLevel = new Stack<HashSet<String>>();
 		this.currentLevel = -1;
 	}
@@ -63,7 +63,7 @@ public class SymbolTable {
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
 	 */
-	public void enter(String id, Entry entry) throws SymbolTableException {
+	public void enter(String id, E entry) throws SymbolTableException {
 		if (id == null) {
 			throw new SymbolTableException("Null identifiers not allowed");
 		}
@@ -83,7 +83,7 @@ public class SymbolTable {
 		
 		// Add the entry to the hashmap
 		if(this.symbols.get(id) == null) {
-			this.symbols.put(id, new Stack<Entry>());
+			this.symbols.put(id, new Stack<E>());
 		}
 		this.symbols.get(id).add(entry);
 	}
@@ -96,8 +96,8 @@ public class SymbolTable {
 	 *         does not contain id
 	 * @throws SymbolTableException 
 	 */
-	public Entry retrieve(String id) {
-		Stack<Entry> entries = this.symbols.get(id);
+	public E retrieve(String id) {
+		Stack<E> entries = this.symbols.get(id);
 
 		if(entries == null || entries.isEmpty()) {
 			return null;

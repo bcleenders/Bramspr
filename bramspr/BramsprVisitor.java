@@ -117,6 +117,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#arrayAccessExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#greaterThanExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -262,6 +269,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionCallExpression(@NotNull BramsprParser.FunctionCallExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#boolLiteralExpression}.

@@ -9,4 +9,4 @@ TODO's;
 	- linenumber printen ("on line 12")
 	- System.exit(1); bij > N fouten? Als commandline argument geven?
 - grammar refactor met ANTLR4 prag. guide pp. 100
-- enums moeten voor mogen komen in vergelijkingen (ze kunnen nu alleen gedeclareerd worden)
+- variabelen een enum constante kunnen geven

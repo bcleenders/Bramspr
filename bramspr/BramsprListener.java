@@ -174,6 +174,17 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link BramsprParser#arrayAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#arrayAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link BramsprParser#greaterThanExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -403,6 +414,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCallExpression(@NotNull BramsprParser.FunctionCallExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#boolLiteralExpression}.
