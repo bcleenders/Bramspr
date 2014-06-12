@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.CommonTokenFactory;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.UnbufferedCharStream;
 import org.antlr.v4.runtime.UnbufferedTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -24,8 +25,10 @@ public class Bramspr {
 		// copy text out of sliding buffer and store in tokens
 		lex.setTokenFactory(new CommonTokenFactory(true));
 		TokenStream tokens = new UnbufferedTokenStream<CommonToken>(lex);
-		BramsprParser parser = new BramsprParser(tokens);
-		parser.setBuildParseTree(false);
-		parser.program();
+		BramsprParser parser = new BramsprParser(tokens);		
+		ParseTree tree = parser.program(); // parse!
+		
+		BramsprChecker checker = new BramsprChecker();
+		checker.visit(tree);
 	}
 }
