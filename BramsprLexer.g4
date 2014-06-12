@@ -40,6 +40,9 @@ WHILE:                  'while';
 FUNCTION:               'function';
 TYPE:                   'type';
 PRINT:                  'print';
+GETINT:                 'getint';
+GETCHAR:                'getchar';
+GETBOOL:                'getbool';
 ENUM:                   'enum';
     
 /* Symbols. */
@@ -60,6 +63,9 @@ STRING : '"' ( ESCAPED | ~('\n'|'\r') )*? '"';
 CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 NUMBER: DIGIT+;
+TRUE: 'true';
+FALSE: 'false';
+BOOL: TRUE | FALSE;
 
 /* Miscellaneous. */
 COMMENT: '//' ~[\r\n]* -> skip; // Matcht alles wat na // komt
