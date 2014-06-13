@@ -97,6 +97,17 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitTypedeclaration(@NotNull BramsprParser.TypedeclarationContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link BramsprParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(@NotNull BramsprParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(@NotNull BramsprParser.BlockContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link BramsprParser#orExpression}.
 	 * @param ctx the parse tree
 	 */

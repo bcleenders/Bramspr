@@ -68,6 +68,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitTypedeclaration(@NotNull BramsprParser.TypedeclarationContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlock(@NotNull BramsprParser.BlockContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#orExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

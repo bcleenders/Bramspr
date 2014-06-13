@@ -121,6 +121,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterBlock(@NotNull BramsprParser.BlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBlock(@NotNull BramsprParser.BlockContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -74,6 +74,28 @@ public class BramsprChecker extends
 	private SymbolTable<Entry> variableSymtab;
 	private SymbolTable<Entry> functionSymtab;
 	private SymbolTable<Entry> typeSymtab;
+	
+	
+	
+	private int errorCount = 0;
+	/**
+	 * Raporteert een error door deze op System.err te printen.
+	 * @param message foutmelding (e.g. illegal argument)
+	 * @param line regelnummer van foutproducerende code
+	 * @param expected wat verwacht werd (optioneel)
+	 * @param encountered wat ontvangen is (optioneel)
+	 */
+	private void reportError(String message, int line, String expected, String encountered) {
+		errorCount++;
+		System.err.print("Error " + errorCount + ": " + message + " on line " + line + ".");
+		if(expected != null) {
+			System.err.print("Expected " + expected);
+			if(encountered != null) {
+				System.err.print(", but found " + encountered);
+			}
+			System.err.println(".");
+		}
+	}
 
 	public BramsprChecker() {
 		this.variableSymtab = new SymbolTable<Entry>();
@@ -159,8 +181,7 @@ public class BramsprChecker extends
 			if (argType == Type.BOOL) {
 				return Type.BOOL; // De negatie van kind 2 is een boolean
 			} else {
-				System.out.println("error on line; " + ctx.getStart().getLine()
-						+ ": bool expected.");
+				reportError("Illegal argument", ctx.getStart().getLine(), "bool", null);
 			}
 		}
 
@@ -170,8 +191,7 @@ public class BramsprChecker extends
 				return Type.INT; // Kind 2 (of de negatieve waarde daarvan) is
 									// een int
 			} else {
-				System.out.println("error on line; " + ctx.getStart().getLine()
-						+ ": int expected.");
+				reportError("Illegal argument", ctx.getStart().getLine(), "int", null);
 			}
 		}
 
