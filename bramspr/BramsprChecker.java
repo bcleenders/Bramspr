@@ -63,9 +63,9 @@ import bramspr.symboltable.SymbolTableException;
  */
 public class BramsprChecker extends BramsprBaseVisitor<String> {
 //public class BramsprChecker implements
-//	 BramsprVisitor<bramspr.BramsprChecker.Type> {
+//	 BramsprVisitor<String> {
 
-	private SymbolTable variableSymtab;
+	private SymbolTable symbolTable;
 	
 	private int errorCount = 0;
 	/**
@@ -88,8 +88,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	public BramsprChecker() {
-		this.variableSymtab = new SymbolTable();
-		this.functionSymtab = new SymbolTable();
+		symbolTable = new SymbolTable();
 
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
@@ -120,7 +119,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	/**
 	 * Bezoekt een node, overgeërfd van AbstractParseTreeListener
 	 */
-	public bramspr.BramsprChecker.Type visit(ParseTree arg0) {
+	public String visit(ParseTree arg0) {
 		return super.visit(arg0);
 	}
 
@@ -128,19 +127,19 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	/**
 	 * Bezoekt een error node, maar geeft geen return type terug (want error nodes hebben geen type).
 	 */
-	public bramspr.BramsprChecker.Type visitErrorNode(ErrorNode arg0) {
+	public String visitErrorNode(ErrorNode arg0) {
 		// Een error node heeft geen return type
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitTerminal(TerminalNode arg0) {
+	public String visitTerminal(TerminalNode arg0) {
 		// Volgens mij hoeven we hier niet echt iets mee...
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitEnumdeclaration(
+	public String visitEnumdeclaration(
 			EnumdeclarationContext ctx) {
 		for(int i = 0; i < ctx.getChildCount(); i++) {
 			System.out.println("enum decl; " + i + " " + ctx.getChild(i).getText());
@@ -149,7 +148,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitParenthesisExpression(
+	public String visitParenthesisExpression(
 			ParenthesisExpressionContext ctx) {
 		// Hier zijn geen eisen aan de inhoud van ctx die niet al door de parser
 		// zijn gecontroleerd.
@@ -162,7 +161,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	 * Als het eerste kind een + of - is, moet het tweede kind een int zijn. De return type is dan ook een int.
 	 * Als het eerste kind een ! is, moet het tweede kind een bool zijn. De return type is dan ook een bool.
 	 */
-	public bramspr.BramsprChecker.Type visitUnaryExpression(
+	public String visitUnaryExpression(
 			UnaryExpressionContext ctx) {
 		// Vraag het type op van de int/bool node
 		Type argType = visit(ctx.getChild(1));
@@ -189,7 +188,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitAdditionExpression(
+	public String visitAdditionExpression(
 			AdditionExpressionContext ctx) {
 		if (ctx.getChildCount() != 2) {
 			System.out.println("error on line; " + ctx.getStart().getLine()
@@ -211,13 +210,13 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitGetIntExpression(
+	public String visitGetIntExpression(
 			GetIntExpressionContext ctx) {
 		return Type.INT;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitFunctiondeclaration(
+	public String visitFunctiondeclaration(
 			FunctiondeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		// functienaam mag niet overeenkomen met andere functienaam (wel met
@@ -226,7 +225,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitAssignExpression(
+	public String visitAssignExpression(
 			AssignExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		// variabele moet al gedeclareerd zijn, en types moeten matchen
@@ -234,7 +233,7 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitTypedeclaration(
+	public String visitTypedeclaration(
 			TypedeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		// Typenaam mag nog niet bezet zijn! (dus geen restricted keyword!)
@@ -242,216 +241,216 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitOrExpression(OrExpressionContext ctx) {
+	public String visitOrExpression(OrExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitPowerExpression(
+	public String visitPowerExpression(
 			PowerExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitWhilestatement(
+	public String visitWhilestatement(
 			WhilestatementContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitNotEqualsToExpression(
+	public String visitNotEqualsToExpression(
 			NotEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitGetBoolExpression(
+	public String visitGetBoolExpression(
 			GetBoolExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitAndExpression(
+	public String visitAndExpression(
 			AndExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitEqualsToExpression(
+	public String visitEqualsToExpression(
 			EqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitGreaterThanExpression(
+	public String visitGreaterThanExpression(
 			GreaterThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitCharLiteralExpression(
+	public String visitCharLiteralExpression(
 			CharLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitSmallerThanExpression(
+	public String visitSmallerThanExpression(
 			SmallerThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitIfstatement(IfstatementContext ctx) {
+	public String visitIfstatement(IfstatementContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitPrintstatement(
+	public String visitPrintstatement(
 			PrintstatementContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitMultiplicationExpression(
+	public String visitMultiplicationExpression(
 			MultiplicationExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitPlusMinusExpression(
+	public String visitPlusMinusExpression(
 			PlusMinusExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitStringLiteralExpression(
+	public String visitStringLiteralExpression(
 			StringLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitGetCharExpression(
+	public String visitGetCharExpression(
 			GetCharExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitVariableExpression(
+	public String visitVariableExpression(
 			VariableExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitGreaterThanEqualsToExpression(
+	public String visitGreaterThanEqualsToExpression(
 			GreaterThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitFunctionExpression(
+	public String visitFunctionExpression(
 			FunctionExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitDeclaration(DeclarationContext ctx) {
+	public String visitDeclaration(DeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitIntLiteralExpression(
+	public String visitIntLiteralExpression(
 			IntLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitSmallerThanEqualsToExpression(
+	public String visitSmallerThanEqualsToExpression(
 			SmallerThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitStatement(StatementContext ctx) {
+	public String visitStatement(StatementContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitVariabledeclaration(
+	public String visitVariabledeclaration(
 			VariabledeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitAssignment(AssignmentContext ctx) {
+	public String visitAssignment(AssignmentContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitPrimitiveType(
+	public String visitPrimitiveType(
 			PrimitiveTypeContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitProgram(ProgramContext ctx) {
+	public String visitProgram(ProgramContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitFunctionCallExpression(
+	public String visitFunctionCallExpression(
 			FunctionCallExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public bramspr.BramsprChecker.Type visitBoolLiteralExpression(
+	public String visitBoolLiteralExpression(
 			BoolLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return Type.VOID;
 	}
 
 	@Override
-	public Type visitChildren(RuleNode arg0) {
+	public String visitChildren(RuleNode arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Type visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+	public String visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Type visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+	public String visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		// Check of dit een enum of een record is!
 		return null;
