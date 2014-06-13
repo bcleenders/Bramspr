@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
+import symboltable.Symbol;
+
 
 public class SymbolTable {
 	private HashMap<String, Stack<Symbol>> symbols;
@@ -14,7 +16,7 @@ public class SymbolTable {
 	 * @ensures this.currentLevel() == -1
 	 */
 	public SymbolTable() {
-		this.symbols = new HashMap<String, Stack<E>>();
+		this.symbols = new HashMap<String, Stack<Symbol>>();
 		this.symbolsInLevel = new Stack<HashSet<String>>();
 		this.currentLevel = -1;
 	}
@@ -76,14 +78,12 @@ public class SymbolTable {
 			throw new SymbolTableException("Identifier already '" + id + "' contained in current scope.");
 		}
 		
-		entry.setLevel(this.currentLevel);
-		
 		// Add the string to the set of identifiers in this level.
 		this.symbolsInLevel.get(this.currentLevel).add(id);
 		
 		// Add the entry to the hashmap
 		if(this.symbols.get(id) == null) {
-			this.symbols.put(id, new Stack<E>());
+			this.symbols.put(id, new Stack<Symbol>());
 		}
 		this.symbols.get(id).add(entry);
 	}
@@ -96,8 +96,8 @@ public class SymbolTable {
 	 *         does not contain id
 	 * @throws SymbolTableException 
 	 */
-	public E resolve(String id) {
-		Stack<E> entries = this.symbols.get(id);
+	public Symbol resolve(String id) {
+		Stack<Symbol> entries = this.symbols.get(id);
 
 		if(entries == null || entries.isEmpty()) {
 			return null;

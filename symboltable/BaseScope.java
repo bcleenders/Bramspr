@@ -37,7 +37,6 @@ public abstract class BaseScope implements Scope {
 
 	public void define(Symbol sym) {
 		symbols.put(sym.toString(), sym);
-		sym.scope = this; // track the scope in each symbol
 	}
 
 	public Scope getEnclosingScope() {

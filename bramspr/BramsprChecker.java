@@ -89,7 +89,6 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 
 	public BramsprChecker() {
 		this.variableSymtab = new SymbolTable();
-		this.functionSymtab = new SymbolTable();
 
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
