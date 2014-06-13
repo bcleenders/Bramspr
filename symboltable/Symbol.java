@@ -1,27 +1,15 @@
 package symboltable;
 
-enum typeClass {
-	ENUM('e'),
-	VARIABLE('v'),
-	TYPE('t'),
-	FUNCTION('f'),
-	ARRAY('a');
-	
-	char firstChar;
-	
-	typeClass(char firstChar) {
-		this.firstChar = firstChar;
-	}
-}
+import bramspr.symboltable.TypeClass;
 
 public class Symbol { // A generic programming language symbol
 	String identifier; // All symbols at least have a name
-	typeClass type;
-	typeClass[] arguments;
+	TypeClass type;
+	TypeClass[] arguments;
 	
 	//Scope scope; // All symbols know what scope contains them.
 	
-	public static String generateSignature(String identifier, typeClass type, typeClass[] arguments) {
+	public static String generateSignature(String identifier, TypeClass type, TypeClass[] arguments) {
 		StringBuilder sb = new StringBuilder(type.firstChar);
 		sb.append(' ');
 		sb.append(identifier);
@@ -34,13 +22,13 @@ public class Symbol { // A generic programming language symbol
 		return sb.toString();
 	}
 
-	public Symbol(String identifier, typeClass type, typeClass[] arguments) {
+	public Symbol(String identifier, TypeClass type, TypeClass[] arguments) {
 		this.identifier = identifier;
 		this.type = type;
 		this.arguments = arguments;
 	}
 
-	public Symbol(String identifier, typeClass type) {
+	public Symbol(String identifier, TypeClass type) {
 		this(identifier, type, null);
 	}
 
@@ -48,7 +36,7 @@ public class Symbol { // A generic programming language symbol
 		return this.identifier;
 	}
 	
-	public typeClass getType() {
+	public TypeClass getType() {
 		return this.type;
 	}
 

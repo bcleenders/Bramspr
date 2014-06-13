@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import symboltable.Symbol;
-
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayAccessExpressionContext;
@@ -46,10 +45,7 @@ import bramspr.BramsprParser.UnaryExpressionContext;
 import bramspr.BramsprParser.VariableExpressionContext;
 import bramspr.BramsprParser.VariabledeclarationContext;
 import bramspr.BramsprParser.WhilestatementContext;
-import bramspr.symboltable.Entry;
-import bramspr.symboltable.SymbolTable;
-import bramspr.symboltable.SymbolTableException;
-
+import bramspr.symboltable.*;
 /**
  * BramsprChecker controleert of een gegeven ParseTree voldoet aan de
  * contextuele eisen van Bramspr.
@@ -93,20 +89,16 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
 			// niet door de user gedefined worden.
-			Entry reservedType = new Entry("Reserved type");
-			this.typeSymtab.enter("int", reservedType);
-			this.typeSymtab.enter("bool", reservedType);
-			this.typeSymtab.enter("char", reservedType);
-			this.typeSymtab.enter("string", reservedType);
+			symbolTable.declare(new Symbol("int", TypeClass.TYPE));
+			symbolTable.declare(new Symbol("bool", TypeClass.TYPE));
+			symbolTable.declare(new Symbol("char", TypeClass.TYPE));
+			symbolTable.declare(new Symbol("string", TypeClass.TYPE));
 
 			// Een aantal functies zijn op een lager niveau gedefinieerd; deze
 			// mogen niet door de user gedefined worden.
-			Entry getint = new Entry("int");
-			Entry getchar = new Entry("char");
-			Entry getbool = new Entry("bool");
-			this.functionSymtab.enter("getint", getint);
-			this.functionSymtab.enter("getchar", getchar);
-			this.functionSymtab.enter("getbool", getbool);
+			symbolTable.declare(new Symbol("getInt", TypeClass.FUNCTION));
+			symbolTable.declare(new Symbol("getChar", TypeClass.FUNCTION));
+			symbolTable.declare(new Symbol("getBool", TypeClass.FUNCTION));
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de
 			// catch is verplicht.
