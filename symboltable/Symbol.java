@@ -4,7 +4,8 @@ enum typeClass {
 	ENUM('e'),
 	VARIABLE('v'),
 	TYPE('t'),
-	FUNCTION('f');
+	FUNCTION('f'),
+	ARRAY('a');
 	
 	char firstChar;
 	
@@ -18,8 +19,7 @@ public class Symbol { // A generic programming language symbol
 	typeClass type;
 	typeClass[] arguments;
 	
-	Scope scope; // All symbols know what scope contains them.
-	
+	//Scope scope; // All symbols know what scope contains them.
 	
 	public static String generateSignature(String identifier, typeClass type, typeClass[] arguments) {
 		StringBuilder sb = new StringBuilder(type.firstChar);

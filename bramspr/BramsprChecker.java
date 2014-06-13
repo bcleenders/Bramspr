@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import symboltable.Symbol;
+
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayAccessExpressionContext;
@@ -59,23 +61,11 @@ import bramspr.symboltable.SymbolTableException;
  *         geeft het (primitieve) type terug dat de bijbehorende programmacode
  *         terug zou geven.
  */
-public class BramsprChecker extends
-		BramsprBaseVisitor<bramspr.BramsprChecker.Type> {
+public class BramsprChecker extends BramsprBaseVisitor<String> {
 //public class BramsprChecker implements
 //	 BramsprVisitor<bramspr.BramsprChecker.Type> {
 
-	/**
-	 * Type bevat de vier soorten primitieve waardes.
-	 */
-	public enum Type {
-		INT, BOOL, CHAR, VOID
-	}
-
-	private SymbolTable<Entry> variableSymtab;
-	private SymbolTable<Entry> functionSymtab;
-	private SymbolTable<Entry> typeSymtab;
-	
-	
+	private SymbolTable variableSymtab;
 	
 	private int errorCount = 0;
 	/**
@@ -98,8 +88,8 @@ public class BramsprChecker extends
 	}
 
 	public BramsprChecker() {
-		this.variableSymtab = new SymbolTable<Entry>();
-		this.functionSymtab = new SymbolTable<Entry>();
+		this.variableSymtab = new SymbolTable();
+		this.functionSymtab = new SymbolTable();
 
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen

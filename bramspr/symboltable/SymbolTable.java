@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Stack;
 
 
-public class SymbolTable<E extends Entry> {
-	private HashMap<String, Stack<E>> symbols;
+public class SymbolTable {
+	private HashMap<String, Stack<Symbol>> symbols;
 	private Stack<HashSet<String>> symbolsInLevel;
 	private int currentLevel;
 
@@ -63,7 +63,7 @@ public class SymbolTable<E extends Entry> {
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
 	 */
-	public void enter(String id, E entry) throws SymbolTableException {
+	public void declare(String id, Symbol entry) throws SymbolTableException {
 		if (id == null) {
 			throw new SymbolTableException("Null identifiers not allowed");
 		}
@@ -96,7 +96,7 @@ public class SymbolTable<E extends Entry> {
 	 *         does not contain id
 	 * @throws SymbolTableException 
 	 */
-	public E retrieve(String id) {
+	public E resolve(String id) {
 		Stack<E> entries = this.symbols.get(id);
 
 		if(entries == null || entries.isEmpty()) {
