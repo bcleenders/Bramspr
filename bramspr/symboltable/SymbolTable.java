@@ -65,27 +65,29 @@ public class SymbolTable {
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
 	 */
-	public void declare(String id, Symbol entry) throws SymbolTableException {
-		if (id == null) {
-			throw new SymbolTableException("Null identifiers not allowed");
+	public void declare(Symbol symbol) throws SymbolTableException {
+		if (symbol == null) {
+			throw new SymbolTableException("Null symbols not allowed");
 		}
 
 		if (this.currentLevel() < 0) {
 			throw new SymbolTableException("Bad scope: no scope opened");
 		}
+		
+		String signature = symbol.toString();
 
-		if(this.symbolsInLevel.get(this.currentLevel).contains(id)) {
-			throw new SymbolTableException("Identifier already '" + id + "' contained in current scope.");
+		if(this.symbolsInLevel.get(this.currentLevel).contains(symbol.toString())) {
+			throw new SymbolTableException("Identifier already '" + signature + "' contained in current scope.");
 		}
 		
 		// Add the string to the set of identifiers in this level.
-		this.symbolsInLevel.get(this.currentLevel).add(id);
+		this.symbolsInLevel.get(this.currentLevel).add(signature);
 		
 		// Add the entry to the hashmap
-		if(this.symbols.get(id) == null) {
-			this.symbols.put(id, new Stack<Symbol>());
+		if(this.symbols.get(signature) == null) {
+			this.symbols.put(signature, new Stack<Symbol>());
 		}
-		this.symbols.get(id).add(entry);
+		this.symbols.get(signature).add(symbol);
 	}
 
 	/**
