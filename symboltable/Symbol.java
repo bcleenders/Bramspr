@@ -47,6 +47,10 @@ public class Symbol { // A generic programming language symbol
 	public String getIdentifier() {
 		return this.identifier;
 	}
+	
+	public typeClass getType() {
+		return this.type;
+	}
 
 	/**
 	 * Deze moet uniek zijn voor twee verschillende functies/variables/enums/...
