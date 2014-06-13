@@ -1,7 +1,9 @@
 grammar Bramspr;
 options { tokenVocab=BramsprLexer; }
 
-program: (declaration | statement )*;
+program: block;
+
+block: (declaration | statement | LEFT_BRACE block RIGHT_BRACE)*;
 
 declaration : variabledeclaration SEMICOLON
             | functiondeclaration
@@ -24,7 +26,7 @@ primitiveType: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 
 // function integer foo(a,b: integer, z:char) { ... }
 functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
-                      LEFT_BRACE (variabledeclaration | statement)* RIGHT_BRACE;
+                      LEFT_BRACE block RIGHT_BRACE;
 
 // enum days { FRIDAY, SATURDAY, SUNDAY }
 enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT_BRACE;
