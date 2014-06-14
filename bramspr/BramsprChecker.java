@@ -11,6 +11,7 @@ import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayAccessExpressionContext;
 import bramspr.BramsprParser.AssignExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
+import bramspr.BramsprParser.BlockContext;
 import bramspr.BramsprParser.BoolLiteralExpressionContext;
 import bramspr.BramsprParser.CharLiteralExpressionContext;
 import bramspr.BramsprParser.DeclarationContext;
@@ -37,10 +38,14 @@ import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.PrimitiveTypeContext;
 import bramspr.BramsprParser.PrintstatementContext;
 import bramspr.BramsprParser.ProgramContext;
+import bramspr.BramsprParser.PutBoolExpressionContext;
+import bramspr.BramsprParser.PutCharExpressionContext;
+import bramspr.BramsprParser.PutIntExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralExpressionContext;
+import bramspr.BramsprParser.SwapstatementContext;
 import bramspr.BramsprParser.TypedeclarationContext;
 import bramspr.BramsprParser.UnaryExpressionContext;
 import bramspr.BramsprParser.VariableExpressionContext;
@@ -60,8 +65,8 @@ import bramspr.symboltable.*;
  *         terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-	// public class BramsprChecker implements
-	// BramsprVisitor<String> {
+//	 public class BramsprChecker implements
+//	 BramsprVisitor<String> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -156,7 +161,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		try {
 			this.symbolTable.declare(symbol);
 		} catch(SymbolTableException e) {
-			this.reportError(e.getMessage(), line, expected, encountered)
+			this.reportError(e.getMessage(), ctx.getChild(1), null, null);
 		}
 		
 		return null;
@@ -199,7 +204,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 		}
 
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
@@ -233,199 +238,199 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// TODO Auto-generated method stub
 		// functienaam mag niet overeenkomen met andere functienaam (wel met
 		// variabele)
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitAssignExpression(AssignExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		// variabele moet al gedeclareerd zijn, en types moeten matchen
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitTypedeclaration(TypedeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		// Typenaam mag nog niet bezet zijn! (dus geen restricted keyword!)
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitOrExpression(OrExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitWhilestatement(WhilestatementContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitGetBoolExpression(GetBoolExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitAndExpression(AndExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitCharLiteralExpression(CharLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitIfstatement(IfstatementContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitPrintstatement(PrintstatementContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitMultiplicationExpression(
 			MultiplicationExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitStringLiteralExpression(
 			StringLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitGetCharExpression(GetCharExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitVariableExpression(VariableExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitGreaterThanEqualsToExpression(
 			GreaterThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitFunctionExpression(FunctionExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitDeclaration(DeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitIntLiteralExpression(IntLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitSmallerThanEqualsToExpression(
 			SmallerThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitStatement(StatementContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitPrimitiveType(PrimitiveTypeContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitProgram(ProgramContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
 	public Suit visitBoolLiteralExpression(BoolLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return Type.VOID;
+		return null;
 	}
 
 	@Override
@@ -441,7 +446,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 	
 	@Override
-	public String visitEnumExpression(EnumExpressionContext ctx) {
+	public Suit visitEnumExpression(EnumExpressionContext ctx) {
 		//
 		
 		// TODO Auto-generated method stub
@@ -449,15 +454,40 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 	
 	@Override
-<<<<<<< HEAD
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-=======
-	public String visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-		//
-		
->>>>>>> 522e35e45f6e6e4587a5d56363d9d5ba311f4c0b
+
 		// TODO Auto-generated method stub
 		// Check of dit een enum of een record is!
+		return null;
+	}
+
+	@Override
+	public Suit visitBlock(BlockContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitPutCharExpression(PutCharExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitPutIntExpression(PutIntExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitPutBoolExpression(PutBoolExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitSwapstatement(SwapstatementContext ctx) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

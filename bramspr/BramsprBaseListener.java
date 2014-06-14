@@ -212,6 +212,32 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterPutCharExpression(@NotNull BramsprParser.PutCharExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPutCharExpression(@NotNull BramsprParser.PutCharExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterPutIntExpression(@NotNull BramsprParser.PutIntExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPutIntExpression(@NotNull BramsprParser.PutIntExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -258,6 +284,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitCharLiteralExpression(@NotNull BramsprParser.CharLiteralExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -329,6 +368,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterPutBoolExpression(@NotNull BramsprParser.PutBoolExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPutBoolExpression(@NotNull BramsprParser.PutBoolExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterStringLiteralExpression(@NotNull BramsprParser.StringLiteralExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -342,13 +394,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx) { }
+	@Override public void enterSwapstatement(@NotNull BramsprParser.SwapstatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx) { }
+	@Override public void exitSwapstatement(@NotNull BramsprParser.SwapstatementContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -362,6 +414,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitVariableExpression(@NotNull BramsprParser.VariableExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -433,19 +498,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterStatement(@NotNull BramsprParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitStatement(@NotNull BramsprParser.StatementContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterVariabledeclaration(@NotNull BramsprParser.VariabledeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -453,6 +505,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitVariabledeclaration(@NotNull BramsprParser.VariabledeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterStatement(@NotNull BramsprParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitStatement(@NotNull BramsprParser.StatementContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

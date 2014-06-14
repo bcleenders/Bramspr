@@ -82,7 +82,7 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisEx
           | expression EQUALS_TO expression PLUSMINUS expression # plusMinusExpression        
           | expression AND expression                            # andExpression
           | expression OR expression                             # orExpression
-          | assignment                                           # assignExpression
+          | LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS        # assignExpression
           | functioncall                                         # functionExpression
           | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE) # arrayAccessExpression
           | ENUM DOT IDENTIFIER DOT IDENTIFIER                   # enumExpression

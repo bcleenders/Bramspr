@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -117,6 +117,20 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAndExpression(@NotNull BramsprParser.AndExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#putCharExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPutCharExpression(@NotNull BramsprParser.PutCharExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#putIntExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPutIntExpression(@NotNull BramsprParser.PutIntExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#equalsToExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -187,6 +201,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#putBoolExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPutBoolExpression(@NotNull BramsprParser.PutBoolExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#stringLiteralExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -194,11 +215,11 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitStringLiteralExpression(@NotNull BramsprParser.StringLiteralExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#getCharExpression}.
+	 * Visit a parse tree produced by {@link BramsprParser#swapstatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx);
+	T visitSwapstatement(@NotNull BramsprParser.SwapstatementContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#variableExpression}.
@@ -206,6 +227,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariableExpression(@NotNull BramsprParser.VariableExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#getCharExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGetCharExpression(@NotNull BramsprParser.GetCharExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#greaterThanEqualsToExpression}.
