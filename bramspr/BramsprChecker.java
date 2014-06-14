@@ -89,11 +89,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @param encountered
 	 *            wat ontvangen is (optioneel)
 	 */
-	private void reportError(String message, ParserRuleContext ctx,
+	private void reportError(String message, ParserRuleContext erroroursNode,
 			String expected, String encountered) {
 		errorCount++;
-		System.err.print("Error " + errorCount + ": " + message + " on line "
-				+ ctx + ".");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Error ");
+		sb.append(errorCount);
+		sb.append(": ");
+		sb.append(message);
+		sb.append(" on line ");
+		sb.append(erroroursNode.getStart().getLine());
+		sb.append(':');
+		sb.append(erroroursNode.getStart().getCharPositionInLine());
+		sb.append('.');
+
+		System.err.print(sb.toString());
+
 		if (expected != null) {
 			System.err.print("Expected " + expected);
 			if (encountered != null) {
@@ -141,17 +153,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitErrorNode(ErrorNode arg0) {
 		// Een error node heeft geen return type
-		return null;
+		return Suit.VOID;
 	}
 
 	@Override
 	public Suit visitTerminal(TerminalNode arg0) {
 		// Volgens mij hoeven we hier niet echt iets mee...
-		return null;
+		return Suit.VOID;
 	}
 
 	@Override
-	/**
+	/*
 	 * Een enum moet een (voor enums) unieke naam hebben.
 	 */
 	public Suit visitEnumdeclaration(EnumdeclarationContext ctx) {
@@ -162,13 +174,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		try {
 			this.symbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
+<<<<<<< HEAD
 			this.reportError(e.getMessage(), ctx.getChild(1), null, null);
 		}
 
 		return null;
+=======
+			this.reportError(e.getMessage(), ctx, null, null);
+		}
+
+		return Suit.VOID;
+>>>>>>> acb8d387b752590f317b51b4b561b6c4a58107a2
 	}
 
 	@Override
+	/*
+	 * Een parenthesisExpression heeft geen contextbeperkingen. Het type van de
+	 * expression erbinnen kan worden doorgegeven.
+	 */
 	public Suit visitParenthesisExpression(ParenthesisExpressionContext ctx) {
 		// Hier zijn geen eisen aan de inhoud van ctx die niet al door de parser
 		// zijn gecontroleerd.
@@ -176,62 +199,73 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	/**
-	 * Controleert de contextbeperkingen van een unaryExpression.
-	 * Als het eerste kind een + of - is, moet het tweede kind een int zijn. De return type is dan ook een int.
-	 * Als het eerste kind een ! is, moet het tweede kind een bool zijn. De return type is dan ook een bool.
+	/*
+	 * Controleert de contextbeperkingen van een unaryExpression. Als het eerste
+	 * kind een + of - is, moet het tweede kind een int zijn. De return type is
+	 * dan ook een int. Als het eerste kind een ! is, moet het tweede kind een
+	 * bool zijn. De return type is dan ook een bool.
 	 */
 	public Suit visitUnaryExpression(UnaryExpressionContext ctx) {
 		// Vraag het type op van de int/bool node
-		Type argType = visit(ctx.getChild(1));
+		Suit argSuit = visit(ctx.getChild(1));
+
+		if (argSuit == null) {
+			reportError("bad argument; cannot be void", ctx, "void", null);
+		}
 
 		if (ctx.getChild(0).getText().equals("!")) {
-			if (argType == Type.BOOL) {
-				return Type.BOOL; // De negatie van kind 2 is een boolean
-			} else {
-				reportError("Illegal argument", ctx.getStart().getLine(),
-						"bool", null);
+			if (!argSuit.type.equals("bool")) {
+				reportError("illegal argument", ctx, "bool", null);
 			}
+			return new Suit("bool", false);
 		}
 
 		if (ctx.getChild(1).getText().equals("-")
 				|| ctx.getChild(1).getText().equals("+")) {
-			if (argType == Type.INT) {
-				return Type.INT; // Kind 2 (of de negatieve waarde daarvan) is
-									// een int
-			} else {
-				reportError("Illegal argument", ctx.getStart().getLine(),
-						"int", null);
+			if (!argSuit.type.equals("int")) {
+				reportError("illegal argument", ctx, "int", null);
 			}
+			return new Suit("int", false);
 		}
 
 		return null;
 	}
 
 	@Override
+	/*
+	 * Een additionExpression telt twee int waardes bij elkaar op, en verwacht
+	 * geen verdere argumenten.
+	 */
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
-		if (ctx.getChildCount() != 2) {
-			System.out.println("error on line; " + ctx.getStart().getLine()
-					+ ": the " + ctx.getChild(1).getText()
-					+ " expects two arguments.");
+		Suit leftExpression = visit(ctx.getChild(0));
+		Suit rightExpression = visit(ctx.getChild(2));
+
+		if (leftExpression == null || rightExpression == null) {
+			this.reportError(
+					"invalid additon; voids cannot be summed/substracted.",
+					ctx, "int", "void");
+			return new Suit("int", false);
 		}
 
-		if (Type.INT != visit(ctx.getChild(0))) {
-			System.out.println("error on line; " + ctx.getStart().getLine()
-					+ ": int expected.");
+		if (!leftExpression.type.equals("int")) {
+			this.reportError("addition/substraction only works for int values",
+					ctx, "int", leftExpression.type);
 		}
 
-		if (Type.INT != visit(ctx.getChild(2))) {
-			System.out.println("error on line; " + ctx.getStart().getLine()
-					+ ": int expected.");
+		if (!rightExpression.type.equals("int")) {
+			this.reportError("addition/substraction only works for int values",
+					ctx, "int", rightExpression.type);
 		}
 
-		return Type.INT;
+		return new Suit("int", false);
 	}
 
+	/*
+	 * Een getint() function call heeft geen contextbeperkingen.
+	 */
 	@Override
 	public Suit visitGetIntExpression(GetIntExpressionContext ctx) {
-		return Type.INT;
+		return new Suit("int", false);
 	}
 
 	@Override
