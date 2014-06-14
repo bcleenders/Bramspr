@@ -6,9 +6,8 @@ import java.util.Stack;
 
 import symboltable.Symbol;
 
-
-public class SymbolTable {
-	private HashMap<String, Stack<Symbol>> symbols;
+public class SymbolTable<S extends Symbol> {
+	private HashMap<String, Stack<S>> symbols;
 	private Stack<HashSet<String>> symbolsInLevel;
 	private int currentLevel;
 
@@ -16,7 +15,7 @@ public class SymbolTable {
 	 * @ensures this.currentLevel() == -1
 	 */
 	public SymbolTable() {
-		this.symbols = new HashMap<String, Stack<Symbol>>();
+		this.symbols = new HashMap<String, Stack<S>>();
 		this.symbolsInLevel = new Stack<HashSet<String>>();
 		this.currentLevel = -1;
 	}
@@ -65,7 +64,7 @@ public class SymbolTable {
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
 	 */
-	public void declare(Symbol symbol) throws SymbolTableException {
+	public void declare(S symbol) throws SymbolTableException {
 		if (symbol == null) {
 			throw new SymbolTableException("Null symbols not allowed");
 		}
@@ -85,7 +84,7 @@ public class SymbolTable {
 		
 		// Add the entry to the hashmap
 		if(this.symbols.get(signature) == null) {
-			this.symbols.put(signature, new Stack<Symbol>());
+			this.symbols.put(signature, new Stack<S>());
 		}
 		this.symbols.get(signature).add(symbol);
 	}
@@ -98,8 +97,8 @@ public class SymbolTable {
 	 *         does not contain id
 	 * @throws SymbolTableException 
 	 */
-	public Symbol resolve(String id) {
-		Stack<Symbol> entries = this.symbols.get(id);
+	public S resolve(String id) {
+		Stack<S> entries = this.symbols.get(id);
 
 		if(entries == null || entries.isEmpty()) {
 			return null;
