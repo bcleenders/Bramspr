@@ -43,6 +43,9 @@ PRINT:                  'print';
 GETINT:                 'getint';
 GETCHAR:                'getchar';
 GETBOOL:                'getbool';
+PUTINT:                 'putint';
+PUTCHAR:                 'putchar';
+PUTBOOL:                 'putbool';
 ENUM:                   'enum';
 RETURN:                 'return';
     

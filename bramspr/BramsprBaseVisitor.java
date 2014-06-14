@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -170,6 +170,14 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -274,7 +282,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitStatement(@NotNull BramsprParser.StatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariabledeclaration(@NotNull BramsprParser.VariabledeclarationContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -282,7 +290,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitVariabledeclaration(@NotNull BramsprParser.VariabledeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStatement(@NotNull BramsprParser.StatementContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
