@@ -1,5 +1,7 @@
 package bramspr;
 
+import java.util.ArrayList;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -10,6 +12,7 @@ import symboltable.Symbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayAccessExpressionContext;
+import bramspr.BramsprParser.ArrayLiteralExpressionContext;
 import bramspr.BramsprParser.AssignExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.BlockContext;
@@ -20,6 +23,7 @@ import bramspr.BramsprParser.EnumExpressionContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
+import bramspr.BramsprParser.FinalDeclarationContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionExpressionContext;
 import bramspr.BramsprParser.FunctiondeclarationContext;
@@ -36,12 +40,13 @@ import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
-import bramspr.BramsprParser.PrimitiveTypeContext;
+import bramspr.BramsprParser.PrimitiveTypeDenoterContext;
 import bramspr.BramsprParser.PrintstatementContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PutBoolExpressionContext;
 import bramspr.BramsprParser.PutCharExpressionContext;
 import bramspr.BramsprParser.PutIntExpressionContext;
+import bramspr.BramsprParser.RecordLiteralExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StatementContext;
@@ -49,6 +54,7 @@ import bramspr.BramsprParser.StringLiteralExpressionContext;
 import bramspr.BramsprParser.SwapstatementContext;
 import bramspr.BramsprParser.TypedeclarationContext;
 import bramspr.BramsprParser.UnaryExpressionContext;
+import bramspr.BramsprParser.VariableDeclarationContext;
 import bramspr.BramsprParser.VariableExpressionContext;
 import bramspr.BramsprParser.VariabledeclarationContext;
 import bramspr.BramsprParser.WhilestatementContext;
@@ -63,8 +69,7 @@ import bramspr.symboltable.*;
  *         (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-	// public class BramsprChecker implements
-	// BramsprVisitor<String> {
+//	 public class BramsprChecker implements BramsprVisitor<Suit> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -116,17 +121,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
-			// niet door de user gedefined worden.
-			symbolTable.declare(new Symbol("int", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("bool", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("char", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("string", TypeClass.TYPE));
+			// niet door de user gedeclareerd worden.
+			symbolTable.declare(new Symbol("int", TypeClass.TYPE, "void")); // declaraties hebben geen return value (-type); void
+			symbolTable.declare(new Symbol("bool", TypeClass.TYPE, "void"));
+			symbolTable.declare(new Symbol("char", TypeClass.TYPE, "void"));
+			symbolTable.declare(new Symbol("string", TypeClass.TYPE, "void"));
 
 			// Een aantal functies zijn op een lager niveau gedefinieerd; deze
 			// mogen niet door de user gedefined worden.
-			symbolTable.declare(new Symbol("getInt", TypeClass.FUNCTION));
-			symbolTable.declare(new Symbol("getChar", TypeClass.FUNCTION));
-			symbolTable.declare(new Symbol("getBool", TypeClass.FUNCTION));
+			symbolTable.declare(new Symbol("getInt", TypeClass.FUNCTION, "int"));
+			symbolTable.declare(new Symbol("getChar", TypeClass.FUNCTION, "char"));
+			symbolTable.declare(new Symbol("getBool", TypeClass.FUNCTION, "bool"));
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de
 			// catch is verplicht.
@@ -166,7 +171,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		String identifier = ctx.getChild(1).getText();
 		System.out.println("Enum naam; " + identifier);
 
-		Symbol symbol = new Symbol(identifier, TypeClass.ENUM);
+		Symbol symbol = new Symbol(identifier, TypeClass.ENUM, "void");
 		try {
 			this.symbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
@@ -199,10 +204,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Vraag het type op van de int/bool node
 		Suit argSuit = visit(ctx.getChild(1));
 
-		if (argSuit == null) {
-			reportError("bad argument; cannot be void", ctx, "void", null);
-		}
-
 		if (ctx.getChild(0).getText().equals("!")) {
 			if (!argSuit.type.equals("bool")) {
 				reportError("illegal argument", ctx, "bool", null);
@@ -222,8 +223,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
-	 * Een additionExpression telt twee int waardes bij elkaar op, en verwacht
-	 * geen verdere argumenten.
+	 * Een additionExpression telt twee int waardes bij elkaar op, en verwacht geen verdere argumenten.
 	 */
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.getChild(0));
@@ -254,11 +254,60 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Er zijn drie contextuele eisen aan een functie:
+	 * 	1 Een functie signature moet uniek zijn binnen zijn scope.
+	 * 		Het signature bestaat uit de naam van de functie plus de types van de argumenten.
+	 * 		Bij foo(a:int, b:int) is "foo int int" het signature (zie ook Symbol)
+	 * 	2 Een functie die void returnt, mag geen return statement hebben.
+	 *  3 Een functie die niet void return moet een return statement hebben, waarbij de expressie hetzelfde type als de functie oplevert.
+	 */
 	public Suit visitFunctiondeclaration(FunctiondeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		// functienaam mag niet overeenkomen met andere functienaam (wel met
-		// variabele)
-		return null;
+		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
+		String declaredReturnType = ctx.IDENTIFIER(0).getText();
+		String functieNaam = ctx.IDENTIFIER(1).getText();
+
+		// Even controleren of deze functie niet een void is die dingen probeert te returnen (context eis 2)
+		boolean hasReturnStatement = ctx.RETURN() != null;
+		if (declaredReturnType.equals("void") && hasReturnStatement) {
+			this.reportError("function " + functieNaam + " has return value: voids methods cannot have return values.", ctx, "}", "return");
+		}
+		
+		this.symbolTable.openScope();
+		
+		/*
+		 * Nu moeten we kijken of de functie signature wel uniek is!
+		 * (dit declareerd de parameter-variabelen ook direct)
+		 */
+		ArrayList<Suit> argumentTypes = new ArrayList<Suit>();
+		
+		for(VariabledeclarationContext argument : ctx.variabledeclaration()) {
+			argumentTypes.add(visit(argument));
+		}
+		
+		Symbol symbol = new Symbol(functieNaam, TypeClass.FUNCTION, declaredReturnType, (TypeClass[]) argumentTypes.toArray());
+
+		try {
+			this.symbolTable.declare(symbol);
+		} catch (SymbolTableException e) {
+			this.reportError("duplicate function signature; functions cannot have identical names and argument types.", ctx, null, null);
+		}
+		
+		/*
+		 * De functie declaratie is gecontroleerd; nu nog controleren of de inhoud ook valide code is.
+		 */
+		visit(ctx.block()); // Dit is de code die uitgevoerd wordt. Het return type is niet belangrijk.
+		
+		if(hasReturnStatement) {
+			Suit returnExpressionType = visit(ctx.expression());
+			
+			if(declaredReturnType != returnExpressionType.type) {
+				this.reportError("invalid function return type", ctx.expression(), declaredReturnType, returnExpressionType.type);
+			}
+		}
+		this.symbolTable.closeScope();
+
+		return new Suit(declaredReturnType, false);
 	}
 
 	@Override
@@ -414,19 +463,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Suit visitPrimitiveType(PrimitiveTypeContext ctx) {
+	public Suit visitPrimitiveTypeDenoter(PrimitiveTypeDenoterContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -606,5 +649,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		}
 
 		return Suit.VOID;
+	}
+
+	@Override
+	public Suit visitFinalDeclaration(FinalDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitRecordLiteralExpression(RecordLiteralExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
