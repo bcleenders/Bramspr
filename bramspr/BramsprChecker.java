@@ -1,5 +1,7 @@
 package bramspr;
 
+import java.util.ArrayList;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -55,15 +57,12 @@ import bramspr.BramsprParser.WhilestatementContext;
 import bramspr.symboltable.*;
 
 /**
- * BramsprChecker controleert of een gegeven ParseTree voldoet aan de
- * contextuele eisen van Bramspr.
+ * BramsprChecker controleert of een gegeven ParseTree voldoet aan de contextuele eisen van Bramspr.
  * 
  * @author Bram&Jasper
  * 
- *         Deze klasse implementeert BramsprVisitor (impliciet) en extend
- *         BramsprBaseVisitor dus ook AbstractParseTreeVisitor. Iedere functie
- *         geeft het (primitieve) type terug dat de bijbehorende programmacode
- *         terug zou geven.
+ *         Deze klasse implementeert BramsprVisitor (impliciet) en extend BramsprBaseVisitor dus ook AbstractParseTreeVisitor. Iedere functie geeft het
+ *         (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	// public class BramsprChecker implements
@@ -89,8 +88,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @param encountered
 	 *            wat ontvangen is (optioneel)
 	 */
-	private void reportError(String message, ParserRuleContext erroroursNode,
-			String expected, String encountered) {
+	private void reportError(String message, ParserRuleContext erroroursNode, String expected, String encountered) {
 		errorCount++;
 
 		StringBuilder sb = new StringBuilder();
@@ -120,17 +118,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		try {
 			// Een aantal types (primitieve types) zijn gereserveerd; deze mogen
-			// niet door de user gedefined worden.
-			symbolTable.declare(new Symbol("int", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("bool", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("char", TypeClass.TYPE));
-			symbolTable.declare(new Symbol("string", TypeClass.TYPE));
+			// niet door de user gedeclareerd worden.
+			symbolTable.declare(new Symbol("int", TypeClass.TYPE, "void")); // declaraties hebben geen return value (-type); void
+			symbolTable.declare(new Symbol("bool", TypeClass.TYPE, "void"));
+			symbolTable.declare(new Symbol("char", TypeClass.TYPE, "void"));
+			symbolTable.declare(new Symbol("string", TypeClass.TYPE, "void"));
 
 			// Een aantal functies zijn op een lager niveau gedefinieerd; deze
 			// mogen niet door de user gedefined worden.
-			symbolTable.declare(new Symbol("getInt", TypeClass.FUNCTION));
-			symbolTable.declare(new Symbol("getChar", TypeClass.FUNCTION));
-			symbolTable.declare(new Symbol("getBool", TypeClass.FUNCTION));
+			symbolTable.declare(new Symbol("getInt", TypeClass.FUNCTION, "int"));
+			symbolTable.declare(new Symbol("getChar", TypeClass.FUNCTION, "char"));
+			symbolTable.declare(new Symbol("getBool", TypeClass.FUNCTION, "bool"));
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de
 			// catch is verplicht.
@@ -170,7 +168,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		String identifier = ctx.getChild(1).getText();
 		System.out.println("Enum naam; " + identifier);
 
-		Symbol symbol = new Symbol(identifier, TypeClass.ENUM);
+		Symbol symbol = new Symbol(identifier, TypeClass.ENUM, "void");
 		try {
 			this.symbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
@@ -202,10 +200,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Vraag het type op van de int/bool node
 		Suit argSuit = visit(ctx.getChild(1));
 
-		if (argSuit == null) {
-			reportError("bad argument; cannot be void", ctx, "void", null);
-		}
-
 		if (ctx.getChild(0).getText().equals("!")) {
 			if (!argSuit.type.equals("bool")) {
 				reportError("illegal argument", ctx, "bool", null);
@@ -213,8 +207,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			return new Suit("bool", false);
 		}
 
-		if (ctx.getChild(1).getText().equals("-")
-				|| ctx.getChild(1).getText().equals("+")) {
+		if (ctx.getChild(1).getText().equals("-") || ctx.getChild(1).getText().equals("+")) {
 			if (!argSuit.type.equals("int")) {
 				reportError("illegal argument", ctx, "int", null);
 			}
@@ -226,28 +219,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
-	 * Een additionExpression telt twee int waardes bij elkaar op, en verwacht
-	 * geen verdere argumenten.
+	 * Een additionExpression telt twee int waardes bij elkaar op, en verwacht geen verdere argumenten.
 	 */
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
-		if (leftExpression == null || rightExpression == null) {
-			this.reportError(
-					"invalid additon; voids cannot be summed/substracted.",
-					ctx, "int", "void");
-			return new Suit("int", false);
-		}
-
 		if (!leftExpression.type.equals("int")) {
-			this.reportError("addition/substraction only works for int values",
-					ctx, "int", leftExpression.type);
+			this.reportError("addition/substraction only works for int values", ctx, "int", leftExpression.type);
 		}
 
 		if (!rightExpression.type.equals("int")) {
-			this.reportError("addition/substraction only works for int values",
-					ctx, "int", rightExpression.type);
+			this.reportError("addition/substraction only works for int values", ctx, "int", rightExpression.type);
 		}
 
 		return new Suit("int", false);
@@ -262,11 +245,60 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Er zijn drie contextuele eisen aan een functie:
+	 * 	1 Een functie signature moet uniek zijn binnen zijn scope.
+	 * 		Het signature bestaat uit de naam van de functie plus de types van de argumenten.
+	 * 		Bij foo(a:int, b:int) is "foo int int" het signature (zie ook Symbol)
+	 * 	2 Een functie die void returnt, mag geen return statement hebben.
+	 *  3 Een functie die niet void return moet een return statement hebben, waarbij de expressie hetzelfde type als de functie oplevert.
+	 */
 	public Suit visitFunctiondeclaration(FunctiondeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		// functienaam mag niet overeenkomen met andere functienaam (wel met
-		// variabele)
-		return null;
+		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
+		String declaredReturnType = ctx.IDENTIFIER(0).getText();
+		String functieNaam = ctx.IDENTIFIER(1).getText();
+
+		// Even controleren of deze functie niet een void is die dingen probeert te returnen (context eis 2)
+		boolean hasReturnStatement = ctx.RETURN() != null;
+		if (declaredReturnType.equals("void") && hasReturnStatement) {
+			this.reportError("function " + functieNaam + " has return value: voids methods cannot have return values.", ctx, "}", "return");
+		}
+		
+		this.symbolTable.openScope();
+		
+		/*
+		 * Nu moeten we kijken of de functie signature wel uniek is!
+		 * (dit declareerd de parameter-variabelen ook direct)
+		 */
+		ArrayList<Suit> argumentTypes = new ArrayList<Suit>();
+		
+		for(VariabledeclarationContext argument : ctx.variabledeclaration()) {
+			argumentTypes.add(visit(argument));
+		}
+		
+		Symbol symbol = new Symbol(functieNaam, TypeClass.FUNCTION, declaredReturnType, (TypeClass[]) argumentTypes.toArray());
+
+		try {
+			this.symbolTable.declare(symbol);
+		} catch (SymbolTableException e) {
+			this.reportError("duplicate function signature; functions cannot have identical names and argument types.", ctx, null, null);
+		}
+		
+		/*
+		 * De functie declaratie is gecontroleerd; nu nog controleren of de inhoud ook valide code is.
+		 */
+		visit(ctx.block()); // Dit is de code die uitgevoerd wordt. Het return type is niet belangrijk.
+		
+		if(hasReturnStatement) {
+			Suit returnExpressionType = visit(ctx.expression());
+			
+			if(declaredReturnType != returnExpressionType.type) {
+				this.reportError("invalid function return type", ctx.expression(), declaredReturnType, returnExpressionType.type);
+			}
+		}
+		this.symbolTable.closeScope();
+
+		return new Suit(declaredReturnType, false);
 	}
 
 	@Override
@@ -356,8 +388,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitMultiplicationExpression(
-			MultiplicationExpressionContext ctx) {
+	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -387,8 +418,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitGreaterThanEqualsToExpression(
-			GreaterThanEqualsToExpressionContext ctx) {
+	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -412,8 +442,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitSmallerThanEqualsToExpression(
-			SmallerThanEqualsToExpressionContext ctx) {
+	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
