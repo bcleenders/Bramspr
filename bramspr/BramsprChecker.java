@@ -174,17 +174,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		try {
 			this.symbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
-<<<<<<< HEAD
-			this.reportError(e.getMessage(), ctx.getChild(1), null, null);
-		}
 
-		return null;
-=======
 			this.reportError(e.getMessage(), ctx, null, null);
 		}
 
 		return Suit.VOID;
->>>>>>> acb8d387b752590f317b51b4b561b6c4a58107a2
 	}
 
 	@Override
@@ -515,7 +509,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
-	 * Er moet hier geverifieerd worden of de expressie inderdaad een boolean is.
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een boolean
+	 * is.
 	 */
 	public Suit visitPutBoolExpression(PutBoolExpressionContext ctx) {
 		// TODO Auto-generated method stub
@@ -531,9 +526,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitSwapstatement(SwapstatementContext ctx) {
 		/*
-		 * De grammatica is 
-		 * 		"swapstatement: expression SWAP expression", 
-		 * dus we moeten children 0 en 2 hebben.
+		 * De grammatica is "swapstatement: expression SWAP expression", dus we
+		 * moeten children 0 en 2 hebben.
 		 */
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
