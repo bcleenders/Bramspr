@@ -7,8 +7,13 @@ public class Symbol { // A generic programming language symbol
 	TypeClass type;
 	TypeClass[] arguments;
 	
-	//Scope scope; // All symbols know what scope contains them.
-	
+	/**
+	 * Genereert een signature van een functie, enum of ander "object".
+	 * @param identifier de naam van het object (e.g. foo, Days)
+	 * @param type het type van het object (e.g. TypeClass.ENUM)
+	 * @param arguments argumenten van het object (null bij niet-functies)
+	 * @return een kenmerkend signature
+	 */
 	public static String generateSignature(String identifier, TypeClass type, TypeClass[] arguments) {
 		StringBuilder sb = new StringBuilder(type.firstChar);
 		sb.append(' ');
@@ -22,6 +27,13 @@ public class Symbol { // A generic programming language symbol
 		return sb.toString();
 	}
 
+	/**
+	 * Genereert een Symbol
+	 * @param identifier
+	 * @param type
+	 * @param arguments
+	 * @ensures Symbol.generateSignature(identifier, type, arguments) == this.toString()
+	 */
 	public Symbol(String identifier, TypeClass type, TypeClass[] arguments) {
 		this.identifier = identifier;
 		this.type = type;
