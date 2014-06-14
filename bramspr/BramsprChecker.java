@@ -19,6 +19,7 @@ import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayAccessExpressionContext;
+import bramspr.BramsprParser.ArrayLiteralExpressionContext;
 import bramspr.BramsprParser.AssignExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.BlockContext;
@@ -29,6 +30,7 @@ import bramspr.BramsprParser.EnumExpressionContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
+import bramspr.BramsprParser.FinalDeclarationContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionExpressionContext;
 import bramspr.BramsprParser.FunctiondeclarationContext;
@@ -45,12 +47,13 @@ import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
-import bramspr.BramsprParser.PrimitiveTypeContext;
+import bramspr.BramsprParser.PrimitiveTypeDenoterContext;
 import bramspr.BramsprParser.PrintstatementContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PutBoolExpressionContext;
 import bramspr.BramsprParser.PutCharExpressionContext;
 import bramspr.BramsprParser.PutIntExpressionContext;
+import bramspr.BramsprParser.RecordLiteralExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StatementContext;
@@ -58,6 +61,7 @@ import bramspr.BramsprParser.StringLiteralExpressionContext;
 import bramspr.BramsprParser.SwapstatementContext;
 import bramspr.BramsprParser.TypedeclarationContext;
 import bramspr.BramsprParser.UnaryExpressionContext;
+import bramspr.BramsprParser.VariableDeclarationContext;
 import bramspr.BramsprParser.VariableExpressionContext;
 import bramspr.BramsprParser.VariabledeclarationContext;
 import bramspr.BramsprParser.WhilestatementContext;
@@ -72,8 +76,7 @@ import bramspr.symboltable.*;
  *         (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-	// public class BramsprChecker implements
-	// BramsprVisitor<String> {
+//	 public class BramsprChecker implements BramsprVisitor<Suit> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -258,6 +261,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
+		if (leftExpression == null || rightExpression == null) {
+			this.reportError("invalid additon; voids cannot be summed/substracted.", ctx, "int", "void");
+			return new Suit("int", false);
+		}
+
 		if (!leftExpression.type.equals("int")) {
 			this.reportError("addition/substraction only works for int values", ctx, "int", leftExpression.type.toString());
 		}
@@ -405,7 +413,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitGetBoolExpression(GetBoolExpressionContext ctx) {
-		return new Suit("bool", false);
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -421,7 +429,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("logical operator AND only works for bool values", ctx, "int", rightExpression.type);
 		}
 
-		return new Suit("int", false);
+		return new Suit(INT, false);
 	}
 
 	@Override
@@ -527,19 +535,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Suit visitPrimitiveType(PrimitiveTypeContext ctx) {
+	public Suit visitPrimitiveTypeDenoter(PrimitiveTypeDenoterContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -590,22 +592,80 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return null;
 	}
 
+	/*
+	 * Hier hoeven geen contextbeperkingen geverifieerd te worden, maar er moeten wel eventueel scopes geopend en gesloten worden.
+	 */
 	@Override
 	public Suit visitBlock(BlockContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		// Aantal parse tree nodes in dit blok opvragen.
+		int amountOfChildren = ctx.getChildCount();
+
+		// Itereren over al deze nodes.
+		for (int i = 0; i < amountOfChildren; i++) {
+			ParseTree currentNode = ctx.getChild(i);
+
+			/*
+			 * In een block kunnen drie verschillende dingen zitten: declarations, statements en {block}'s. 
+			 * Bij { moet er een scope geöpend worden, bij } moet er een scope gesloten worden, en de declarations, 
+			 * statements en blocks moeten simpelweg gevisit worden. 
+			 */
+
+			if (currentNode instanceof TerminalNode) {
+				if (currentNode.getText().equals("{")) {
+					symbolTable.openScope();
+				} else {
+					symbolTable.closeScope();
+				}
+			} else {
+				visit(currentNode);
+
+			}
+		}
+
+		return Suit.VOID;
 	}
 
+	/*
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een character
+	 * is.
+	 */
 	@Override
 	public Suit visitPutCharExpression(PutCharExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		/*
+		 * De expressie opvragen.
+		 */
+
+		Suit expressionSuit = visit(ctx.expression());
+
+		/*
+		 * Controleren of de expressie een character is.
+		 */
+		if (!expressionSuit.type.equals("char")) {
+			reportError("The argument of putbool must be of character type.", ctx, "char", expressionSuit.type);
+		}
+
+		return Suit.VOID;
 	}
 
+	/*
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een integer
+	 * is.
+	 */
 	@Override
 	public Suit visitPutIntExpression(PutIntExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		/*
+		* De expressie opvragen.
+		*/
+		Suit expressionSuit = visit(ctx.expression());
+
+		/*
+		 * Controleren of de expressie een integer is.
+		 */
+		if (!expressionSuit.type.equals("int")) {
+			reportError("The argument of putint must be of integer type.", ctx, "int", expressionSuit.type);
+		}
+
+		return Suit.VOID;
 	}
 
 	@Override
@@ -614,44 +674,76 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * is.
 	 */
 	public Suit visitPutBoolExpression(PutBoolExpressionContext ctx) {
-		// TODO Auto-generated method stub
+		/*
+		 * De expressie opvragen.
+		 */
+		Suit expressionSuit = visit(ctx.expression());
+
+		/*
+		 * Controleren of de expressie een boolean is.
+		 */
+		if (!expressionSuit.type.equals("bool")) {
+			reportError("The argument of putbool must be of boolean type.", ctx, "bool", expressionSuit.type);
+		}
+
 		return Suit.VOID;
 	}
 
 	/*
-	 * Er moeten hier twee zaken geverifieerd worden: - beide kinderen zijn
-	 * mutable - beide kinderen zijn van hetzelfde type
+	 * Er moeten hier twee zaken geverifieerd worden: 
+	 * - beide kinderen zijn mutable
+	 * - beide kinderen zijn van hetzelfde type
 	 * 
-	 * Deze node levert niets op, dus V returnen.
+	 * Deze node levert niets op, dus VOID returnen.
 	 */
 	@Override
 	public Suit visitSwapstatement(SwapstatementContext ctx) {
-		/*
-		 * De grammatica is "swapstatement: expression SWAP expression", dus we
-		 * moeten children 0 en 2 hebben.
-		 */
-		Suit leftExpression = visit(ctx.getChild(0));
-		Suit rightExpression = visit(ctx.getChild(2));
+		Suit leftExpressionSuit = visit(ctx.expression(0));
+		Suit rightExpressionSuit = visit(ctx.expression(1));
 
 		/*
 		 * Controleren of de linker- en rechterexpressies mutable zijn.
 		 */
-		if (!leftExpression.isMutable) {
-			reportError(ctx.getChild(0).getText() + " is not mutable. You can't assign it a value.", ctx, null, null);
+		if (!leftExpressionSuit.isMutable) {
+			reportError(ctx.expression(0).getText() + " is not mutable. You can't assign it a value.", ctx, null, null);
 		}
 
-		if (!rightExpression.isMutable) {
-			reportError(ctx.getChild(2).getText() + " is not mutable. You can't assign it a value.", ctx, null, null);
+		if (!rightExpressionSuit.isMutable) {
+			reportError(ctx.expression(1).getText() + " is not mutable. You can't assign it a value.", ctx, null, null);
 		}
 
 		/*
 		 * Controleren of beide expressies van hetzelfde type zijn.
 		 */
-		if (!rightExpression.type.equals(leftExpression.type)) {
-			reportError("Both sides of this swap-statement must be of the same value.", ctx, leftExpression.type + " and " + leftExpression.type + ", or "
-					+ rightExpression.type + " and " + rightExpression.type, leftExpression.type + " and " + rightExpression.type);
+		if (!rightExpressionSuit.type.equals(leftExpressionSuit.type)) {
+			reportError("Both sides of this swap-statement must be of the same value.", ctx, leftExpressionSuit.type + " and " + leftExpressionSuit.type
+					+ ", or " + rightExpressionSuit.type + " and " + rightExpressionSuit.type, leftExpressionSuit.type + " and " + rightExpressionSuit.type);
 		}
 
 		return Suit.VOID;
+	}
+
+	@Override
+	public Suit visitFinalDeclaration(FinalDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitRecordLiteralExpression(RecordLiteralExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

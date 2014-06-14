@@ -13,7 +13,9 @@ declaration : variabledeclaration SEMICOLON
 
 // x, y: integer
 // x: [11]integer (is een array van integers)
-variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveType;
+variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter (BECOMES expression)? #variableDeclaration
+                   | IDENTIFIER (COMMA IDENTIFIER)* FINAL COLON primitiveTypeDenoter BECOMES expression #finalDeclaration
+                   ;
    
 // type bank {
 //      kussens: integer,
@@ -22,10 +24,10 @@ variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveType;
 typedeclaration: TYPE IDENTIFIER LEFT_BRACE variabledeclaration (COMMA variabledeclaration)* RIGHT_BRACE;
 
 // [2][9]integer
-primitiveType: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
+primitiveTypeDenoter: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 
 // function integer foo(a,b: integer, z:char) { return a + b; }
-functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER 
+functiondeclaration: FUNCTION primitiveTypeDenoter IDENTIFIER 
                         LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
                         LEFT_BRACE 
                             block
@@ -36,12 +38,12 @@ functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER
 enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT_BRACE;
 
 // foo(x+1, y)
-functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpression
-            | GETCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getCharExpression
-            | GETBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getBoolExpression
-            | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putIntExpression
-            | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putCharExpression
-            | PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putBoolExpression
+functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS                         # getIntExpression
+            | GETCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS                        # getCharExpression
+            | GETBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS                        # getBoolExpression
+            | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS              # putIntExpression
+            | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS             # putCharExpression
+            | PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS             # putBoolExpression
             // Deze moet als laatste, anders matchen de bovenstaande er al op!
             | IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
             ;
@@ -65,32 +67,36 @@ printstatement: PRINT LEFT_PARENTHESIS expression (COMMA expression)* RIGHT_PARE
 assignment: (expression BECOMES)+ expression;
 swapstatement: expression SWAP expression;
 
-expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisExpression
-          | (PLUS | MINUS | NOT) expression                      # unaryExpression
-          | expression POWER <assoc=right> expression            # powerExpression
-          | expression (MULTIPLICATION | DIVISION | MODULUS) expression # multiplicationExpression
-          | expression (PLUS | MINUS) expression                 # additionExpression
+expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # parenthesisExpression
+          | (PLUS | MINUS | NOT) expression                                 # unaryExpression
+          | expression POWER <assoc=right> expression                       # powerExpression
+          | expression (MULTIPLICATION | DIVISION | MODULUS) expression     # multiplicationExpression
+          | expression (PLUS | MINUS) expression                            # additionExpression
 
           // Comparators should be combined?
-          | expression (SMALLER_THAN expression)+                # smallerThanExpression        
-          | expression (SMALLER_THAN_EQUALS_TO expression)+      # smallerThanEqualsToExpression                   
-          | expression (GREATER_THAN expression)+                # greaterThanExpression        
-          | expression (GREATER_THAN_EQUALS_TO expression)+      # greaterThanEqualsToExpression                    
-          | expression (EQUALS_TO expression)+                   # equalsToExpression        
-          | expression (NOT_EQUALS_TO expression)+               # notEqualsToExpression
+          | expression (SMALLER_THAN expression)+                           # smallerThanExpression        
+          | expression (SMALLER_THAN_EQUALS_TO expression)+                 # smallerThanEqualsToExpression                   
+          | expression (GREATER_THAN expression)+                           # greaterThanExpression        
+          | expression (GREATER_THAN_EQUALS_TO expression)+                 # greaterThanEqualsToExpression                    
+          | expression (EQUALS_TO expression)+                              # equalsToExpression        
+          | expression (NOT_EQUALS_TO expression)+                          # notEqualsToExpression
 
-          | expression EQUALS_TO expression PLUSMINUS expression # plusMinusExpression        
-          | expression AND expression                            # andExpression
-          | expression OR expression                             # orExpression
-          | LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS        # assignExpression
-          | functioncall                                         # functionExpression
-          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE) # arrayAccessExpression
-          | ENUM DOT IDENTIFIER DOT IDENTIFIER                   # enumExpression
+          | expression EQUALS_TO expression PLUSMINUS expression            # plusMinusExpression        
+          | expression AND expression                                       # andExpression
+          | expression OR expression                                        # orExpression
+          | LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                   # assignExpression
+          | functioncall                                                    # functionExpression
+          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE)        # arrayAccessExpression
+          | ENUM DOT IDENTIFIER DOT IDENTIFIER                              # enumExpression
           // Let op; dit matcht zowel records als enums! Opletten in de checker.
-          | expression DOT IDENTIFIER                            # fieldAccessExpression
-          | IDENTIFIER                                           # variableExpression
-          | NUMBER                                               # intLiteralExpression
-          | BOOL                                                 # boolLiteralExpression
-          | CHARACTER                                            # charLiteralExpression
-          | STRING                                               # stringLiteralExpression
+          | expression DOT IDENTIFIER                                       # fieldAccessExpression
+          | IDENTIFIER                                                      # variableExpression
+          // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
+          | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression
+          // Voorbeelden: {aantal = getInt(), prijs = catalogus[1], mooi = true} of {}
+          | LEFT_BRACE IDENTIFIER((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
+          | NUMBER                                                          # intLiteralExpression
+          | BOOL                                                            # boolLiteralExpression
+          | CHARACTER                                                       # charLiteralExpression
+          | STRING                                                          # stringLiteralExpression
           ;
