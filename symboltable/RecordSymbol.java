@@ -13,6 +13,10 @@ public class RecordSymbol extends TypeSymbol {
 		}
 	}
 	
+	public boolean hasField(String fieldName) {
+		return this.fields.containsKey(fieldName);
+	}
+	
 	public TypeSymbol getFieldType(String fieldName) {
 		return this.fields.get(fieldName);
 	}

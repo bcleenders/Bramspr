@@ -30,6 +30,7 @@ import bramspr.BramsprParser.EnumExpressionContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
+import bramspr.BramsprParser.FielddeclarationContext;
 import bramspr.BramsprParser.FinalDeclarationContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionExpressionContext;
@@ -263,7 +264,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		if (leftExpression == null || rightExpression == null) {
 			this.reportError("invalid additon; voids cannot be summed/substracted.", ctx, "int", "void");
-			return new Suit("int", false);
+			return new Suit(INT, false);
 		}
 
 		if (!leftExpression.type.equals("int")) {
@@ -296,8 +297,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitFunctiondeclaration(FunctiondeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
-		TypeSymbol declaredReturnType = this.typeSymbolTable.resolve(ctx.IDENTIFIER(0).getText());
-		String functieNaam = ctx.IDENTIFIER(1).getText();
+		TypeSymbol declaredReturnType = visit(ctx.primitiveTypeDenoter()).type;
+		String functieNaam = ctx.IDENTIFIER().getText();
 
 		// Even controleren of deze functie niet een void is die dingen probeert te returnen (context eis 2)
 		boolean hasReturnStatement = ctx.RETURN() != null;
@@ -353,17 +354,48 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
-	 * Een type moet een unieke naam hebben.
+	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
+	 *  1 Een type moet een unieke naam hebben.
+	 *  2 Alle velden in het type moeten een unieke naam hebben.
+	 *  3 Alle velden in het type moeten een geldig type hebben.
+	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3. Dit zou een oneindige loop opleveren.
 	 */
-	public Suit visitTypedeclaration(TypedeclarationContext ctx) { // TODO nog niet klaar!
+	public Suit visitTypedeclaration(TypedeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER().getText();
-		Symbol symbol = new Symbol(typeNaam, TypeClass.TYPE, "void");
+
+		// We weten nu hoe 't beestje heet, maar welke velden heeft 'ie?
+		int fieldCount = ctx.fielddeclaration().size(); // allereerst even tellen hoeveel
+		String[] fieldNames = new String[fieldCount];
+		TypeSymbol[] fieldTypes = new TypeSymbol[fieldCount];
+		
+		this.openScope();
+		for (int i = 0; i < ctx.fielddeclaration().size(); i++) {
+			fieldNames[i] = ctx.fielddeclaration(i).IDENTIFIER(0).getText(); // Dit is de naam van het veld.
+			fieldTypes[i] = visit(ctx.fielddeclaration(i)).type; // Even types opvragen
+		}
+		this.closeScope();
+		
+		// Check of er geen dubbele namen zijn.
+		for (int i = 0; i < fieldNames.length; i++) {
+			for (int j = i + 1; j < fieldNames.length; j++) {
+				if(fieldNames[i].equals(fieldNames[j])) {
+					this.reportError("record has non-unique fieldnames", ctx, fieldNames[j], null);
+				}
+			}
+		}
+		
+		TypeSymbol symbol = new RecordSymbol(typeNaam, fieldNames, fieldTypes); // TODO deze functie is nog kapot! 
 
 		try {
-			this.symbolTable.declare(symbol);
+			this.typeSymbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
 			this.reportError("could not declare type; duplicate name", ctx, null, null);
 		}
+		
+		return Suit.VOID;
+	}
+	
+	public Suit visitFielddeclaration(FielddeclarationContext ctx) {
 		return Suit.VOID;
 	}
 
@@ -373,14 +405,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit rightExpression = visit(ctx.getChild(2));
 
 		if (!leftExpression.type.equals("bool")) {
-			this.reportError("boolean operation OR only works for bool values", ctx, "bool", leftExpression.type);
+			this.reportError("boolean operation OR only works for bool values", ctx, "bool", leftExpression.type.toString());
 		}
 
 		if (!rightExpression.type.equals("bool")) {
-			this.reportError("boolean operation OR only works for bool values", ctx, "bool", rightExpression.type);
+			this.reportError("boolean operation OR only works for bool values", ctx, "bool", rightExpression.type.toString());
 		}
 
-		return new Suit("bool", false);
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -389,14 +421,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit rightExpression = visit(ctx.getChild(2));
 
 		if (!leftExpression.type.equals("int")) {
-			this.reportError("exponentiation requires an int base", ctx, "int", leftExpression.type);
+			this.reportError("exponentiation requires an int base", ctx, "int", leftExpression.type.toString());
 		}
 
 		if (!rightExpression.type.equals("int")) {
-			this.reportError("exponentiation requires an int power", ctx, "int", rightExpression.type);
+			this.reportError("exponentiation requires an int power", ctx, "int", rightExpression.type.toString());
 		}
 
-		return new Suit("int", false);
+		return new Suit(INT, false);
 	}
 
 	@Override
@@ -407,8 +439,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -422,11 +453,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit rightExpression = visit(ctx.getChild(2));
 
 		if (!leftExpression.type.equals("int")) {
-			this.reportError("logical operator AND only works for bool values", ctx, "int", leftExpression.type);
+			this.reportError("logical operator AND only works for bool values", ctx, "int", leftExpression.type.toString());
 		}
 
 		if (!rightExpression.type.equals("int")) {
-			this.reportError("logical operator AND only works for bool values", ctx, "int", rightExpression.type);
+			this.reportError("logical operator AND only works for bool values", ctx, "int", rightExpression.type.toString());
 		}
 
 		return new Suit(INT, false);
@@ -560,12 +591,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitBoolLiteralExpression(BoolLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitChildren(RuleNode arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -18,10 +18,12 @@ variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter (
                    ;
    
 // type bank {
-//      kussens: integer,
+//      kussens, aantalPoten: integer,
 //      bezetDoor: [2]persoon
 // }
-typedeclaration: TYPE IDENTIFIER LEFT_BRACE variabledeclaration (COMMA variabledeclaration)* RIGHT_BRACE;
+typedeclaration: TYPE IDENTIFIER LEFT_BRACE fielddeclaration (COMMA fielddeclaration)* RIGHT_BRACE;
+
+fielddeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter;
 
 // [2][9]integer
 primitiveTypeDenoter: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
