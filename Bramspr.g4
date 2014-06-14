@@ -27,7 +27,7 @@ typedeclaration: TYPE IDENTIFIER LEFT_BRACE variabledeclaration (COMMA variabled
 primitiveTypeDenoter: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
 
 // function integer foo(a,b: integer, z:char) { return a + b; }
-functiondeclaration: FUNCTION IDENTIFIER IDENTIFIER 
+functiondeclaration: FUNCTION primitiveTypeDenoter IDENTIFIER 
                         LEFT_PARENTHESIS (variabledeclaration (COMMA variabledeclaration)*)? RIGHT_PARENTHESIS 
                         LEFT_BRACE 
                             block
@@ -94,7 +94,7 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # pa
           // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
           | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression
           // Voorbeelden: {aantal = getInt(), prijs = catalogus[1], mooi = true} of {}
-          | LEFT_BRACE ((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
+          | LEFT_BRACE IDENTIFIER((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
           | NUMBER                                                          # intLiteralExpression
           | BOOL                                                            # boolLiteralExpression
           | CHARACTER                                                       # charLiteralExpression
