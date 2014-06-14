@@ -1,5 +1,6 @@
 package bramspr;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
@@ -65,8 +66,8 @@ import bramspr.symboltable.*;
  *         terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-//	 public class BramsprChecker implements
-//	 BramsprVisitor<String> {
+	// public class BramsprChecker implements
+	// BramsprVisitor<String> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -81,18 +82,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 
 	 * @param message
 	 *            foutmelding (e.g. illegal argument)
-	 * @param line
+	 * @param ctx
 	 *            regelnummer van foutproducerende code
 	 * @param expected
 	 *            wat verwacht werd (optioneel)
 	 * @param encountered
 	 *            wat ontvangen is (optioneel)
 	 */
-	private void reportError(String message, int line, String expected,
-			String encountered) {
+	private void reportError(String message, ParserRuleContext ctx,
+			String expected, String encountered) {
 		errorCount++;
 		System.err.print("Error " + errorCount + ": " + message + " on line "
-				+ line + ".");
+				+ ctx + ".");
 		if (expected != null) {
 			System.err.print("Expected " + expected);
 			if (encountered != null) {
@@ -156,14 +157,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitEnumdeclaration(EnumdeclarationContext ctx) {
 		String identifier = ctx.getChild(1).getText();
 		System.out.println("Enum naam; " + identifier);
-		
-		Symbol symbol = new Symbol(identifier, TypeClass.ENUM); 
+
+		Symbol symbol = new Symbol(identifier, TypeClass.ENUM);
 		try {
 			this.symbolTable.declare(symbol);
-		} catch(SymbolTableException e) {
+		} catch (SymbolTableException e) {
 			this.reportError(e.getMessage(), ctx.getChild(1), null, null);
 		}
-		
+
 		return null;
 	}
 
@@ -341,8 +342,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitStringLiteralExpression(
-			StringLiteralExpressionContext ctx) {
+	public Suit visitStringLiteralExpression(StringLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -444,15 +444,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Suit visitEnumExpression(EnumExpressionContext ctx) {
 		//
-		
+
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
 
@@ -480,15 +480,57 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een boolean is.
+	 */
 	public Suit visitPutBoolExpression(PutBoolExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return Suit.VOID;
 	}
 
+	/*
+	 * Er moeten hier twee zaken geverifieerd worden: - beide kinderen zijn
+	 * mutable - beide kinderen zijn van hetzelfde type
+	 * 
+	 * Deze node levert niets op, dus V returnen.
+	 */
 	@Override
 	public Suit visitSwapstatement(SwapstatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		/*
+		 * De grammatica is 
+		 * 		"swapstatement: expression SWAP expression", 
+		 * dus we moeten children 0 en 2 hebben.
+		 */
+		Suit leftExpression = visit(ctx.getChild(0));
+		Suit rightExpression = visit(ctx.getChild(2));
 
+		/*
+		 * Controleren of de linker- en rechterexpressies mutable zijn.
+		 */
+		if (!leftExpression.isMutable) {
+			reportError(ctx.getChild(0).getText()
+					+ " is not mutable. You can't assign it a value.", ctx,
+					null, null);
+		}
+
+		if (!rightExpression.isMutable) {
+			reportError(ctx.getChild(2).getText()
+					+ " is not mutable. You can't assign it a value.", ctx,
+					null, null);
+		}
+
+		/*
+		 * Controleren of beide expressies van hetzelfde type zijn.
+		 */
+		if (!rightExpression.type.equals(leftExpression.type)) {
+			reportError(
+					"Both sides of this swap-statement must be of the same value.",
+					ctx, leftExpression.type + " and " + leftExpression.type
+							+ ", or " + rightExpression.type + " and "
+							+ rightExpression.type, leftExpression.type
+							+ " and " + rightExpression.type);
+		}
+
+		return Suit.VOID;
+	}
 }
