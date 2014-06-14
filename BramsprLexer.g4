@@ -40,14 +40,15 @@ WHILE:                  'while';
 FUNCTION:               'function';
 TYPE:                   'type';
 PRINT:                  'print';
-GETINT:                 'getint';
-GETCHAR:                'getchar';
-GETBOOL:                'getbool';
-PUTINT:                 'putint';
-PUTCHAR:                 'putchar';
-PUTBOOL:                 'putbool';
+GETINT:                 'getInt';
+GETCHAR:                'getChar';
+GETBOOL:                'getBool';
+PUTINT:                 'putInt';
+PUTCHAR:                'putChar';
+PUTBOOL:                'putBool';
 ENUM:                   'enum';
 RETURN:                 'return';
+FINAL:                  'final';
     
 /* Symbols. */
 COLON:                  ':'     ;
