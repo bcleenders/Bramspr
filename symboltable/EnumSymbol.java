@@ -18,7 +18,7 @@ public class EnumSymbol extends TypeSymbol {
 	 * @param identifier the name of the constant to be checked
 	 * @return true iff the enum contains this constant
 	 */
-	public boolean getConstantId(String identifier) {
+	public boolean hasValue(String identifier) {
 		return constants.contains(identifier);
 	}
 }
