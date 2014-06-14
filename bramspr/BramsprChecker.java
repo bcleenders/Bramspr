@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import symboltable.ArraySymbol;
 import symboltable.EnumSymbol;
 import symboltable.FunctionSymbol;
 import symboltable.RecordSymbol;
@@ -141,6 +142,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 			System.err.println(".");
 		}
+	}
+	
+	/*
+	 * Handige reportError-wrapper zonder 'expected, encountered'.
+	 */
+	private void reportError(String message, ParserRuleContext erroroursNode){
+		reportError(message, erroroursNode, null, null);
 	}
 
 	public static final RecordSymbol INT = new RecordSymbol("int", null, null);
@@ -611,9 +619,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-
-		// TODO Auto-generated method stub
-		// Check of dit een enum of een record is!
+		
+		Suit expressionSuit = visit(ctx.expression());
+		
+		Suit returnValue = Suit.VOID;
+		
+		// Eerst kijken of de expression een enum of een record is.
+		if (expressionSuit.type instanceof EnumSymbol){
+			// Blijkbaar is het een enum. Dan: controleren of het wel een geldige waarde van deze enum is.
+			String fieldName = ctx.IDENTIFIER().getText();
+			if (!((EnumSymbol) expressionSuit.type).hasValue(fieldName)){
+				reportError("Enum " + expressionSuit.type.getIdentifier() + " does not have value " + fieldName + ".", ctx);
+			}
+			
+			return 
+			
+		} else if (expressionSuit.type instanceof RecordSymbol){
+			// Blijkbaar is het een record. Dan controleren of het wel een 
+			
+		} else if (expressionSuit.type instanceof ArraySymbol){
+			// TODO: weghalen voor het inleveren
+			System.out.println("SHIT GAAT ECHT ENORM FOUT! Check visitFieldAccesExpression in de context checker.");
+			System.exit(666);
+		}
 		return null;
 	}
 
@@ -637,9 +665,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			if (currentNode instanceof TerminalNode) {
 				if (currentNode.getText().equals("{")) {
-					symbolTable.openScope();
+					openScope();
 				} else {
-					symbolTable.closeScope();
+					closeScope();
 				}
 			} else {
 				visit(currentNode);
@@ -666,7 +694,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Controleren of de expressie een character is.
 		 */
 		if (!expressionSuit.type.equals("char")) {
-			reportError("The argument of putbool must be of character type.", ctx, "char", expressionSuit.type);
+			reportError("The argument of putbool must be of character type.", ctx, "char", expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
@@ -687,7 +715,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Controleren of de expressie een integer is.
 		 */
 		if (!expressionSuit.type.equals("int")) {
-			reportError("The argument of putint must be of integer type.", ctx, "int", expressionSuit.type);
+			reportError("The argument of putint must be of integer type.", ctx, "int", expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
@@ -708,7 +736,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Controleren of de expressie een boolean is.
 		 */
 		if (!expressionSuit.type.equals("bool")) {
-			reportError("The argument of putbool must be of boolean type.", ctx, "bool", expressionSuit.type);
+			reportError("The argument of putbool must be of boolean type.", ctx, "bool", expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;

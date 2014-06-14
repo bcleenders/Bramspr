@@ -7,7 +7,11 @@ public abstract class Symbol { // A generic programm symbol
 		this.identifier = identifier;
 	}
 	
-	public String toString() {
+	public String getIdentifier() {
 		return this.identifier;
+	}
+	
+	public String toString(){
+		return getIdentifier();
 	}
 }
