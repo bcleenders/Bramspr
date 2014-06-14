@@ -79,12 +79,14 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisEx
           | expression OR expression                             # orExpression
           | assignment                                           # assignExpression
           | functioncall                                         # functionExpression
-          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE) # arrayAccessExpression
-          // Let op; dit matcht zowel records als enums! Opletten in de checker.
-          | expression DOT IDENTIFIER                            # fieldAccessExpression
-          | IDENTIFIER                                           # variableExpression
+          | assignable                                           # assignableExpression
           | NUMBER                                               # intLiteralExpression
           | BOOL                                                 # boolLiteralExpression
           | CHARACTER                                            # charLiteralExpression
           | STRING                                               # stringLiteralExpression
           ;
+
+assignable: IDENTIFIER                                           # variableExpression
+            // Let op; dit matcht zowel records als enums! Opletten in de checker.
+          | assignable DOT IDENTIFIER                            # fieldAccessExpression
+          | assignable LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE # arrayAccessExpression
