@@ -14,6 +14,7 @@ import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.BoolLiteralExpressionContext;
 import bramspr.BramsprParser.CharLiteralExpressionContext;
 import bramspr.BramsprParser.DeclarationContext;
+import bramspr.BramsprParser.EnumExpressionContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
@@ -440,9 +441,19 @@ public class BramsprChecker extends BramsprBaseVisitor<String> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	@Override
+	public String visitEnumExpression(EnumExpressionContext ctx) {
+		//
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public String visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+		//
+		
 		// TODO Auto-generated method stub
 		// Check of dit een enum of een record is!
 		return null;

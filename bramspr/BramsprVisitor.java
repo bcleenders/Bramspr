@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -145,6 +145,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitCharLiteralExpression(@NotNull BramsprParser.CharLiteralExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#enumExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -236,18 +243,18 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitSmallerThanEqualsToExpression(@NotNull BramsprParser.SmallerThanEqualsToExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatement(@NotNull BramsprParser.StatementContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#variabledeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitVariabledeclaration(@NotNull BramsprParser.VariabledeclarationContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement(@NotNull BramsprParser.StatementContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#assignment}.

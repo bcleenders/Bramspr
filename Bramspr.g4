@@ -39,6 +39,9 @@ enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT
 functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpression
             | GETCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getCharExpression
             | GETBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getBoolExpression
+            | PUTINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putIntExpression
+            | PUTCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putCharExpression
+            | PUTBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putBoolExpression
             // Deze moet als laatste, anders matchen de bovenstaande er al op!
             | IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
             ;
@@ -46,6 +49,7 @@ functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpre
 statement: ifstatement
          | whilestatement
          | assignment SEMICOLON
+         | swapstatement SEMICOLON
          | expression SEMICOLON
          | printstatement SEMICOLON
          ;
@@ -58,7 +62,8 @@ whilestatement: WHILE expression LEFT_BRACE statement* RIGHT_BRACE;
 // print("x = ", x);
 printstatement: PRINT LEFT_PARENTHESIS expression (COMMA expression)* RIGHT_PARENTHESIS;
 
-assignment: (IDENTIFIER BECOMES)+ expression;
+assignment: (expression BECOMES)+ expression;
+swapstatement: expression SWAP expression;
 
 expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisExpression
           | (PLUS | MINUS | NOT) expression                      # unaryExpression
@@ -80,6 +85,7 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS        # parenthesisEx
           | assignment                                           # assignExpression
           | functioncall                                         # functionExpression
           | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE) # arrayAccessExpression
+          | ENUM DOT IDENTIFIER DOT IDENTIFIER                   # enumExpression
           // Let op; dit matcht zowel records als enums! Opletten in de checker.
           | expression DOT IDENTIFIER                            # fieldAccessExpression
           | IDENTIFIER                                           # variableExpression
