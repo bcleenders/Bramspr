@@ -81,7 +81,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 
 	 * @param message
 	 *            foutmelding (e.g. illegal argument)
-	 * @param line
+	 * @param ctx
 	 *            regelnummer van foutproducerende code
 	 * @param expected
 	 *            wat verwacht werd (optioneel)
@@ -172,6 +172,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		try {
 			this.symbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
+
 			this.reportError(e.getMessage(), ctx, null, null);
 		}
 
@@ -536,15 +537,57 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een boolean
+	 * is.
+	 */
 	public Suit visitPutBoolExpression(PutBoolExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return Suit.VOID;
 	}
 
+	/*
+	 * Er moeten hier twee zaken geverifieerd worden: - beide kinderen zijn
+	 * mutable - beide kinderen zijn van hetzelfde type
+	 * 
+	 * Deze node levert niets op, dus V returnen.
+	 */
 	@Override
 	public Suit visitSwapstatement(SwapstatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		/*
+		 * De grammatica is "swapstatement: expression SWAP expression", dus we
+		 * moeten children 0 en 2 hebben.
+		 */
+		Suit leftExpression = visit(ctx.getChild(0));
+		Suit rightExpression = visit(ctx.getChild(2));
 
+		/*
+		 * Controleren of de linker- en rechterexpressies mutable zijn.
+		 */
+		if (!leftExpression.isMutable) {
+			reportError(ctx.getChild(0).getText()
+					+ " is not mutable. You can't assign it a value.", ctx,
+					null, null);
+		}
+
+		if (!rightExpression.isMutable) {
+			reportError(ctx.getChild(2).getText()
+					+ " is not mutable. You can't assign it a value.", ctx,
+					null, null);
+		}
+
+		/*
+		 * Controleren of beide expressies van hetzelfde type zijn.
+		 */
+		if (!rightExpression.type.equals(leftExpression.type)) {
+			reportError(
+					"Both sides of this swap-statement must be of the same value.",
+					ctx, leftExpression.type + " and " + leftExpression.type
+							+ ", or " + rightExpression.type + " and "
+							+ rightExpression.type, leftExpression.type
+							+ " and " + rightExpression.type);
+		}
+
+		return Suit.VOID;
+	}
 }

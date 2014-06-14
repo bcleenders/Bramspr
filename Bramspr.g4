@@ -39,9 +39,9 @@ enumdeclaration: ENUM IDENTIFIER LEFT_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT
 functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # getIntExpression
             | GETCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getCharExpression
             | GETBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS           # getBoolExpression
-            | PUTINT LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putIntExpression
-            | PUTCHAR LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putCharExpression
-            | PUTBOOL LEFT_PARENTHESIS RIGHT_PARENTHESIS            # putBoolExpression
+            | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putIntExpression
+            | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putCharExpression
+            | PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS            # putBoolExpression
             // Deze moet als laatste, anders matchen de bovenstaande er al op!
             | IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
             ;
