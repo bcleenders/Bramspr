@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -117,6 +117,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#recordAccessExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRecordAccessExpression(@NotNull BramsprParser.RecordAccessExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -166,18 +173,18 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitFunctionCallExpression(@NotNull BramsprParser.FunctionCallExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#boolLiteralExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolLiteralExpression(@NotNull BramsprParser.BoolLiteralExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#boolLiteralExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolLiteralExpression(@NotNull BramsprParser.BoolLiteralExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#primitiveTypeDenoter}.
