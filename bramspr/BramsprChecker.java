@@ -55,6 +55,7 @@ import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PutBoolExpressionContext;
 import bramspr.BramsprParser.PutCharExpressionContext;
 import bramspr.BramsprParser.PutIntExpressionContext;
+import bramspr.BramsprParser.RecordAccessExpressionContext;
 import bramspr.BramsprParser.RecordLiteralExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
@@ -86,7 +87,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>(); // functienamen (e.g. foo)
 	private SymbolTable<VariableSymbol> variableSymbolTable = new SymbolTable<VariableSymbol>(); // variabelenamen (e.g. x)
-	private SymbolTable<TypeSymbol> typeSymbolTable = new SymbolTable<TypeSymbol>(); // typenamen (e.g. Stoel)
+	private SymbolTable<RecordSymbol> typeSymbolTable = new SymbolTable<RecordSymbol>(); // typenamen (e.g. Stoel)
 	private SymbolTable<EnumSymbol> enumSymbolTable = new SymbolTable<EnumSymbol>(); // enumnamen (e.g. DAYS)
 
 	private void openScope() {
@@ -662,21 +663,21 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-		
+	public Suit visitRecordAccessExpression(RecordAccessExpressionContext ctx) {
 		Suit expressionSuit = visit(ctx.expression());
 		
 		Suit returnValue = Suit.VOID;
 		
-		// Eerst kijken of de expression een enum of een record is.
+		// Eerst kijken of de expression een enum-identifier of een record is.
 		if (expressionSuit.type instanceof EnumSymbol){
+			
 			// Blijkbaar is het een enum. Dan: controleren of het wel een geldige waarde van deze enum is.
 			String fieldName = ctx.IDENTIFIER().getText();
+			
 			if (!((EnumSymbol) expressionSuit.type).hasValue(fieldName)){
 				reportError("Enum " + expressionSuit.type.getIdentifier() + " does not have value " + fieldName + ".", ctx);
 			}
-			
-			return 
+		 
 			
 		} else if (expressionSuit.type instanceof RecordSymbol){
 			// Blijkbaar is het een record. Dan controleren of het wel een 
@@ -686,6 +687,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.out.println("SHIT GAAT ECHT ENORM FOUT! Check visitFieldAccesExpression in de context checker.");
 			System.exit(666);
 		}
+		return null;
+	}
+	
+	@Override
+	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+		// Identifiers opvragen
+		String leftHandIdentifier = ctx.IDENTIFIER(0).getText();
+		String fieldNameIdentifier = ctx.IDENTIFIER(1).getText();
+		
+		// Dummy-returnwaarde aanmaken
+		Suit returnValue = Suit.VOID;
+		
+		// Records hebben prioriteit over enumerations. Eerst dus kijken of deze identifier aan een record gelinkt is.
+		RecordSymbol recordDeclaration = typeSymbolTable.resolve(leftHandIdentifier);
+		
+		if (recordDeclaration != null){
+			// We weten nu dat het om een record gaat. Controleren of record wel dit veld heeft.
+			
+//			if (RecordDeclaration.)
+			
+			
+		}
+			
 		return null;
 	}
 
@@ -843,4 +867,5 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
