@@ -377,7 +377,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			// Bij x,y: int is typeOfFields int
 			TypeSymbol typeOfFields = visit(fielddeclctx).type;
-			
+
 			for (int j = 0; j < fielddeclctx.IDENTIFIER().size(); j++) {
 				fieldNames.add(fielddeclctx.IDENTIFIER(j).getText());
 				fieldTypes.add(typeOfFields);
@@ -460,19 +460,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
 		TypeSymbol firstType = visit(ctx.expression(0)).type;
-		
-		if(!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
+
+		if (!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
 			this.reportError("non-primitive types cannot be compared with == ", ctx, "int/bool/char/enum", firstType.toString());
 		}
-		
+
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
-			
-			if(! firstType.equals(currType)) {
+
+			if (!firstType.equals(currType)) {
 				this.reportError("only equal types can be compared with ==", ctx, firstType.toString(), currType.toString());
 			}
 		}
-		
+
 		return new Suit(BOOL, false);
 	}
 
@@ -500,19 +500,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		TypeSymbol firstType = visit(ctx.expression(0)).type;
-		
-		if(!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
+
+		if (!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
 			this.reportError("non-primitive types cannot be compared", ctx, "int/bool/char/enum", firstType.toString());
 		}
-		
+
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
-			
-			if(! firstType.equals(currType)) {
+
+			if (!firstType.equals(currType)) {
 				this.reportError("only equal types can be compared", ctx, firstType.toString(), currType.toString());
 			}
 		}
-		
+
 		return new Suit(BOOL, false);
 	}
 
@@ -520,12 +520,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
-			
-			if(! currType.equals(INT)) {
+
+			if (!currType.equals(INT)) {
 				this.reportError("only int types are comparable with < and >", ctx, INT.toString(), currType.toString());
 			}
 		}
-		
+
 		return new Suit(BOOL, false);
 	}
 
@@ -665,51 +665,85 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitRecordAccessExpression(RecordAccessExpressionContext ctx) {
 		Suit expressionSuit = visit(ctx.expression());
-		
+
 		Suit returnValue = Suit.VOID;
-		
+
 		// Eerst kijken of de expression een enum-identifier of een record is.
-		if (expressionSuit.type instanceof EnumSymbol){
-			
+		if (expressionSuit.type instanceof EnumSymbol) {
+
 			// Blijkbaar is het een enum. Dan: controleren of het wel een geldige waarde van deze enum is.
 			String fieldName = ctx.IDENTIFIER().getText();
-			
-			if (!((EnumSymbol) expressionSuit.type).hasValue(fieldName)){
+
+			if (!((EnumSymbol) expressionSuit.type).hasValue(fieldName)) {
 				reportError("Enum " + expressionSuit.type.getIdentifier() + " does not have value " + fieldName + ".", ctx);
 			}
-		 
-			
-		} else if (expressionSuit.type instanceof RecordSymbol){
-			// Blijkbaar is het een record. Dan controleren of het wel een 
-			
-		} else if (expressionSuit.type instanceof ArraySymbol){
+
+		} else if (expressionSuit.type instanceof RecordSymbol) {
+			// Blijkbaar is het een record. Dan controleren of het wel een
+
+		} else if (expressionSuit.type instanceof ArraySymbol) {
 			// TODO: weghalen voor het inleveren
 			System.out.println("SHIT GAAT ECHT ENORM FOUT! Check visitFieldAccesExpression in de context checker.");
 			System.exit(666);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
 		// Identifiers opvragen
 		String leftHandIdentifier = ctx.IDENTIFIER(0).getText();
 		String fieldNameIdentifier = ctx.IDENTIFIER(1).getText();
-		
+
 		// Dummy-returnwaarde aanmaken
-		Suit returnValue = Suit.VOID;
+		Suit returnSuit = Suit.VOID;
+
+		// Symbol table lookup doen, voor zowel records als enumerations
+		RecordSymbol recordDeclaration = typeSymbolTable.resolve(leftHandIdentifier);
+		EnumSymbol enumDeclaration = enumSymbolTable.resolve(leftHandIdentifier);
 		
 		// Records hebben prioriteit over enumerations. Eerst dus kijken of deze identifier aan een record gelinkt is.
-		RecordSymbol recordDeclaration = typeSymbolTable.resolve(leftHandIdentifier);
+		if (recordDeclaration != null) {
+			
+			// We weten nu dat het om een record gaat. Controleren of dit record wel dit veld heeft.
+			if (!recordDeclaration.hasField(fieldNameIdentifier)) {
+				
+				/*
+				 * De programmeur heeft een fout gemaakt: dit record heeft dit veld niet. Het kan echter zijn dat de programmeur
+				 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
+				 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
+				 * bestaat dat wèl deze veldnaam bezit.
+				 */
+				String errorMessage = "Record " + leftHandIdentifier + " does not contain field " + fieldNameIdentifier + ".";
+
+				if (enumDeclaration != null && enumDeclaration.hasValue(fieldNameIdentifier)) {
+					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+					
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + leftHandIdentifier + " is currently being hided by record"
+							+ leftHandIdentifier + ". To denote the enumeration, use 'enum." + leftHandIdentifier + "'.";
+				}
+				
+				reportError(errorMessage, ctx);
+			} else {
+				TypeSymbol returnType = recordDeclaration.getFieldType(fieldNameIdentifier);
+				returnSuit = new Suit(returnType, true);
+			}
+		} 
 		
-		if (recordDeclaration != null){
-			// We weten nu dat het om een record gaat. Controleren of record wel dit veld heeft.
+		// Blijkbaar is het geen record. Is het wel een enumeration?
+		else if (enumDeclaration != null){
 			
-//			if (RecordDeclaration.)
+			// Het is een enumeration! Maar heeft deze enumeration dit veld wel?
+			if (!enumDeclaration.hasValue(fieldNameIdentifier)){
+				String errorMessage = "The enumeration " + leftHandIdentifier + " does not have value " + fieldNameIdentifier + ".";
+				reportError(errorMessage, ctx);
+			}
 			
 			
+		} else {
+			// Blijkbaar is deze identifier noch een enumeration, noch een record.
 		}
-			
+
 		return null;
 	}
 
