@@ -46,6 +46,7 @@ GETBOOL:                'getBool';
 PUTINT:                 'putInt';
 PUTCHAR:                'putChar';
 PUTBOOL:                'putBool';
+PUTSTRING:              'putString';
 ENUM:                   'enum';
 RETURN:                 'return';
 FINAL:                  'final';

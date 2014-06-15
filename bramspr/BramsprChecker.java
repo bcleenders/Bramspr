@@ -52,6 +52,7 @@ import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PutBoolExpressionContext;
 import bramspr.BramsprParser.PutCharExpressionContext;
 import bramspr.BramsprParser.PutIntExpressionContext;
+import bramspr.BramsprParser.PutStringExpressionContext;
 import bramspr.BramsprParser.RecordAccessExpressionContext;
 import bramspr.BramsprParser.RecordLiteralExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
@@ -172,6 +173,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			functionSymbolTable.declare(new FunctionSymbol("putInt", INT, new TypeSymbol[]{INT}));
 			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOL, new TypeSymbol[]{CHAR}));
 			functionSymbolTable.declare(new FunctionSymbol("putBool", CHAR, new TypeSymbol[]{BOOL}));
+			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[]{STRING}));
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
@@ -1256,6 +1258,26 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 */
 		if (!expressionSuit.type.equals(BOOL)) {
 			reportError("The argument of putBool must be of boolean type.", ctx, BOOL.toString(), expressionSuit.type.toString());
+		}
+
+		return Suit.VOID;
+	}
+	
+	@Override
+	/*
+	 * Er moet hier geverifieerd worden of de expressie inderdaad een String is.
+	 */
+	public Suit visitPutStringExpression(PutStringExpressionContext ctx) {
+		/*
+		 * De expressie opvragen.
+		 */
+		Suit expressionSuit = visit(ctx.expression());
+
+		/*
+		 * Controleren of de expressie een boolean is.
+		 */
+		if (!expressionSuit.type.equals(STRING)) {
+			reportError("The argument of putString must be of string type.", ctx, STRING.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;

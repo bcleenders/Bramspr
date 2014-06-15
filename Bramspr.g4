@@ -46,6 +46,7 @@ functioncall: GETINT LEFT_PARENTHESIS RIGHT_PARENTHESIS                         
             | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS              # putIntExpression
             | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS             # putCharExpression
             | PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS             # putBoolExpression
+            | PUTSTRING LEFT_PARENTHESIS expression RIGHT_PARENTHESIS           # putStringExpression
             // Deze moet als laatste, anders matchen de bovenstaande er al op!
             | IDENTIFIER LEFT_PARENTHESIS (expression (COMMA expression)*)? RIGHT_PARENTHESIS # functionCallExpression
             ;
@@ -93,7 +94,7 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # pa
           // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
           | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression
           // Voorbeelden: {aantal = getInt(), prijs = catalogus[1], mooi = true} of {}
-          | LEFT_BRACE IDENTIFIER((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
+          | IDENTIFIER LEFT_BRACE IDENTIFIER((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
           | NUMBER                                                          # intLiteralExpression
           | BOOL                                                            # boolLiteralExpression
           | CHARACTER                                                       # charLiteralExpression

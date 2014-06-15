@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -346,6 +346,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#putStringExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPutStringExpression(@NotNull BramsprParser.PutStringExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#arrayLiteralExpression}.

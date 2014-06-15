@@ -163,17 +163,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#recordAccessExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -183,6 +172,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRecordAccessExpression(@NotNull BramsprParser.RecordAccessExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#smallerThanEqualsToExpression}.
@@ -535,6 +535,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#putStringExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPutStringExpression(@NotNull BramsprParser.PutStringExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#putStringExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPutStringExpression(@NotNull BramsprParser.PutStringExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#arrayLiteralExpression}.
