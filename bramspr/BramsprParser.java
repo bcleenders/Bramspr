@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -16,24 +16,23 @@ public class BramsprParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		FUNCTION=25, LOGIC=20, WHILE=24, PUTINT=31, NOT=16, AND=17, PUTCHAR=32, 
-		CHARACTER=48, IF=21, TYPE=26, FINAL=36, THEN=22, SMALLER_THAN=8, RIGHT_PARENTHESIS=40, 
-		COMMA=45, IDENTIFIER=49, LEFT_PARENTHESIS=39, RETURN=35, DIVISION=6, BLOCKCOMMENT=55, 
-		PLUS=3, GREATER_THAN_EQUALS_TO=11, COMMENT=54, DOT=46, RIGHT_BRACE=42, 
+		CHARACTER=50, IF=21, TYPE=26, FINAL=36, THEN=22, SMALLER_THAN=8, RIGHT_PARENTHESIS=42, 
+		COMMA=47, IDENTIFIER=51, LEFT_PARENTHESIS=41, RETURN=35, DIVISION=6, BLOCKCOMMENT=55, 
+		PLUS=3, GREATER_THAN_EQUALS_TO=11, COMMENT=54, DOT=48, RIGHT_BRACE=44, 
 		XOR=19, GETBOOL=30, GREATER_THAN=10, GETCHAR=29, SWAP=2, ELSE=23, PLUSMINUS=14, 
-		BOOL=53, NUMBER=50, BECOMES=1, WHITESPACE=56, POWER=15, PUTBOOL=33, SEMICOLON=38, 
-		MINUS=4, TRUE=51, PRINT=27, EQUALS_TO=12, GETINT=28, LEFT_BLOCKBRACE=43, 
-		RIGHT_BLOCKBRACE=44, COLON=37, ENUM=34, MODULUS=7, LEFT_BRACE=41, OR=18, 
-		MULTIPLICATION=5, NOT_EQUALS_TO=13, FALSE=52, SMALLER_THAN_EQUALS_TO=9, 
-		STRING=47;
+		BOOL=53, NUMBER=52, BECOMES=1, WHITESPACE=56, POWER=15, PUTBOOL=33, SEMICOLON=40, 
+		MINUS=4, TRUE=37, PRINT=27, EQUALS_TO=12, GETINT=28, LEFT_BLOCKBRACE=45, 
+		RIGHT_BLOCKBRACE=46, COLON=39, ENUM=34, MODULUS=7, LEFT_BRACE=43, OR=18, 
+		MULTIPLICATION=5, NOT_EQUALS_TO=13, FALSE=38, STRING=49, SMALLER_THAN_EQUALS_TO=9;
 	public static final String[] tokenNames = {
-		"<INVALID>", "':='", "'<>'", "'+'", "'-'", "'*'", "'/'", "'%'", "SMALLER_THAN", 
-		"'<='", "GREATER_THAN", "'>='", "'='", "'=/='", "'+-'", "'^'", "'!'", 
-		"'&'", "'|'", "'!&'", "LOGIC", "'if'", "'then'", "'else'", "'while'", 
-		"'function'", "'type'", "'print'", "'getInt'", "'getChar'", "'getBool'", 
-		"'putInt'", "'putChar'", "'putBool'", "'enum'", "'return'", "'final'", 
+		"<INVALID>", "':='", "'<>'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", 
+		"'<='", "'>'", "'>='", "'='", "'=/='", "'+-'", "'^'", "'!'", "'&'", "'|'", 
+		"'!&'", "LOGIC", "'if'", "'then'", "'else'", "'while'", "'function'", 
+		"'type'", "'print'", "'getInt'", "'getChar'", "'getBool'", "'putInt'", 
+		"'putChar'", "'putBool'", "'enum'", "'return'", "'final'", "'true'", "'false'", 
 		"':'", "';'", "'('", "')'", "'{'", "'}'", "'['", "']'", "','", "'.'", 
-		"STRING", "CHARACTER", "IDENTIFIER", "NUMBER", "'true'", "'false'", "BOOL", 
-		"COMMENT", "BLOCKCOMMENT", "WHITESPACE"
+		"STRING", "CHARACTER", "IDENTIFIER", "NUMBER", "BOOL", "COMMENT", "BLOCKCOMMENT", 
+		"WHITESPACE"
 	};
 	public static final int
 		RULE_program = 0, RULE_block = 1, RULE_declaration = 2, RULE_variabledeclaration = 3, 
@@ -72,14 +71,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterProgram(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitProgram(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitProgram(this);
@@ -138,14 +129,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBlock(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBlock(this);
@@ -226,14 +209,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitDeclaration(this);
@@ -318,14 +293,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_variabledeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterVariabledeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitVariabledeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitVariabledeclaration(this);
 			else return visitor.visitChildren(this);
@@ -401,14 +368,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_finaldeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFinaldeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFinaldeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFinaldeclaration(this);
 			else return visitor.visitChildren(this);
@@ -475,14 +434,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typedeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterTypedeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitTypedeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitTypedeclaration(this);
 			else return visitor.visitChildren(this);
@@ -546,14 +497,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_fielddeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFielddeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFielddeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFielddeclaration(this);
 			else return visitor.visitChildren(this);
@@ -616,14 +559,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_primitiveTypeDenoter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPrimitiveTypeDenoter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPrimitiveTypeDenoter(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPrimitiveTypeDenoter(this);
 			else return visitor.visitChildren(this);
@@ -667,8 +602,8 @@ public class BramsprParser extends Parser {
 	}
 
 	public static class FunctiondeclarationContext extends ParserRuleContext {
-		public TerminalNode RIGHT_BRACE() { return getToken(BramsprParser.RIGHT_BRACE, 0); }
 		public TerminalNode SEMICOLON() { return getToken(BramsprParser.SEMICOLON, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(BramsprParser.RIGHT_BRACE, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -698,14 +633,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functiondeclaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctiondeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctiondeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctiondeclaration(this);
@@ -790,14 +717,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_enumdeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumdeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumdeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumdeclaration(this);
 			else return visitor.visitChildren(this);
@@ -863,14 +782,6 @@ public class BramsprParser extends Parser {
 		}
 		public PutCharExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPutCharExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPutCharExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPutCharExpression(this);
 			else return visitor.visitChildren(this);
@@ -881,14 +792,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
 		public TerminalNode GETCHAR() { return getToken(BramsprParser.GETCHAR, 0); }
 		public GetCharExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGetCharExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGetCharExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGetCharExpression(this);
@@ -904,14 +807,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode PUTINT() { return getToken(BramsprParser.PUTINT, 0); }
 		public PutIntExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPutIntExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPutIntExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPutIntExpression(this);
 			else return visitor.visitChildren(this);
@@ -922,14 +817,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode GETINT() { return getToken(BramsprParser.GETINT, 0); }
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
 		public GetIntExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGetIntExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGetIntExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGetIntExpression(this);
@@ -952,14 +839,6 @@ public class BramsprParser extends Parser {
 		}
 		public FunctionCallExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionCallExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionCallExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
 			else return visitor.visitChildren(this);
@@ -974,14 +853,6 @@ public class BramsprParser extends Parser {
 		}
 		public PutBoolExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPutBoolExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPutBoolExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPutBoolExpression(this);
 			else return visitor.visitChildren(this);
@@ -992,14 +863,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
 		public TerminalNode GETBOOL() { return getToken(BramsprParser.GETBOOL, 0); }
 		public GetBoolExpressionContext(FunctioncallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGetBoolExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGetBoolExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGetBoolExpression(this);
@@ -1139,14 +1002,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
@@ -1234,14 +1089,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ifstatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIfstatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIfstatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIfstatement(this);
 			else return visitor.visitChildren(this);
@@ -1299,14 +1146,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_whilestatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterWhilestatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitWhilestatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitWhilestatement(this);
 			else return visitor.visitChildren(this);
@@ -1352,14 +1191,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_assignment; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignment(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignment(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignment(this);
@@ -1421,14 +1252,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_swapstatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSwapstatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSwapstatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSwapstatement(this);
 			else return visitor.visitChildren(this);
@@ -1480,14 +1303,6 @@ public class BramsprParser extends Parser {
 		}
 		public ParenthesisExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterParenthesisExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitParenthesisExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitParenthesisExpression(this);
 			else return visitor.visitChildren(this);
@@ -1502,16 +1317,21 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public UnaryExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterUnaryExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitUnaryExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitUnaryExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class AssignExpressionContext extends ExpressionContext {
+		public TerminalNode LEFT_PARENTHESIS() { return getToken(BramsprParser.LEFT_PARENTHESIS, 0); }
+		public AssignmentContext assignment() {
+			return getRuleContext(AssignmentContext.class,0);
+		}
+		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
+		public AssignExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1526,60 +1346,8 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public AdditionExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAdditionExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAdditionExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAdditionExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class AssignExpressionContext extends ExpressionContext {
-		public TerminalNode LEFT_PARENTHESIS() { return getToken(BramsprParser.LEFT_PARENTHESIS, 0); }
-		public AssignmentContext assignment() {
-			return getRuleContext(AssignmentContext.class,0);
-		}
-		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
-		public AssignExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class OrExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode OR() { return getToken(BramsprParser.OR, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterOrExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitOrExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitOrExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1593,16 +1361,23 @@ public class BramsprParser extends Parser {
 		}
 		public PowerExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPowerExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPowerExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPowerExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class OrExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(BramsprParser.OR, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitOrExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1619,14 +1394,6 @@ public class BramsprParser extends Parser {
 		}
 		public NotEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNotEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNotEqualsToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotEqualsToExpression(this);
 			else return visitor.visitChildren(this);
@@ -1641,14 +1408,6 @@ public class BramsprParser extends Parser {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public AndExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAndExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAndExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAndExpression(this);
@@ -1668,14 +1427,6 @@ public class BramsprParser extends Parser {
 		}
 		public EqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEqualsToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEqualsToExpression(this);
 			else return visitor.visitChildren(this);
@@ -1691,14 +1442,6 @@ public class BramsprParser extends Parser {
 		}
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayAccessExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayAccessExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayAccessExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayAccessExpression(this);
@@ -1718,14 +1461,6 @@ public class BramsprParser extends Parser {
 		}
 		public GreaterThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -1743,14 +1478,6 @@ public class BramsprParser extends Parser {
 		}
 		public EnumExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumExpression(this);
 			else return visitor.visitChildren(this);
@@ -1759,14 +1486,6 @@ public class BramsprParser extends Parser {
 	public static class CharLiteralExpressionContext extends ExpressionContext {
 		public TerminalNode CHARACTER() { return getToken(BramsprParser.CHARACTER, 0); }
 		public CharLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCharLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCharLiteralExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCharLiteralExpression(this);
@@ -1786,14 +1505,6 @@ public class BramsprParser extends Parser {
 		}
 		public SmallerThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -1811,14 +1522,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode MODULUS() { return getToken(BramsprParser.MODULUS, 0); }
 		public MultiplicationExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterMultiplicationExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitMultiplicationExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitMultiplicationExpression(this);
 			else return visitor.visitChildren(this);
@@ -1835,14 +1538,6 @@ public class BramsprParser extends Parser {
 		}
 		public PlusMinusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPlusMinusExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPlusMinusExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPlusMinusExpression(this);
 			else return visitor.visitChildren(this);
@@ -1852,14 +1547,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode STRING() { return getToken(BramsprParser.STRING, 0); }
 		public StringLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStringLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStringLiteralExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStringLiteralExpression(this);
 			else return visitor.visitChildren(this);
@@ -1868,14 +1555,6 @@ public class BramsprParser extends Parser {
 	public static class VariableExpressionContext extends ExpressionContext {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public VariableExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterVariableExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitVariableExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitVariableExpression(this);
@@ -1887,14 +1566,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(FunctioncallContext.class,0);
 		}
 		public FunctionExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionExpression(this);
@@ -1914,14 +1585,6 @@ public class BramsprParser extends Parser {
 		}
 		public GreaterThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanEqualsToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanEqualsToExpression(this);
 			else return visitor.visitChildren(this);
@@ -1935,14 +1598,6 @@ public class BramsprParser extends Parser {
 		}
 		public RecordAccessExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterRecordAccessExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitRecordAccessExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitRecordAccessExpression(this);
 			else return visitor.visitChildren(this);
@@ -1951,14 +1606,6 @@ public class BramsprParser extends Parser {
 	public static class IntLiteralExpressionContext extends ExpressionContext {
 		public TerminalNode NUMBER() { return getToken(BramsprParser.NUMBER, 0); }
 		public IntLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIntLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIntLiteralExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIntLiteralExpression(this);
@@ -1977,14 +1624,6 @@ public class BramsprParser extends Parser {
 			return getToken(BramsprParser.SMALLER_THAN_EQUALS_TO, i);
 		}
 		public SmallerThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanEqualsToExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanEqualsToExpression(this);
@@ -2014,14 +1653,6 @@ public class BramsprParser extends Parser {
 		}
 		public RecordLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterRecordLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitRecordLiteralExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitRecordLiteralExpression(this);
 			else return visitor.visitChildren(this);
@@ -2042,16 +1673,17 @@ public class BramsprParser extends Parser {
 		}
 		public ArrayLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayLiteralExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayLiteralExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class BoolLiteralExpressionContext extends ExpressionContext {
+		public TerminalNode BOOL() { return getToken(BramsprParser.BOOL, 0); }
+		public BoolLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBoolLiteralExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2063,33 +1695,8 @@ public class BramsprParser extends Parser {
 		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
 		public FieldAccessExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFieldAccessExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFieldAccessExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccessExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class BoolLiteralExpressionContext extends ExpressionContext {
-		public TerminalNode BOOL() { return getToken(BramsprParser.BOOL, 0); }
-		public BoolLiteralExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBoolLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBoolLiteralExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBoolLiteralExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2680,76 +2287,76 @@ public class BramsprParser extends Parser {
 		"\2\2\2\16e\3\2\2\2\20u\3\2\2\2\22z\3\2\2\2\24\u0093\3\2\2\2\26\u00c5\3"+
 		"\2\2\2\30\u00d2\3\2\2\2\32\u00d4\3\2\2\2\34\u00e0\3\2\2\2\36\u00e9\3\2"+
 		"\2\2 \u00ef\3\2\2\2\"\u012b\3\2\2\2$%\5\4\3\2%\3\3\2\2\2&-\5\6\4\2\'-"+
-		"\5\30\r\2()\7+\2\2)*\5\4\3\2*+\7,\2\2+-\3\2\2\2,&\3\2\2\2,\'\3\2\2\2,"+
+		"\5\30\r\2()\7-\2\2)*\5\4\3\2*+\7.\2\2+-\3\2\2\2,&\3\2\2\2,\'\3\2\2\2,"+
 		"(\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\5\3\2\2\2\60.\3\2\2\2\61\62"+
-		"\5\b\5\2\62\63\7(\2\2\63;\3\2\2\2\64\65\5\n\6\2\65\66\7(\2\2\66;\3\2\2"+
+		"\5\b\5\2\62\63\7*\2\2\63;\3\2\2\2\64\65\5\n\6\2\65\66\7*\2\2\66;\3\2\2"+
 		"\2\67;\5\22\n\28;\5\f\7\29;\5\24\13\2:\61\3\2\2\2:\64\3\2\2\2:\67\3\2"+
-		"\2\2:8\3\2\2\2:9\3\2\2\2;\7\3\2\2\2<A\7\63\2\2=>\7/\2\2>@\7\63\2\2?=\3"+
-		"\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2BD\3\2\2\2CA\3\2\2\2DE\7\'\2\2EH\5"+
-		"\20\t\2FG\7\3\2\2GI\5\"\22\2HF\3\2\2\2HI\3\2\2\2I\t\3\2\2\2JO\7\63\2\2"+
-		"KL\7/\2\2LN\7\63\2\2MK\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2PR\3\2\2\2"+
-		"QO\3\2\2\2RS\7\'\2\2ST\7&\2\2TU\5\20\t\2UV\7\3\2\2VW\5\"\22\2W\13\3\2"+
-		"\2\2XY\7\34\2\2YZ\7\63\2\2Z[\7+\2\2[`\5\16\b\2\\]\7/\2\2]_\5\16\b\2^\\"+
-		"\3\2\2\2_b\3\2\2\2`^\3\2\2\2`a\3\2\2\2ac\3\2\2\2b`\3\2\2\2cd\7,\2\2d\r"+
-		"\3\2\2\2ej\7\63\2\2fg\7/\2\2gi\7\63\2\2hf\3\2\2\2il\3\2\2\2jh\3\2\2\2"+
-		"jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mn\7\'\2\2no\5\20\t\2o\17\3\2\2\2pq\7-\2"+
-		"\2qr\7\64\2\2rt\7.\2\2sp\3\2\2\2tw\3\2\2\2us\3\2\2\2uv\3\2\2\2vx\3\2\2"+
-		"\2wu\3\2\2\2xy\7\63\2\2y\21\3\2\2\2z{\7\33\2\2{|\5\20\t\2|}\7\63\2\2}"+
-		"\u0086\7)\2\2~\u0083\5\b\5\2\177\u0080\7/\2\2\u0080\u0082\5\b\5\2\u0081"+
-		"\177\3\2\2\2\u0082\u0085\3\2\2\2\u0083\u0081\3\2\2\2\u0083\u0084\3\2\2"+
-		"\2\u0084\u0087\3\2\2\2\u0085\u0083\3\2\2\2\u0086~\3\2\2\2\u0086\u0087"+
-		"\3\2\2\2\u0087\u0088\3\2\2\2\u0088\u0089\7*\2\2\u0089\u008a\7+\2\2\u008a"+
-		"\u008f\5\4\3\2\u008b\u008c\7%\2\2\u008c\u008d\5\"\22\2\u008d\u008e\7("+
-		"\2\2\u008e\u0090\3\2\2\2\u008f\u008b\3\2\2\2\u008f\u0090\3\2\2\2\u0090"+
-		"\u0091\3\2\2\2\u0091\u0092\7,\2\2\u0092\23\3\2\2\2\u0093\u0094\7$\2\2"+
-		"\u0094\u0095\7\63\2\2\u0095\u0096\7+\2\2\u0096\u009b\7\63\2\2\u0097\u0098"+
-		"\7/\2\2\u0098\u009a\7\63\2\2\u0099\u0097\3\2\2\2\u009a\u009d\3\2\2\2\u009b"+
-		"\u0099\3\2\2\2\u009b\u009c\3\2\2\2\u009c\u009e\3\2\2\2\u009d\u009b\3\2"+
-		"\2\2\u009e\u009f\7,\2\2\u009f\25\3\2\2\2\u00a0\u00a1\7\36\2\2\u00a1\u00a2"+
-		"\7)\2\2\u00a2\u00c6\7*\2\2\u00a3\u00a4\7\37\2\2\u00a4\u00a5\7)\2\2\u00a5"+
-		"\u00c6\7*\2\2\u00a6\u00a7\7 \2\2\u00a7\u00a8\7)\2\2\u00a8\u00c6\7*\2\2"+
-		"\u00a9\u00aa\7!\2\2\u00aa\u00ab\7)\2\2\u00ab\u00ac\5\"\22\2\u00ac\u00ad"+
-		"\7*\2\2\u00ad\u00c6\3\2\2\2\u00ae\u00af\7\"\2\2\u00af\u00b0\7)\2\2\u00b0"+
-		"\u00b1\5\"\22\2\u00b1\u00b2\7*\2\2\u00b2\u00c6\3\2\2\2\u00b3\u00b4\7#"+
-		"\2\2\u00b4\u00b5\7)\2\2\u00b5\u00b6\5\"\22\2\u00b6\u00b7\7*\2\2\u00b7"+
-		"\u00c6\3\2\2\2\u00b8\u00b9\7\63\2\2\u00b9\u00c2\7)\2\2\u00ba\u00bf\5\""+
-		"\22\2\u00bb\u00bc\7/\2\2\u00bc\u00be\5\"\22\2\u00bd\u00bb\3\2\2\2\u00be"+
-		"\u00c1\3\2\2\2\u00bf\u00bd\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c3\3\2"+
-		"\2\2\u00c1\u00bf\3\2\2\2\u00c2\u00ba\3\2\2\2\u00c2\u00c3\3\2\2\2\u00c3"+
-		"\u00c4\3\2\2\2\u00c4\u00c6\7*\2\2\u00c5\u00a0\3\2\2\2\u00c5\u00a3\3\2"+
+		"\2\2:8\3\2\2\2:9\3\2\2\2;\7\3\2\2\2<A\7\65\2\2=>\7\61\2\2>@\7\65\2\2?"+
+		"=\3\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2BD\3\2\2\2CA\3\2\2\2DE\7)\2\2E"+
+		"H\5\20\t\2FG\7\3\2\2GI\5\"\22\2HF\3\2\2\2HI\3\2\2\2I\t\3\2\2\2JO\7\65"+
+		"\2\2KL\7\61\2\2LN\7\65\2\2MK\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2PR\3"+
+		"\2\2\2QO\3\2\2\2RS\7)\2\2ST\7&\2\2TU\5\20\t\2UV\7\3\2\2VW\5\"\22\2W\13"+
+		"\3\2\2\2XY\7\34\2\2YZ\7\65\2\2Z[\7-\2\2[`\5\16\b\2\\]\7\61\2\2]_\5\16"+
+		"\b\2^\\\3\2\2\2_b\3\2\2\2`^\3\2\2\2`a\3\2\2\2ac\3\2\2\2b`\3\2\2\2cd\7"+
+		".\2\2d\r\3\2\2\2ej\7\65\2\2fg\7\61\2\2gi\7\65\2\2hf\3\2\2\2il\3\2\2\2"+
+		"jh\3\2\2\2jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mn\7)\2\2no\5\20\t\2o\17\3\2\2"+
+		"\2pq\7/\2\2qr\7\66\2\2rt\7\60\2\2sp\3\2\2\2tw\3\2\2\2us\3\2\2\2uv\3\2"+
+		"\2\2vx\3\2\2\2wu\3\2\2\2xy\7\65\2\2y\21\3\2\2\2z{\7\33\2\2{|\5\20\t\2"+
+		"|}\7\65\2\2}\u0086\7+\2\2~\u0083\5\b\5\2\177\u0080\7\61\2\2\u0080\u0082"+
+		"\5\b\5\2\u0081\177\3\2\2\2\u0082\u0085\3\2\2\2\u0083\u0081\3\2\2\2\u0083"+
+		"\u0084\3\2\2\2\u0084\u0087\3\2\2\2\u0085\u0083\3\2\2\2\u0086~\3\2\2\2"+
+		"\u0086\u0087\3\2\2\2\u0087\u0088\3\2\2\2\u0088\u0089\7,\2\2\u0089\u008a"+
+		"\7-\2\2\u008a\u008f\5\4\3\2\u008b\u008c\7%\2\2\u008c\u008d\5\"\22\2\u008d"+
+		"\u008e\7*\2\2\u008e\u0090\3\2\2\2\u008f\u008b\3\2\2\2\u008f\u0090\3\2"+
+		"\2\2\u0090\u0091\3\2\2\2\u0091\u0092\7.\2\2\u0092\23\3\2\2\2\u0093\u0094"+
+		"\7$\2\2\u0094\u0095\7\65\2\2\u0095\u0096\7-\2\2\u0096\u009b\7\65\2\2\u0097"+
+		"\u0098\7\61\2\2\u0098\u009a\7\65\2\2\u0099\u0097\3\2\2\2\u009a\u009d\3"+
+		"\2\2\2\u009b\u0099\3\2\2\2\u009b\u009c\3\2\2\2\u009c\u009e\3\2\2\2\u009d"+
+		"\u009b\3\2\2\2\u009e\u009f\7.\2\2\u009f\25\3\2\2\2\u00a0\u00a1\7\36\2"+
+		"\2\u00a1\u00a2\7+\2\2\u00a2\u00c6\7,\2\2\u00a3\u00a4\7\37\2\2\u00a4\u00a5"+
+		"\7+\2\2\u00a5\u00c6\7,\2\2\u00a6\u00a7\7 \2\2\u00a7\u00a8\7+\2\2\u00a8"+
+		"\u00c6\7,\2\2\u00a9\u00aa\7!\2\2\u00aa\u00ab\7+\2\2\u00ab\u00ac\5\"\22"+
+		"\2\u00ac\u00ad\7,\2\2\u00ad\u00c6\3\2\2\2\u00ae\u00af\7\"\2\2\u00af\u00b0"+
+		"\7+\2\2\u00b0\u00b1\5\"\22\2\u00b1\u00b2\7,\2\2\u00b2\u00c6\3\2\2\2\u00b3"+
+		"\u00b4\7#\2\2\u00b4\u00b5\7+\2\2\u00b5\u00b6\5\"\22\2\u00b6\u00b7\7,\2"+
+		"\2\u00b7\u00c6\3\2\2\2\u00b8\u00b9\7\65\2\2\u00b9\u00c2\7+\2\2\u00ba\u00bf"+
+		"\5\"\22\2\u00bb\u00bc\7\61\2\2\u00bc\u00be\5\"\22\2\u00bd\u00bb\3\2\2"+
+		"\2\u00be\u00c1\3\2\2\2\u00bf\u00bd\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c3"+
+		"\3\2\2\2\u00c1\u00bf\3\2\2\2\u00c2\u00ba\3\2\2\2\u00c2\u00c3\3\2\2\2\u00c3"+
+		"\u00c4\3\2\2\2\u00c4\u00c6\7,\2\2\u00c5\u00a0\3\2\2\2\u00c5\u00a3\3\2"+
 		"\2\2\u00c5\u00a6\3\2\2\2\u00c5\u00a9\3\2\2\2\u00c5\u00ae\3\2\2\2\u00c5"+
 		"\u00b3\3\2\2\2\u00c5\u00b8\3\2\2\2\u00c6\27\3\2\2\2\u00c7\u00d3\5\32\16"+
-		"\2\u00c8\u00d3\5\34\17\2\u00c9\u00ca\5\36\20\2\u00ca\u00cb\7(\2\2\u00cb"+
-		"\u00d3\3\2\2\2\u00cc\u00cd\5 \21\2\u00cd\u00ce\7(\2\2\u00ce\u00d3\3\2"+
-		"\2\2\u00cf\u00d0\5\"\22\2\u00d0\u00d1\7(\2\2\u00d1\u00d3\3\2\2\2\u00d2"+
+		"\2\u00c8\u00d3\5\34\17\2\u00c9\u00ca\5\36\20\2\u00ca\u00cb\7*\2\2\u00cb"+
+		"\u00d3\3\2\2\2\u00cc\u00cd\5 \21\2\u00cd\u00ce\7*\2\2\u00ce\u00d3\3\2"+
+		"\2\2\u00cf\u00d0\5\"\22\2\u00d0\u00d1\7*\2\2\u00d1\u00d3\3\2\2\2\u00d2"+
 		"\u00c7\3\2\2\2\u00d2\u00c8\3\2\2\2\u00d2\u00c9\3\2\2\2\u00d2\u00cc\3\2"+
 		"\2\2\u00d2\u00cf\3\2\2\2\u00d3\31\3\2\2\2\u00d4\u00d5\7\27\2\2\u00d5\u00d6"+
-		"\5\"\22\2\u00d6\u00d7\7+\2\2\u00d7\u00d8\5\4\3\2\u00d8\u00de\7,\2\2\u00d9"+
-		"\u00da\7\31\2\2\u00da\u00db\7+\2\2\u00db\u00dc\5\4\3\2\u00dc\u00dd\7,"+
+		"\5\"\22\2\u00d6\u00d7\7-\2\2\u00d7\u00d8\5\4\3\2\u00d8\u00de\7.\2\2\u00d9"+
+		"\u00da\7\31\2\2\u00da\u00db\7-\2\2\u00db\u00dc\5\4\3\2\u00dc\u00dd\7."+
 		"\2\2\u00dd\u00df\3\2\2\2\u00de\u00d9\3\2\2\2\u00de\u00df\3\2\2\2\u00df"+
-		"\33\3\2\2\2\u00e0\u00e1\7\32\2\2\u00e1\u00e2\5\"\22\2\u00e2\u00e3\7+\2"+
-		"\2\u00e3\u00e4\5\4\3\2\u00e4\u00e5\7,\2\2\u00e5\35\3\2\2\2\u00e6\u00e7"+
+		"\33\3\2\2\2\u00e0\u00e1\7\32\2\2\u00e1\u00e2\5\"\22\2\u00e2\u00e3\7-\2"+
+		"\2\u00e3\u00e4\5\4\3\2\u00e4\u00e5\7.\2\2\u00e5\35\3\2\2\2\u00e6\u00e7"+
 		"\5\"\22\2\u00e7\u00e8\7\3\2\2\u00e8\u00ea\3\2\2\2\u00e9\u00e6\3\2\2\2"+
 		"\u00ea\u00eb\3\2\2\2\u00eb\u00e9\3\2\2\2\u00eb\u00ec\3\2\2\2\u00ec\u00ed"+
 		"\3\2\2\2\u00ed\u00ee\5\"\22\2\u00ee\37\3\2\2\2\u00ef\u00f0\5\"\22\2\u00f0"+
 		"\u00f1\7\4\2\2\u00f1\u00f2\5\"\22\2\u00f2!\3\2\2\2\u00f3\u00f4\b\22\1"+
-		"\2\u00f4\u00f5\t\2\2\2\u00f5\u012c\5\"\22\2\u00f6\u00f7\7)\2\2\u00f7\u00f8"+
-		"\5\"\22\2\u00f8\u00f9\7*\2\2\u00f9\u012c\3\2\2\2\u00fa\u00fb\7)\2\2\u00fb"+
-		"\u00fc\5\36\20\2\u00fc\u00fd\7*\2\2\u00fd\u012c\3\2\2\2\u00fe\u012c\5"+
-		"\26\f\2\u00ff\u0100\7$\2\2\u0100\u0101\7\60\2\2\u0101\u0102\7\63\2\2\u0102"+
-		"\u0103\7\60\2\2\u0103\u012c\7\63\2\2\u0104\u0105\7\63\2\2\u0105\u0106"+
-		"\7\60\2\2\u0106\u012c\7\63\2\2\u0107\u012c\7\63\2\2\u0108\u0112\7+\2\2"+
-		"\u0109\u010a\5\"\22\2\u010a\u010b\7/\2\2\u010b\u010d\3\2\2\2\u010c\u0109"+
+		"\2\u00f4\u00f5\t\2\2\2\u00f5\u012c\5\"\22\2\u00f6\u00f7\7+\2\2\u00f7\u00f8"+
+		"\5\"\22\2\u00f8\u00f9\7,\2\2\u00f9\u012c\3\2\2\2\u00fa\u00fb\7+\2\2\u00fb"+
+		"\u00fc\5\36\20\2\u00fc\u00fd\7,\2\2\u00fd\u012c\3\2\2\2\u00fe\u012c\5"+
+		"\26\f\2\u00ff\u0100\7$\2\2\u0100\u0101\7\62\2\2\u0101\u0102\7\65\2\2\u0102"+
+		"\u0103\7\62\2\2\u0103\u012c\7\65\2\2\u0104\u0105\7\65\2\2\u0105\u0106"+
+		"\7\62\2\2\u0106\u012c\7\65\2\2\u0107\u012c\7\65\2\2\u0108\u0112\7-\2\2"+
+		"\u0109\u010a\5\"\22\2\u010a\u010b\7\61\2\2\u010b\u010d\3\2\2\2\u010c\u0109"+
 		"\3\2\2\2\u010d\u0110\3\2\2\2\u010e\u010c\3\2\2\2\u010e\u010f\3\2\2\2\u010f"+
 		"\u0111\3\2\2\2\u0110\u010e\3\2\2\2\u0111\u0113\5\"\22\2\u0112\u010e\3"+
-		"\2\2\2\u0112\u0113\3\2\2\2\u0113\u0114\3\2\2\2\u0114\u012c\7,\2\2\u0115"+
-		"\u0116\7+\2\2\u0116\u0124\7\63\2\2\u0117\u0118\7\63\2\2\u0118\u0119\7"+
-		"\3\2\2\u0119\u011a\5\"\22\2\u011a\u011b\7/\2\2\u011b\u011d\3\2\2\2\u011c"+
+		"\2\2\2\u0112\u0113\3\2\2\2\u0113\u0114\3\2\2\2\u0114\u012c\7.\2\2\u0115"+
+		"\u0116\7-\2\2\u0116\u0124\7\65\2\2\u0117\u0118\7\65\2\2\u0118\u0119\7"+
+		"\3\2\2\u0119\u011a\5\"\22\2\u011a\u011b\7\61\2\2\u011b\u011d\3\2\2\2\u011c"+
 		"\u0117\3\2\2\2\u011d\u0120\3\2\2\2\u011e\u011c\3\2\2\2\u011e\u011f\3\2"+
-		"\2\2\u011f\u0121\3\2\2\2\u0120\u011e\3\2\2\2\u0121\u0122\7\63\2\2\u0122"+
+		"\2\2\u011f\u0121\3\2\2\2\u0120\u011e\3\2\2\2\u0121\u0122\7\65\2\2\u0122"+
 		"\u0123\7\3\2\2\u0123\u0125\5\"\22\2\u0124\u011e\3\2\2\2\u0124\u0125\3"+
-		"\2\2\2\u0125\u0126\3\2\2\2\u0126\u012c\7,\2\2\u0127\u012c\7\64\2\2\u0128"+
-		"\u012c\7\67\2\2\u0129\u012c\7\62\2\2\u012a\u012c\7\61\2\2\u012b\u00f3"+
+		"\2\2\2\u0125\u0126\3\2\2\2\u0126\u012c\7.\2\2\u0127\u012c\7\66\2\2\u0128"+
+		"\u012c\7\67\2\2\u0129\u012c\7\64\2\2\u012a\u012c\7\63\2\2\u012b\u00f3"+
 		"\3\2\2\2\u012b\u00f6\3\2\2\2\u012b\u00fa\3\2\2\2\u012b\u00fe\3\2\2\2\u012b"+
 		"\u00ff\3\2\2\2\u012b\u0104\3\2\2\2\u012b\u0107\3\2\2\2\u012b\u0108\3\2"+
 		"\2\2\u012b\u0115\3\2\2\2\u012b\u0127\3\2\2\2\u012b\u0128\3\2\2\2\u012b"+
@@ -2774,9 +2381,9 @@ public class BramsprParser extends Parser {
 		"\u0164\3\2\2\2\u0164\u0175\3\2\2\2\u0165\u0168\6\22\r\3\u0166\u0167\7"+
 		"\17\2\2\u0167\u0169\5\"\22\2\u0168\u0166\3\2\2\2\u0169\u016a\3\2\2\2\u016a"+
 		"\u0168\3\2\2\2\u016a\u016b\3\2\2\2\u016b\u0175\3\2\2\2\u016c\u016d\6\22"+
-		"\16\3\u016d\u016e\7-\2\2\u016e\u016f\5\"\22\2\u016f\u0170\7.\2\2\u0170"+
-		"\u0175\3\2\2\2\u0171\u0172\6\22\17\3\u0172\u0173\7\60\2\2\u0173\u0175"+
-		"\7\63\2\2\u0174\u012d\3\2\2\2\u0174\u0130\3\2\2\2\u0174\u0133\3\2\2\2"+
+		"\16\3\u016d\u016e\7/\2\2\u016e\u016f\5\"\22\2\u016f\u0170\7\60\2\2\u0170"+
+		"\u0175\3\2\2\2\u0171\u0172\6\22\17\3\u0172\u0173\7\62\2\2\u0173\u0175"+
+		"\7\65\2\2\u0174\u012d\3\2\2\2\u0174\u0130\3\2\2\2\u0174\u0133\3\2\2\2"+
 		"\u0174\u0136\3\2\2\2\u0174\u0139\3\2\2\2\u0174\u013c\3\2\2\2\u0174\u0142"+
 		"\3\2\2\2\u0174\u0149\3\2\2\2\u0174\u0150\3\2\2\2\u0174\u0157\3\2\2\2\u0174"+
 		"\u015e\3\2\2\2\u0174\u0165\3\2\2\2\u0174\u016c\3\2\2\2\u0174\u0171\3\2"+

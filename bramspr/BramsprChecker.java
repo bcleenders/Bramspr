@@ -149,8 +149,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	public static final RecordSymbol INT = new RecordSymbol("int", null, null);
 	public static final RecordSymbol VOID = new RecordSymbol("void", null, null);
-	public static final RecordSymbol CHAR = new RecordSymbol("bool", null, null);
-	public static final RecordSymbol BOOL = new RecordSymbol("char", null, null);
+	public static final RecordSymbol CHAR = new RecordSymbol("char", null, null);
+	public static final RecordSymbol BOOL = new RecordSymbol("bool", null, null);
 	public static final RecordSymbol STRING = new RecordSymbol("string", null, null);
 
 	public BramsprChecker() {
@@ -333,7 +333,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			if (!argSuit.type.equals(BOOL)) {
 				reportError("illegal argument", ctx, BOOL.toString(), null);
 			}
-			return new Suit(INT, false);
+			return new Suit(BOOL, false);
 		}
 
 		if (ctx.getChild(1).getText().equals("-") || ctx.getChild(1).getText().equals("+")) {

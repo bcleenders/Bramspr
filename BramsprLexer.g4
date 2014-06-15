@@ -12,7 +12,7 @@ DIVISION:               '/';
 MODULUS:                '%';
 
 /* Comparators. */
-SMALLER_THAN:           '>';
+SMALLER_THAN:           '<';
 SMALLER_THAN_EQUALS_TO: '<=';
 GREATER_THAN:           '>';
 GREATER_THAN_EQUALS_TO: '>=';
