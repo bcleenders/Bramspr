@@ -14,7 +14,6 @@ import symboltable.ArraySymbol;
 import symboltable.EnumSymbol;
 import symboltable.FunctionSymbol;
 import symboltable.RecordSymbol;
-import symboltable.Symbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
@@ -32,7 +31,7 @@ import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FielddeclarationContext;
-import bramspr.BramsprParser.FinalDeclarationContext;
+import bramspr.BramsprParser.FinaldeclarationContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionExpressionContext;
 import bramspr.BramsprParser.FunctiondeclarationContext;
@@ -50,7 +49,6 @@ import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.PrimitiveTypeDenoterContext;
-import bramspr.BramsprParser.PrintstatementContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PutBoolExpressionContext;
 import bramspr.BramsprParser.PutCharExpressionContext;
@@ -64,7 +62,6 @@ import bramspr.BramsprParser.StringLiteralExpressionContext;
 import bramspr.BramsprParser.SwapstatementContext;
 import bramspr.BramsprParser.TypedeclarationContext;
 import bramspr.BramsprParser.UnaryExpressionContext;
-import bramspr.BramsprParser.VariableDeclarationContext;
 import bramspr.BramsprParser.VariableExpressionContext;
 import bramspr.BramsprParser.VariabledeclarationContext;
 import bramspr.BramsprParser.WhilestatementContext;
@@ -79,7 +76,7 @@ import bramspr.symboltable.*;
  *         (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-	// public class BramsprChecker implements BramsprVisitor<Suit> {
+//	 public class BramsprChecker implements BramsprVisitor<Suit> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -433,24 +430,33 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * Een powerExpression moet twee int 
 	 */
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.getChild(0));
-		Suit rightExpression = visit(ctx.getChild(2));
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
 
 		if (!leftExpression.type.equals(INT)) {
-			this.reportError("exponentiation requires an int base", ctx, INT.toString(), leftExpression.type.toString());
+			this.reportError("exponentiation requires an int base", ctx.expression(0), INT.toString(), leftExpression.type.toString());
 		}
 
 		if (!rightExpression.type.equals(INT)) {
-			this.reportError("exponentiation requires an int power", ctx, INT.toString(), rightExpression.type.toString());
+			this.reportError("exponentiation requires an int power", ctx.expression(1), INT.toString(), rightExpression.type.toString());
 		}
 
 		return new Suit(INT, false);
 	}
 
 	@Override
+	/*
+	 * Een while (E) { C } statement moet aan een contextuele eis voldoen:
+	 * 	1 De expressie E moet een bool waarde opleveren
+	 */
 	public Suit visitWhilestatement(WhilestatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		TypeSymbol expressionType = visit(ctx.expression()).type;
+		
+		if(! expressionType.equals(BOOL)) {
+			this.reportError("control expression in while statement should produce a bool", ctx.expression(), BOOL.toString(), expressionType.toString());
+		}
+			
+		return Suit.VOID;
 	}
 
 	@Override
@@ -476,12 +482,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOL, false);
 	}
 
-	@Override
+	/*
+	 * Een getBoolExpression heeft geen contextuele eisen, en levert een bool op.
+	 */
 	public Suit visitGetBoolExpression(GetBoolExpressionContext ctx) {
 		return new Suit(BOOL, false);
 	}
 
 	@Override
+	/*
+	 * Een andExpression vergelijkt twee bool waardes, en levert een bool op.
+	 */
 	public Suit visitAndExpression(AndExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
@@ -498,6 +509,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een equalsExpression vergelijkt twee gelijk getypeerde waardes, beide primitieve waardes, en levert een bool op.
+	 */
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		TypeSymbol firstType = visit(ctx.expression(0)).type;
 		
@@ -517,6 +531,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een greaterThanExpression vergelijkt int waardes, en levert een bool op.
+	 */
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
@@ -530,14 +547,27 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een charLiteralExpression heeft geen contextbeperkingen, en levert een char op.
+	 */
 	public Suit visitCharLiteralExpression(CharLiteralExpressionContext ctx) {
 		return new Suit(CHAR, false);
 	}
 
 	@Override
+	/*
+	 * Een smallerThanExpression vergelijkt int waardes, en levert een bool op.
+	 */
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! currType.equals(INT)) {
+				this.reportError("only int types are comparable with < and >", ctx, INT.toString(), currType.toString());
+			}
+		}
+		
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -547,21 +577,48 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitPrintstatement(PrintstatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+	/*
+	 * Een multiplicationExpression (*, /, %) heeft twee int argumenten, en levert een int op. 
+	 */
 	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
+
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), leftExpression.type.toString());
+		}
+
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), rightExpression.type.toString());
+		}
+
+		return new Suit(INT, false);
 	}
 
 	@Override
+	/*
+	 * 9 = 10 +- 2
+	 * ! (7 = 10 +- 2)
+	 * Een plusMinusExpression heeft drie int argumenten, en levert een bool op.
+	 */
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
+		Suit middleExpression = visit(ctx.expression(1));
+
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.expression(0), INT.toString(), leftExpression.type.toString());
+		}
+		
+		if (!middleExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.expression(1), INT.toString(), middleExpression.type.toString());
+		}
+
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.expression(2), INT.toString(), rightExpression.type.toString());
+		}
+
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -572,8 +629,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitGetCharExpression(GetCharExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(CHAR, false);
 	}
 
 	@Override
@@ -584,8 +640,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! currType.equals(INT)) {
+				this.reportError("only int types are comparable with <= and >=", ctx, INT.toString(), currType.toString());
+			}
+		}
+		
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -602,14 +665,20 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitIntLiteralExpression(IntLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(INT, false);
 	}
 
 	@Override
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! currType.equals(INT)) {
+				this.reportError("only int types are comparable with <= and >=", ctx, INT.toString(), currType.toString());
+			}
+		}
+		
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -845,18 +914,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitFinalDeclaration(FinalDeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Suit visitRecordLiteralExpression(RecordLiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
@@ -864,6 +921,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitChildren(RuleNode arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitFinaldeclaration(FinaldeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}

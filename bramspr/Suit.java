@@ -1,10 +1,12 @@
 package bramspr;
 
+import symboltable.ErrorType;
 import symboltable.RecordSymbol;
 import symboltable.TypeSymbol;
 
 public class Suit {
 	public static final Suit VOID = new Suit(new RecordSymbol("void", null, null), false);
+	public static final Suit ERROR = new Suit(new ErrorType(), true);
 	
 	/**
 	 * The String representation of this type.
