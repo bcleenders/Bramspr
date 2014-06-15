@@ -1,6 +1,7 @@
 package bramspr;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -195,6 +196,79 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
+	 * Een variabele moet op zijn scope een unieke identifier hebben. 
+	 * De identifiers moeten aan het juiste type gebound worden, en 
+	 * bij een directe initialisatie moet die expressie van hetzelfde type zijn.
+	 */
+	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
+		// Alle identifiers opvragen.
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		// Kijken wat het bedoelde type is.
+		TypeSymbol targetType = visit(ctx.primitiveTypeDenoter()).type;
+
+		for (Iterator<TerminalNode> iterator = identifiers.iterator(); iterator.hasNext();) {
+			TerminalNode identifier = iterator.next();
+			String name = identifier.getText();
+
+			try {
+				variableSymbolTable.declare(new VariableSymbol(name, targetType, false));
+			} catch (SymbolTableException e) {
+				String errorMessage = "The variable " + name + " was already declared in this scope.";
+				reportError(errorMessage, ctx);
+			}
+		}
+
+		// Als de variabelen direct geinitialiseerd worden, moet het type van de expressie gecontroleerd worden.
+		if (ctx.expression() != null) {
+			TypeSymbol expressionType = visit(ctx.expression()).type;
+
+			if (!expressionType.equals(targetType)) {
+				String errorMessage = "The expression " + ctx.expression().getText() + " does not yield a value of the same type as the declaration.";
+				reportError(errorMessage, ctx, targetType.toString(), expressionType.toString());
+			}
+		}
+		return Suit.VOID;
+	}
+
+	/*
+	 * Een fianl variabele moet, op zijn scope, een unieke identifier 
+	 * hebben. De identifiers moeten aan het juiste type gebound worden,
+	 * en de expressie moet van datzelfde type zijn.
+	 */
+	@Override
+	public Suit visitFinaldeclaration(FinaldeclarationContext ctx) {
+		// Alle identifiers opvragen.
+				List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+				// Kijken wat het bedoelde type is.
+				TypeSymbol targetType = visit(ctx.primitiveTypeDenoter()).type;
+
+				for (Iterator<TerminalNode> iterator = identifiers.iterator(); iterator.hasNext();) {
+					TerminalNode identifier = iterator.next();
+					String name = identifier.getText();
+
+					try {
+						variableSymbolTable.declare(new VariableSymbol(name, targetType, true));
+					} catch (SymbolTableException e) {
+						String errorMessage = "The variable " + name + " was already declared in this scope.";
+						reportError(errorMessage, ctx);
+						}
+					}
+				
+				// Nog even checken of de initialisatie-expressie van het correcte type is.
+				TypeSymbol expressionType = visit(ctx.expression()).type;
+				
+				if (!expressionType.equals(targetType)){
+					String errorMessage = "The expression " + ctx.expression().getText() + " does not yield a value of the same type as the declaration.";
+					reportError(errorMessage, ctx, targetType.toString(), expressionType.toString());
+				}
+
+				return Suit.VOID;
+	}
+
+	@Override
+	/*
 	 * Een enum moet een (voor enums) unieke naam hebben.
 	 */
 	public Suit visitEnumdeclaration(EnumdeclarationContext ctx) {
@@ -208,6 +282,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		}
 
 		EnumSymbol symbol = new EnumSymbol(enumName, constants);
+
 		try {
 			this.enumSymbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
@@ -726,23 +801,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// Alle expressions op één na zijn variabelen
 		int aantalVariabelen = ctx.expression().size() - 1;
-		
+
 		// De laatste expression is de value; visit de value expression om het type te achterhalen
 		TypeSymbol valueType = visit(ctx.expression(aantalVariabelen)).type;
-		
+
 		for (int i = 0; i < aantalVariabelen; i++) {
 			Suit variableSuit = visit(ctx.expression(i));
-			
-			if(!variableSuit.type.equals(valueType)) {
-				this.reportError("cannot assign '" + ctx.expression(i).getText() + "' to '" + ctx.expression(i).getText() + "': need same type variable/value", ctx.expression(i));
+
+			if (!variableSuit.type.equals(valueType)) {
+				this.reportError("cannot assign '" + ctx.expression(i).getText() + "' to '" + ctx.expression(i).getText() + "': need same type variable/value",
+						ctx.expression(i));
 			}
-			
-			
-			if(!variableSuit.isMutable) {
+
+			if (!variableSuit.isMutable) {
 				this.reportError("cannot assign to '" + ctx.expression(i).getText() + "': assignment requires mutable object.", ctx.expression(i));
 			}
 		}
-		
+
 		return new Suit(valueType, false);
 	}
 
@@ -757,19 +832,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitPrimitiveTypeDenoter(PrimitiveTypeDenoterContext ctx) {
 		TypeSymbol lastType = this.typeSymbolTable.resolve(ctx.IDENTIFIER().getText());
-		
-		if(lastType == null) {
+
+		if (lastType == null) {
 			this.reportError("encountered reference to non-existing type", ctx, ctx.IDENTIFIER().getText(), null);
 		}
-		
+
 		Integer[] arraySizes = (Integer[]) ctx.NUMBER().toArray();
-		
+
 		TypeSymbol outputType = lastType;
 		// Loop er in omgekeerde volgorde doorheen; [1][2][3]int moet namelijk als (1(2(3(int)))) geparst worden; met 3 het dichtst bij int.
 		for (int i = arraySizes.length - 1; i >= 0; i++) {
 			outputType = new ArraySymbol(arraySizes[i], outputType);
 		}
-		
+
 		return new Suit(outputType, false);
 	}
 
@@ -836,14 +911,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 				// Alles klopt. Gaan met die banaan.
 				returnSuit = new Suit(arrayType.type, returnSuit.isMutable);
-				
+
 			} else {
 
 				// Oh oh. De meegegeven index is geen integer...
 				String errorMessage = "The expression " + ctx.expression(1).getText() + " yields no integer value. Array indexes must be of integer type.";
 				reportError(errorMessage, ctx);
 			}
-			
+
 		} else {
 
 			// Oh oh. De linkerexpressie levert geen arraywaarde op...
@@ -1204,18 +1279,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitVariabledeclaration(VariabledeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitFinaldeclaration(FinaldeclarationContext ctx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
