@@ -91,7 +91,8 @@ expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # pa
           | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE)        # arrayAccessExpression
           | ENUM DOT IDENTIFIER DOT IDENTIFIER                              # enumExpression
           // Let op; dit matcht zowel records als enums! Opletten in de checker.
-          | expression DOT IDENTIFIER                                       # fieldAccessExpression
+          | IDENTIFIER DOT IDENTIFIER                                       # fieldAccessExpression
+          | expression DOT IDENTIFIER                                       # recordAccessExpression
           | IDENTIFIER                                                      # variableExpression
           // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
           | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression

@@ -49,7 +49,9 @@ PUTBOOL:                'putBool';
 ENUM:                   'enum';
 RETURN:                 'return';
 FINAL:                  'final';
-    
+TRUE:                   'true';
+FALSE:                  'false';
+
 /* Symbols. */
 COLON:                  ':'     ;
 SEMICOLON:              ';'     ;
@@ -69,8 +71,6 @@ STRING : '"' ( ESCAPED | ~('\n'|'\r') )*? '"';
 CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 NUMBER: DIGIT+;
-TRUE: 'true';
-FALSE: 'false';
 BOOL: TRUE | FALSE;
 
 /* Miscellaneous. */
