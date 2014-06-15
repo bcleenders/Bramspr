@@ -20,4 +20,8 @@ public class RecordSymbol extends TypeSymbol {
 	public TypeSymbol getFieldType(String fieldName) {
 		return this.fields.get(fieldName);
 	}
+	
+	public int getNumberOfFields() {
+		return fields.size();
+	}
 }

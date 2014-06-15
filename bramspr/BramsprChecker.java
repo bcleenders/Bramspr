@@ -1,6 +1,7 @@
 package bramspr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -457,10 +458,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		if (!expressionType.equals(BOOL)) {
 			this.reportError("control expression in while statement should produce a bool", ctx.expression(), BOOL.toString(), expressionType.toString());
 		}
-		
+
 		// Doorloop nog even de code in de while loop, om die ook te checken.
 		visit(ctx.block());
-			
+
 		return Suit.VOID;
 	}
 
@@ -552,7 +553,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	/*
+	/*----
 	 * Een charLiteralExpression heeft geen contextbeperkingen, en levert een char op.
 	 */
 	public Suit visitCharLiteralExpression(CharLiteralExpressionContext ctx) {
@@ -583,15 +584,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitIfstatement(IfstatementContext ctx) {
 		TypeSymbol expressionType = visit(ctx.expression()).type;
-		
-		if(!expressionType.equals(BOOL)) {
+
+		if (!expressionType.equals(BOOL)) {
 			this.reportError("if control expression should return bool value", ctx.expression(), BOOL.toString(), expressionType.toString());
 		}
-		
+
 		for (int i = 0; i < ctx.block().size(); i++) {
 			visit(ctx.block(i));
 		}
-		
+
 		return Suit.VOID;
 	}
 
@@ -668,7 +669,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		String variableName = ctx.IDENTIFIER().getText();
 		VariableSymbol variableSymbol = this.variableSymbolTable.resolve(variableName);
 		TypeSymbol variableType = variableSymbol.getReturnType();
-		
+
 		return new Suit(variableType, true);
 	}
 
@@ -726,23 +727,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// Alle expressions op één na zijn variabelen
 		int aantalVariabelen = ctx.expression().size() - 1;
-		
+
 		// De laatste expression is de value; visit de value expression om het type te achterhalen
 		TypeSymbol valueType = visit(ctx.expression(aantalVariabelen)).type;
-		
+
 		for (int i = 0; i < aantalVariabelen; i++) {
 			Suit variableSuit = visit(ctx.expression(i));
-			
-			if(!variableSuit.type.equals(valueType)) {
-				this.reportError("cannot assign '" + ctx.expression(i).getText() + "' to '" + ctx.expression(i).getText() + "': need same type variable/value", ctx.expression(i));
+
+			if (!variableSuit.type.equals(valueType)) {
+				this.reportError("cannot assign '" + ctx.expression(i).getText() + "' to '" + ctx.expression(i).getText() + "': need same type variable/value",
+						ctx.expression(i));
 			}
-			
-			
-			if(!variableSuit.isMutable) {
+
+			if (!variableSuit.isMutable) {
 				this.reportError("cannot assign to '" + ctx.expression(i).getText() + "': assignment requires mutable object.", ctx.expression(i));
 			}
 		}
-		
+
 		return new Suit(valueType, false);
 	}
 
@@ -757,19 +758,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitPrimitiveTypeDenoter(PrimitiveTypeDenoterContext ctx) {
 		TypeSymbol lastType = this.typeSymbolTable.resolve(ctx.IDENTIFIER().getText());
-		
-		if(lastType == null) {
+
+		if (lastType == null) {
 			this.reportError("encountered reference to non-existing type", ctx, ctx.IDENTIFIER().getText(), null);
 		}
-		
+
 		Integer[] arraySizes = (Integer[]) ctx.NUMBER().toArray();
-		
+
 		TypeSymbol outputType = lastType;
 		// Loop er in omgekeerde volgorde doorheen; [1][2][3]int moet namelijk als (1(2(3(int)))) geparst worden; met 3 het dichtst bij int.
 		for (int i = arraySizes.length - 1; i >= 0; i++) {
 			outputType = new ArraySymbol(arraySizes[i], outputType);
 		}
-		
+
 		return new Suit(outputType, false);
 	}
 
@@ -783,23 +784,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 		String functieNaam = ctx.IDENTIFIER().getText();
-		
+
 		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.expression().size()];
-		
+
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			argumentTypes[i] = visit(ctx.expression(i)).type;
 		}
-		
+
 		// Als de functionsignature klopt, zijn de argumenttypes ook goed. Deze bepalen namelijk de signature!
 		String functionSignature = FunctionSymbol.generateSignature(functieNaam, argumentTypes);
-		
+
 		FunctionSymbol functionSymbol = this.functionSymbolTable.resolve(functionSignature);
-		
-		if(functionSymbol == null) {
+
+		if (functionSymbol == null) {
 			this.reportError("unknown function signature ('" + functionSignature + "'); check your function name/arguments", ctx);
 			return Suit.ERROR;
 		}
-		
+
 		return new Suit(functionSymbol.getReturnType(), false);
 	}
 
@@ -855,7 +856,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			reportError(errorMessage, ctx);
 			returnSuit = Suit.ERROR;
 		}
-		
+
 		return returnSuit;
 	}
 
@@ -1125,15 +1126,86 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een recordLiteralExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Het record type moet gedefinieërd zijn
+	 * 	2 Alleen bestaande fields mogen geassigned worden
+	 * 	3 Alle fields moeten een waarde krijgen
+	 * 	4 Alle fields moeten een waarde krijgen waarvan het type overeenkomt met het type van het field (e.g. stoel{aantalPoten: true})
+	 *  5 Een field mag niet twee maal geassigned worden binnen de literal (e.g. stoel{aantalPoten: 2, aantalPoten: 4})
+	 */
 	public Suit visitRecordLiteralExpression(RecordLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		String typeNaam = ctx.IDENTIFIER(0).getText();
+		RecordSymbol recordSymbol = this.typeSymbolTable.resolve(typeNaam);
+
+		if (recordSymbol == null) {
+			this.reportError("reference to non-existing record type '" + typeNaam + "'.", ctx);
+			return Suit.ERROR;
+		}
+
+		HashSet<String> reedsToegewezenFields = new HashSet<String>();
+
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			String fieldName = ctx.IDENTIFIER(i).getText();
+
+			TypeSymbol fieldType = recordSymbol.getFieldType(fieldName);
+
+			if (fieldType == null) {
+				this.reportError("reference to non-existing field '" + fieldName + "' in record type '" + recordSymbol.getIdentifier() + "'.", ctx);
+			}
+
+			// De expresstion index loopt 1 achter op de identifiers, want recordType gebruikt al een identifier.
+			TypeSymbol expressionType = visit(ctx.expression(i - 1)).type;
+
+			if (!expressionType.equals(fieldType)) {
+				this.reportError("incorrect value type for field '" + fieldName + "'.", ctx.expression(i - 1), expressionType.toString(), fieldType.toString());
+			}
+
+			if (reedsToegewezenFields.contains(fieldName)) {
+				this.reportError("double assignment of field '" + fieldName + "' is not allowed in literal", ctx.expression(i - 1));
+			}
+		}
+
+		if (reedsToegewezenFields.size() < recordSymbol.getNumberOfFields()) {
+			this.reportError("not all fields of record type were assigned in record literal", ctx, "" + reedsToegewezenFields.size() + " fields", ""
+					+ recordSymbol.getNumberOfFields() + " fields");
+		}
+
+		return new Suit(recordSymbol, false);
 	}
 
 	@Override
+	/*
+	 * Een arrayLiteralExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Alle elementen moeten hetzelfde type hebben
+	 * 	2 Het type van het element moet bestaan
+	 * De tweede eis wordt reeds gegarandeerd door de contextuele eis dat een waarde in zijn algemeenheid nooit een onbestaand type 
+	 * kan hebben; door een element te assignen weten we dus al dat het type bestaat.
+	 */
 	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		int aantalElementen = ctx.expression().size();
+
+		if (aantalElementen == 0) {
+			// Als er toch 0 elementen zijn, maak ze dan maar direct voids...
+			return new Suit(new ArraySymbol(0, VOID), false);
+		}
+
+		// Wat voor types zou hij bevatten?
+		TypeSymbol elementType = visit(ctx.expression(0)).type;
+
+		for (int i = 1; i < aantalElementen; i++) {
+			// Type van het huidige element
+			TypeSymbol currElementType = visit(ctx.expression(i)).type;
+
+			if (!elementType.equals(currElementType)) {
+				this.reportError("attempted to enter different types in array literal: use records for that!", ctx.expression(i), elementType.getIdentifier(),
+						currElementType.getIdentifier());
+			}
+		}
+
+		ArraySymbol arrayType = new ArraySymbol(aantalElementen, elementType);
+
+		return new Suit(arrayType, false);
 	}
 
 	@Override
