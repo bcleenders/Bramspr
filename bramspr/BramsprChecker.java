@@ -2,6 +2,7 @@ package bramspr;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -627,7 +628,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	/*
+	/*----
 	 * Een charLiteralExpression heeft geen contextbeperkingen, en levert een char op.
 	 */
 	public Suit visitCharLiteralExpression(CharLiteralExpressionContext ctx) {
@@ -1272,15 +1273,86 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een recordLiteralExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Het record type moet gedefinieërd zijn
+	 * 	2 Alleen bestaande fields mogen geassigned worden
+	 * 	3 Alle fields moeten een waarde krijgen
+	 * 	4 Alle fields moeten een waarde krijgen waarvan het type overeenkomt met het type van het field (e.g. stoel{aantalPoten: true})
+	 *  5 Een field mag niet twee maal geassigned worden binnen de literal (e.g. stoel{aantalPoten: 2, aantalPoten: 4})
+	 */
 	public Suit visitRecordLiteralExpression(RecordLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		String typeNaam = ctx.IDENTIFIER(0).getText();
+		RecordSymbol recordSymbol = this.typeSymbolTable.resolve(typeNaam);
+
+		if (recordSymbol == null) {
+			this.reportError("reference to non-existing record type '" + typeNaam + "'.", ctx);
+			return Suit.ERROR;
+		}
+
+		HashSet<String> reedsToegewezenFields = new HashSet<String>();
+
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			String fieldName = ctx.IDENTIFIER(i).getText();
+
+			TypeSymbol fieldType = recordSymbol.getFieldType(fieldName);
+
+			if (fieldType == null) {
+				this.reportError("reference to non-existing field '" + fieldName + "' in record type '" + recordSymbol.getIdentifier() + "'.", ctx);
+			}
+
+			// De expresstion index loopt 1 achter op de identifiers, want recordType gebruikt al een identifier.
+			TypeSymbol expressionType = visit(ctx.expression(i - 1)).type;
+
+			if (!expressionType.equals(fieldType)) {
+				this.reportError("incorrect value type for field '" + fieldName + "'.", ctx.expression(i - 1), expressionType.toString(), fieldType.toString());
+			}
+
+			if (reedsToegewezenFields.contains(fieldName)) {
+				this.reportError("double assignment of field '" + fieldName + "' is not allowed in literal", ctx.expression(i - 1));
+			}
+		}
+
+		if (reedsToegewezenFields.size() < recordSymbol.getNumberOfFields()) {
+			this.reportError("not all fields of record type were assigned in record literal", ctx, "" + reedsToegewezenFields.size() + " fields", ""
+					+ recordSymbol.getNumberOfFields() + " fields");
+		}
+
+		return new Suit(recordSymbol, false);
 	}
 
 	@Override
+	/*
+	 * Een arrayLiteralExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Alle elementen moeten hetzelfde type hebben
+	 * 	2 Het type van het element moet bestaan
+	 * De tweede eis wordt reeds gegarandeerd door de contextuele eis dat een waarde in zijn algemeenheid nooit een onbestaand type 
+	 * kan hebben; door een element te assignen weten we dus al dat het type bestaat.
+	 */
 	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		int aantalElementen = ctx.expression().size();
+
+		if (aantalElementen == 0) {
+			// Als er toch 0 elementen zijn, maak ze dan maar direct voids...
+			return new Suit(new ArraySymbol(0, VOID), false);
+		}
+
+		// Wat voor types zou hij bevatten?
+		TypeSymbol elementType = visit(ctx.expression(0)).type;
+
+		for (int i = 1; i < aantalElementen; i++) {
+			// Type van het huidige element
+			TypeSymbol currElementType = visit(ctx.expression(i)).type;
+
+			if (!elementType.equals(currElementType)) {
+				this.reportError("attempted to enter different types in array literal: use records for that!", ctx.expression(i), elementType.getIdentifier(),
+						currElementType.getIdentifier());
+			}
+		}
+
+		ArraySymbol arrayType = new ArraySymbol(aantalElementen, elementType);
+
+		return new Suit(arrayType, false);
 	}
 
 }
