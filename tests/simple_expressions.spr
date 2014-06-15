@@ -1,15 +1,25 @@
-var x: int;
-var y, z: int;
+x: int;
+y, z: int;
 
 x := 5;
 y := z := 10;
-print(x, y, z, '\n');
+putint(x);
+putint(y);
+putint(z);
+putchar('\n');
 
 z := 2*(1+y*x);
-print(z, 102, '\n'); // Moet 102 zijn
+putint(102);
+putint(z);
+putchar('\n'); // Moet 102 zijn
 
 x := 4^3^2;
-print(x, 4^3^2, 262144, '\n');
+putint(x);
+putint(4^3^2);
+putint(262144);
+putchar('\n');
 
 y := 2*3+2^3*4; // Moet 6+8*4=38 zijn
-print(y, 38, '\n');
+putint(y);
+putint(38);
+putchar('\n');

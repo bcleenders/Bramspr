@@ -128,7 +128,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		sb.append(erroneousNode.getStart().getCharPositionInLine());
 		sb.append('.');
 
-		System.err.print(sb.toString());
+		System.err.println(sb.toString());
 
 		if (expected != null) {
 			System.err.print("Expected " + expected);
@@ -153,6 +153,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public static final RecordSymbol STRING = new RecordSymbol("string", null, null);
 
 	public BramsprChecker() {
+		
+	}
+	
+	public Suit visitProgram(ProgramContext ctx) {
+		this.openScope();
 		try {
 			typeSymbolTable.declare(INT);
 			typeSymbolTable.declare(VOID);
@@ -166,9 +171,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
-			System.err.println("New SymbolTable contains reserved name.");
+			System.err.println(se.getMessage());
+			se.printStackTrace();
 			System.exit(1); // Als het zo erg misgaat, laat dan maar zitten...
 		}
+	
+		super.visitProgram(ctx);
+		
+		this.closeScope();
+		return Suit.VOID;
 	}
 
 	@Override
@@ -668,6 +679,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitVariableExpression(VariableExpressionContext ctx) {
 		String variableName = ctx.IDENTIFIER().getText();
 		VariableSymbol variableSymbol = this.variableSymbolTable.resolve(variableName);
+		
+		if(variableSymbol == null) {
+			this.reportError("variable '" + variableName + "' has not been declared.", ctx);
+			return Suit.ERROR;
+		}
+		
 		TypeSymbol variableType = variableSymbol.getReturnType();
 
 		return new Suit(variableType, true);
