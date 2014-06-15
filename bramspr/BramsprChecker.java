@@ -78,7 +78,7 @@ import bramspr.symboltable.*;
  *         (primitieve) type terug dat de bijbehorende programmacode terug zou geven.
  */
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
-//	 public class BramsprChecker implements BramsprVisitor<Suit> {
+	// public class BramsprChecker implements BramsprVisitor<Suit> {
 
 	// record; identifier (van het record, e.g. "Stoel")
 	// "primitief" type ("int", "bool"...)
@@ -88,14 +88,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	private SymbolTable<VariableSymbol> variableSymbolTable = new SymbolTable<VariableSymbol>(); // variabelenamen (e.g. x)
 	private SymbolTable<TypeSymbol> typeSymbolTable = new SymbolTable<TypeSymbol>(); // typenamen (e.g. Stoel)
 	private SymbolTable<EnumSymbol> enumSymbolTable = new SymbolTable<EnumSymbol>(); // enumnamen (e.g. DAYS)
-	
+
 	private void openScope() {
 		functionSymbolTable.openScope();
 		variableSymbolTable.openScope();
 		typeSymbolTable.openScope();
 		enumSymbolTable.openScope();
 	}
-	
+
 	private void closeScope() {
 		functionSymbolTable.closeScope();
 		variableSymbolTable.closeScope();
@@ -143,11 +143,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.err.println(".");
 		}
 	}
-	
+
 	/*
 	 * Handige reportError-wrapper zonder 'expected, encountered'.
 	 */
-	private void reportError(String message, ParserRuleContext erroroursNode){
+	private void reportError(String message, ParserRuleContext erroroursNode) {
 		reportError(message, erroroursNode, null, null);
 	}
 
@@ -208,11 +208,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		String enumName = identifiers.remove(0).getText();
 		String[] constants = new String[identifiers.size()];
-		
+
 		for (int i = 0; i < identifiers.size(); i++) {
 			constants[i] = identifiers.get(i).getText();
 		}
-		
+
 		EnumSymbol symbol = new EnumSymbol(enumName, constants);
 		try {
 			this.enumSymbolTable.declare(symbol);
@@ -246,15 +246,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit argSuit = visit(ctx.getChild(1));
 
 		if (ctx.getChild(0).getText().equals("!")) {
-			if (!argSuit.type.equals("bool")) {
-				reportError("illegal argument", ctx, "bool", null);
+			if (!argSuit.type.equals(BOOL)) {
+				reportError("illegal argument", ctx, BOOL.toString(), null);
 			}
 			return new Suit(INT, false);
 		}
 
 		if (ctx.getChild(1).getText().equals("-") || ctx.getChild(1).getText().equals("+")) {
-			if (!argSuit.type.equals("int")) {
-				reportError("illegal argument", ctx, "int", null);
+			if (!argSuit.type.equals(INT)) {
+				reportError("illegal argument", ctx, INT.toString(), null);
 			}
 			return new Suit(INT, false);
 		}
@@ -270,17 +270,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
-		if (leftExpression == null || rightExpression == null) {
-			this.reportError("invalid additon; voids cannot be summed/substracted.", ctx, "int", "void");
-			return new Suit(INT, false);
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), leftExpression.type.toString());
 		}
 
-		if (!leftExpression.type.equals("int")) {
-			this.reportError("addition/substraction only works for int values", ctx, "int", leftExpression.type.toString());
-		}
-
-		if (!rightExpression.type.equals("int")) {
-			this.reportError("addition/substraction only works for int values", ctx, "int", rightExpression.type.toString());
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), rightExpression.type.toString());
 		}
 
 		return new Suit(INT, false);
@@ -325,7 +320,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.variabledeclaration().size(); i++) {
 			argumentTypes[i] = visit(ctx.variabledeclaration(i)).type;
 		}
-		
+
 		FunctionSymbol symbol = new FunctionSymbol(functieNaam, declaredReturnType, argumentTypes);
 
 		try {
@@ -346,7 +341,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				this.reportError("invalid function return type", ctx.expression(), declaredReturnType.toString(), returnExpressionType.type.toString());
 			}
 		}
-		
+
 		this.closeScope();
 
 		return new Suit(declaredReturnType, false);
@@ -366,74 +361,86 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *  1 Een type moet een unieke naam hebben.
 	 *  2 Alle velden in het type moeten een unieke naam hebben.
 	 *  3 Alle velden in het type moeten een geldig type hebben.
-	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3. Dit zou een oneindige loop opleveren.
+	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
 	 */
 	public Suit visitTypedeclaration(TypedeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER().getText();
 
 		// We weten nu hoe 't beestje heet, maar welke velden heeft 'ie?
-		int fieldCount = ctx.fielddeclaration().size(); // allereerst even tellen hoeveel
-		String[] fieldNames = new String[fieldCount];
-		TypeSymbol[] fieldTypes = new TypeSymbol[fieldCount];
-		
-		this.openScope();
+		ArrayList<String> fieldNames = new ArrayList<String>(); // we weten nog niet hoeveel
+		ArrayList<TypeSymbol> fieldTypes = new ArrayList<TypeSymbol>();
+
+		// We gaan de fielddeclarations stuk voor stuk doorlopen.
 		for (int i = 0; i < ctx.fielddeclaration().size(); i++) {
-			fieldNames[i] = ctx.fielddeclaration(i).IDENTIFIER(0).getText(); // Dit is de naam van het veld.
-			fieldTypes[i] = visit(ctx.fielddeclaration(i)).type; // Even types opvragen
+			FielddeclarationContext fielddeclctx = ctx.fielddeclaration(i);
+
+			// Bij x,y: int is typeOfFields int
+			TypeSymbol typeOfFields = visit(fielddeclctx).type;
+			
+			for (int j = 0; j < fielddeclctx.IDENTIFIER().size(); j++) {
+				fieldNames.add(fielddeclctx.IDENTIFIER(j).getText());
+				fieldTypes.add(typeOfFields);
+			}
 		}
-		this.closeScope();
-		
+
 		// Check of er geen dubbele namen zijn.
-		for (int i = 0; i < fieldNames.length; i++) {
-			for (int j = i + 1; j < fieldNames.length; j++) {
-				if(fieldNames[i].equals(fieldNames[j])) {
-					this.reportError("record has non-unique fieldnames", ctx, fieldNames[j], null);
+		for (int i = 0; i < fieldNames.size(); i++) {
+			for (int j = i + 1; j < fieldNames.size(); j++) {
+				if (fieldNames.get(i).equals(fieldNames.get(j))) {
+					this.reportError("record has non-unique fieldnames", ctx, fieldNames.get(j), null);
 				}
 			}
 		}
-		
-		TypeSymbol symbol = new RecordSymbol(typeNaam, fieldNames, fieldTypes); // TODO deze functie is nog kapot! 
+
+		RecordSymbol symbol = new RecordSymbol(typeNaam, (String[]) fieldNames.toArray(), (TypeSymbol[]) fieldTypes.toArray());
 
 		try {
 			this.typeSymbolTable.declare(symbol);
 		} catch (SymbolTableException e) {
-			this.reportError("could not declare type; duplicate name", ctx, null, null);
+			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
 		}
-		
-		return Suit.VOID;
-	}
-	
-	public Suit visitFielddeclaration(FielddeclarationContext ctx) {
+
 		return Suit.VOID;
 	}
 
-	@Override
+	/**
+	 * Geeft het type van de fields die gedeclareerd worden in deze fielddeclaration. E.g. x,y,z: INT zou INT opleveren.
+	 */
+	public Suit visitFielddeclaration(FielddeclarationContext ctx) {
+		return visit(ctx.primitiveTypeDenoter());
+	}
+
+	/*
+	 * Een orExpression moet twee boolean waardes als argumenten krijgen.
+	 */
 	public Suit visitOrExpression(OrExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
-		if (!leftExpression.type.equals("bool")) {
-			this.reportError("boolean operation OR only works for bool values", ctx, "bool", leftExpression.type.toString());
+		if (!leftExpression.type.equals(BOOL)) {
+			this.reportError("boolean operation OR only works for bool values", ctx, BOOL.toString(), leftExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals("bool")) {
-			this.reportError("boolean operation OR only works for bool values", ctx, "bool", rightExpression.type.toString());
+		if (!rightExpression.type.equals(BOOL)) {
+			this.reportError("boolean operation OR only works for bool values", ctx, BOOL.toString(), rightExpression.type.toString());
 		}
 
 		return new Suit(BOOL, false);
 	}
 
-	@Override
+	/*
+	 * Een powerExpression moet twee int 
+	 */
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
-		if (!leftExpression.type.equals("int")) {
-			this.reportError("exponentiation requires an int base", ctx, "int", leftExpression.type.toString());
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("exponentiation requires an int base", ctx, INT.toString(), leftExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals("int")) {
-			this.reportError("exponentiation requires an int power", ctx, "int", rightExpression.type.toString());
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("exponentiation requires an int power", ctx, INT.toString(), rightExpression.type.toString());
 		}
 
 		return new Suit(INT, false);
@@ -446,7 +453,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Alle argumenten van een notEqualsExpression moeten hetzelfde "primitieve" type hebben.
+	 * Dit mag dus INT, BOOL, CHAR of <enum> zijn.
+	 */
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
+		TypeSymbol firstType = visit(ctx.expression(0)).type;
+		
+		if(!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
+			this.reportError("non-primitive types cannot be compared with == ", ctx, "int/bool/char/enum", firstType.toString());
+		}
+		
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! firstType.equals(currType)) {
+				this.reportError("only equal types can be compared with ==", ctx, firstType.toString(), currType.toString());
+			}
+		}
+		
 		return new Suit(BOOL, false);
 	}
 
@@ -460,33 +485,52 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit leftExpression = visit(ctx.getChild(0));
 		Suit rightExpression = visit(ctx.getChild(2));
 
-		if (!leftExpression.type.equals("int")) {
-			this.reportError("logical operator AND only works for bool values", ctx, "int", leftExpression.type.toString());
+		if (!leftExpression.type.equals(BOOL)) {
+			this.reportError("logical operator AND only works for bool values", ctx, BOOL.toString(), leftExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals("int")) {
-			this.reportError("logical operator AND only works for bool values", ctx, "int", rightExpression.type.toString());
+		if (!rightExpression.type.equals(BOOL)) {
+			this.reportError("logical operator AND only works for bool values", ctx, BOOL.toString(), rightExpression.type.toString());
 		}
 
-		return new Suit(INT, false);
+		return new Suit(BOOL, false);
 	}
 
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		TypeSymbol firstType = visit(ctx.expression(0)).type;
+		
+		if(!firstType.equals(INT) && !firstType.equals(BOOL) && !firstType.equals(CHAR) && !(firstType instanceof EnumSymbol)) {
+			this.reportError("non-primitive types cannot be compared", ctx, "int/bool/char/enum", firstType.toString());
+		}
+		
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! firstType.equals(currType)) {
+				this.reportError("only equal types can be compared", ctx, firstType.toString(), currType.toString());
+			}
+		}
+		
+		return new Suit(BOOL, false);
 	}
 
 	@Override
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			TypeSymbol currType = visit(ctx.expression(i)).type;
+			
+			if(! currType.equals(INT)) {
+				this.reportError("only int types are comparable with < and >", ctx, INT.toString(), currType.toString());
+			}
+		}
+		
+		return new Suit(BOOL, false);
 	}
 
 	@Override
 	public Suit visitCharLiteralExpression(CharLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(CHAR, false);
 	}
 
 	@Override
@@ -714,8 +758,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		/*
 		 * Controleren of de expressie een integer is.
 		 */
-		if (!expressionSuit.type.equals("int")) {
-			reportError("The argument of putint must be of integer type.", ctx, "int", expressionSuit.type.toString());
+		if (!expressionSuit.type.equals(INT)) {
+			reportError("The argument of putint must be of integer type.", ctx, INT.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
@@ -735,8 +779,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		/*
 		 * Controleren of de expressie een boolean is.
 		 */
-		if (!expressionSuit.type.equals("bool")) {
-			reportError("The argument of putbool must be of boolean type.", ctx, "bool", expressionSuit.type.toString());
+		if (!expressionSuit.type.equals(BOOL)) {
+			reportError("The argument of putbool must be of boolean type.", ctx, BOOL.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
