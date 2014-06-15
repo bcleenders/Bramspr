@@ -15,7 +15,7 @@ declaration : variabledeclaration SEMICOLON
 // x, y: integer
 // x: [11]integer (is een array van integers)
 variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter (BECOMES expression)?;
-finaldeclaration: IDENTIFIER (COMMA IDENTIFIER)* FINAL COLON primitiveTypeDenoter BECOMES expression;
+finaldeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON FINAL primitiveTypeDenoter BECOMES expression;
                       
 // type bank {
 //      kussens, aantalPoten: integer,
@@ -26,7 +26,7 @@ typedeclaration: TYPE IDENTIFIER LEFT_BRACE fielddeclaration (COMMA fielddeclara
 fielddeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter;
 
 // [2][9]integer
-primitiveTypeDenoter: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)*IDENTIFIER;
+primitiveTypeDenoter: (LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE)* IDENTIFIER;
 
 // function integer foo(a,b: integer, z:char) { return a + b; }
 functiondeclaration: FUNCTION primitiveTypeDenoter IDENTIFIER 
