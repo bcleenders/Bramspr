@@ -5,7 +5,7 @@ public class ArraySymbol extends TypeSymbol {
 	/**
 	 * The type of the entries (all equal)
 	 */
-	TypeSymbol type;
+	public TypeSymbol type;
 	
 	/**
 	 * @param amount het aantal elementen in deze array

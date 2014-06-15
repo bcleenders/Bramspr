@@ -809,10 +809,51 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOL, false);
 	}
 
+	/*
+	 * Er moet hier gekeken worden of
+	 *  - de array-expressie inderdaad een array is
+	 *  - de index-expressie een integer is
+	 *  - welke type de array-elementen zijn, zodat de juiste return suit gekozen kan worden
+	 *  - of de array-expressie mutable is, zodat de juiste return suit gekozen kan worden
+	 */
 	@Override
 	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+
+		// Dummy-returnwaarde aanmaken.
+		Suit returnSuit = Suit.VOID;
+
+		// Suits opvragen.
+		Suit expressionSuit = visit(ctx.expression(0));
+		Suit indexSuit = visit(ctx.expression(1));
+
+		// Levert de linkerexpressie een arraywaarde op?
+		if (expressionSuit.type instanceof ArraySymbol) {
+
+			// Ja, het levert een arraywaarde op! We kunnen deze cast nu maken.
+			ArraySymbol arrayType = (ArraySymbol) expressionSuit.type;
+
+			// Nu kijken of de meegegeven index wel een integer is.
+			if (indexSuit.type.equals(INT)) {
+
+				// Alles klopt. Gaan met die banaan.
+				returnSuit = new Suit(arrayType.type, returnSuit.isMutable);
+				
+			} else {
+
+				// Oh oh. De meegegeven index is geen integer...
+				String errorMessage = "The expression " + ctx.expression(1).getText() + " yields no integer value. Array indexes must be of integer type.";
+				reportError(errorMessage, ctx);
+			}
+			
+		} else {
+
+			// Oh oh. De linkerexpressie levert geen arraywaarde op...
+			String errorMessage = "The expression " + ctx.expression(0).getText() + " does not yield an array.";
+			reportError(errorMessage, ctx);
+
+		}
+
+		return returnSuit;
 	}
 
 	/*
@@ -830,13 +871,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		String fieldNameIdentifier = ctx.IDENTIFIER(1).getText();
 
 		// Symbol table lookup doen.
-		EnumSymbol declaration = enumSymbolTable.resolve(enumerationIdentifier);
+		EnumSymbol enumSymbol = enumSymbolTable.resolve(enumerationIdentifier);
 
 		// Kwam er iets uit?
-		if (declaration != null) {
+		if (enumSymbol != null) {
 
 			// Hij is gedeclareerd! Maar heeft deze enumeration dit veld wel?
-			if (!declaration.hasValue(fieldNameIdentifier)) {
+			if (!enumSymbol.hasValue(fieldNameIdentifier)) {
 
 				// Helaas, dit is een ongeldige waarde voor deze enumeration.
 				String errorMessage = "The enumeration " + enumerationIdentifier + " does not have value " + fieldNameIdentifier + ".";
@@ -846,12 +887,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			} else {
 
 				// Deze enumeration value bestaat. Mooie tijden. Dan nu het juiste type teruggeven.
-				returnSuit = new Suit(declaration, false);
+				returnSuit = new Suit(enumSymbol, false);
 			}
 
 		} else {
-			// Blijkbaar is deze identifier noch een enumeration, noch een record.
 
+			// Blijkbaar is deze identifier geen enumeration.
 			String errorMessage = "The enumeration '" + enumerationIdentifier + "' has not yet been declared.";
 			reportError(errorMessage, ctx);
 			returnSuit = Suit.ERROR;
@@ -891,7 +932,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			} else {
 
-				// Dit veld bestaat! Return suit aanpassen aan type, en de mutability volgens de 'chain of mutability' doen.
+				/*
+				 * Dit veld bestaat! Return suit aanpassen aan type, en de mutability volgens de 'chain of mutability' doen.
+				 * 
+				 * Noot: er hoeft niet gekeken te worden naar isFinal; het 'directe' field accessen van een variabele gaat
+				 * via visitFieldAccessExpression. visitRecordAccessExpression matcht alleen record-values verkregen uit
+				 * function calls, record-literals en andere field access expressions.
+				 */
+
 				returnSuit = new Suit(typeDeclaration.getFieldType(fieldNameIdentifier), expressionSuit.isMutable);
 			}
 
@@ -903,7 +951,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			reportError(errorMessage, ctx);
 			returnSuit = Suit.ERROR;
 
-		} else if (expressionSuit.type instanceof EnumSymbol) {
+		} else {
 
 			// TODO: weghalen voor het inleveren
 			System.out.println("SHIT GAAT ECHT HEEL ERG FOUT! Check visitRecordAccessExpression in de context checker.");
@@ -932,46 +980,70 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Dummy-returnwaarde aanmaken.
 		Suit returnSuit = Suit.VOID;
 
-		// Symbol table lookup doen, voor zowel records als enumerations
-		RecordSymbol recordDeclaration = typeSymbolTable.resolve(leftHandIdentifier);
-		EnumSymbol enumDeclaration = enumSymbolTable.resolve(leftHandIdentifier);
+		// Symbol table lookup doen, voor zowel variabelen als enumerations
+		VariableSymbol variableSymbol = variableSymbolTable.resolve(leftHandIdentifier);
+		EnumSymbol enumSymbol = enumSymbolTable.resolve(leftHandIdentifier);
 
-		// Records hebben prioriteit over enumerations. Eerst dus kijken of deze identifier aan een record gelinkt is.
-		if (recordDeclaration != null) {
+		// Records hebben prioriteit over enumerations. Eerst dus kijken of deze identifier aan een variabele gelinkt is.
+		if (variableSymbol != null) {
 
-			// We weten nu dat het om een record gaat. Controleren of dit record wel dit veld heeft.
-			if (!recordDeclaration.hasField(fieldNameIdentifier)) {
+			// Nu kan het nog een recordvariabele of een arrayvariabele zijn. We willen een recordvariabele; dit controleren.
+			TypeSymbol returnType = variableSymbol.getReturnType();
 
-				/*
-				 * De programmeur heeft een fout gemaakt: dit record heeft dit veld niet. Het kan echter zijn dat de programmeur
-				 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
-				 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
-				 * bestaat dat wèl deze veldnaam bezit.
-				 */
-				String errorMessage = "Type " + leftHandIdentifier + " does not contain field " + fieldNameIdentifier + ".";
+			if (returnType instanceof RecordSymbol) {
+				RecordSymbol recordType = (RecordSymbol) returnType;
 
-				if (enumDeclaration != null && enumDeclaration.hasValue(fieldNameIdentifier)) {
-					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+				// We weten nu dat het om een recordvariabele gaat. Controleren of dit recordtype wel dit veld heeft.
 
-					errorMessage = errorMessage + "Warning: please be aware that enumeration " + leftHandIdentifier + " is currently being hided by type"
-							+ leftHandIdentifier + ". To denote the enumeration, use 'enum." + leftHandIdentifier + "'.";
+				if (!recordType.hasField(fieldNameIdentifier)) {
+
+					/*
+					 * De programmeur heeft een fout gemaakt: dit recordtype heeft dit veld niet. Het kan echter zijn dat de programmeur
+					 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
+					 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
+					 * bestaat dat wèl deze veldnaam bezit.
+					 */
+					String errorMessage = "Type " + leftHandIdentifier + " does not contain field " + fieldNameIdentifier + ".";
+
+					if (enumSymbol != null && enumSymbol.hasValue(fieldNameIdentifier)) {
+						// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+
+						errorMessage = errorMessage + "Warning: please be aware that enumeration " + leftHandIdentifier + " is currently being hided by type"
+								+ leftHandIdentifier + ". To denote the enumeration, use 'enum." + leftHandIdentifier + "'.";
+					}
+
+					reportError(errorMessage, ctx);
+					returnSuit = Suit.ERROR;
+
+				} else {
+					// Dit veld bestaat. Nu het type van het veld opvragen en teruggeven. Mutability van de return suit aanpassen op isFinal.
+					TypeSymbol fieldType = recordType.getFieldType(fieldNameIdentifier);
+					returnSuit = new Suit(fieldType, !variableSymbol.isFinal());
 				}
+			}
 
+			else if (variableSymbol.getReturnType() instanceof ArraySymbol) {
+
+				// De programmeur heeft geprobeerd een veld te bereiken van een array.
+				String errorMessage = "This expression yields an arrayvalue. You can't access fields of an array like that. Please use the following notation: "
+						+ ctx.IDENTIFIER(0).getText() + "[n], where n is an integer.";
 				reportError(errorMessage, ctx);
 				returnSuit = Suit.ERROR;
 
 			} else {
-				// Dit veld bestaat. Nu het juiste type opvragen en teruggeven.
-				TypeSymbol returnType = recordDeclaration.getFieldType(fieldNameIdentifier);
-				returnSuit = new Suit(returnType, true);
+
+				// TODO: weghalen voor het inleveren
+				System.out.println("SHIT GAAT ECHT HEEL ERG FOUT! Check visitRecordAccessExpression in de context checker.");
+				System.exit(666);
+
 			}
 		}
 
 		// Blijkbaar is het geen record. Is het wel een enumeration?
-		else if (enumDeclaration != null) {
+		else if (enumSymbol != null) {
 
 			// Het is een enumeration! Maar heeft deze enumeration dit veld wel?
-			if (!enumDeclaration.hasValue(fieldNameIdentifier)) {
+			if (!enumSymbol.hasValue(fieldNameIdentifier)) {
 
 				// Helaas, dit is een ongeldige waarde voor deze enumeration.
 				String errorMessage = "The enumeration " + leftHandIdentifier + " does not have value " + fieldNameIdentifier + ".";
@@ -981,7 +1053,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			} else {
 
 				// Deze enumeration value bestaat. Mooie tijden. Dan nu het juiste type teruggeven.
-				returnSuit = new Suit(enumDeclaration, false);
+				returnSuit = new Suit(enumSymbol, false);
 			}
 
 		} else {
