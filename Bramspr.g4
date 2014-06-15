@@ -57,10 +57,10 @@ statement: ifstatement
          | expression SEMICOLON
          ;
 
-ifstatement : IF expression LEFT_BRACE statement* RIGHT_BRACE 
-              (ELSE LEFT_BRACE statement* RIGHT_BRACE)?;
+ifstatement : IF expression LEFT_BRACE block RIGHT_BRACE
+              (ELSE LEFT_BRACE block RIGHT_BRACE)?;
 
-whilestatement: WHILE expression LEFT_BRACE statement* RIGHT_BRACE;
+whilestatement: WHILE expression LEFT_BRACE block RIGHT_BRACE;
 
 assignment: (expression BECOMES)+ expression;
 swapstatement: expression SWAP expression;

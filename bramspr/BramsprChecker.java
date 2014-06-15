@@ -271,10 +271,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		if (!leftExpression.type.equals(INT)) {
 			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		if (!rightExpression.type.equals(INT)) {
 			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		return new Suit(INT, false);
@@ -418,10 +420,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		if (!leftExpression.type.equals(BOOL)) {
 			this.reportError("boolean operation OR only works for bool values", ctx, BOOL.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		if (!rightExpression.type.equals(BOOL)) {
 			this.reportError("boolean operation OR only works for bool values", ctx, BOOL.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		return new Suit(BOOL, false);
@@ -436,10 +440,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		if (!leftExpression.type.equals(INT)) {
 			this.reportError("exponentiation requires an int base", ctx.expression(0), INT.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		if (!rightExpression.type.equals(INT)) {
 			this.reportError("exponentiation requires an int power", ctx.expression(1), INT.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
 		}
 
 		return new Suit(INT, false);
@@ -456,7 +462,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		if (!expressionType.equals(BOOL)) {
 			this.reportError("control expression in while statement should produce a bool", ctx.expression(), BOOL.toString(), expressionType.toString());
 		}
-
+		
+		// Doorloop nog even de code in de while loop, om die ook te checken.
+		visit(ctx.block());
+			
 		return Suit.VOID;
 	}
 
@@ -565,6 +574,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			if (!currType.equals(INT)) {
 				this.reportError("only int types are comparable with < and >", ctx, INT.toString(), currType.toString());
+				return Suit.ERROR;
 			}
 		}
 
@@ -572,9 +582,22 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een if statement if (E) { C1 } else { C2 } heeft de volgende context beperkingen:
+	 * 	1 E moet een boolean opleveren
+	 */
 	public Suit visitIfstatement(IfstatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		TypeSymbol expressionType = visit(ctx.expression()).type;
+		
+		if(!expressionType.equals(BOOL)) {
+			this.reportError("if control expression should return bool value", ctx.expression(), BOOL.toString(), expressionType.toString());
+		}
+		
+		for (int i = 0; i < ctx.block().size(); i++) {
+			visit(ctx.block(i));
+		}
+		
+		return Suit.VOID;
 	}
 
 	@Override
@@ -626,29 +649,45 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een stringLiteral heeft geen contextbeperkingen, en geeft een string terug.
+	 */
 	public Suit visitStringLiteralExpression(StringLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(STRING, false);
 	}
 
 	@Override
+	/*
+	 * Een getCharExpression heeft geen contextbeperkingen, en geeft een char terug.
+	 */
 	public Suit visitGetCharExpression(GetCharExpressionContext ctx) {
 		return new Suit(CHAR, false);
 	}
 
 	@Override
+	/*
+	 * Een variableExpression moet refereren naar een bestaande variabele, en het return type is gelijk aan het type van de variabele.
+	 * Een variabele is mutable!
+	 */
 	public Suit visitVariableExpression(VariableExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		String variableName = ctx.IDENTIFIER().getText();
+		VariableSymbol variableSymbol = this.variableSymbolTable.resolve(variableName);
+		TypeSymbol variableType = variableSymbol.getReturnType();
+		
+		return new Suit(variableType, true);
 	}
 
 	@Override
+	/*
+	 * Een greaterThanEqualsExpression heeft int waardes als input, en geeft een bool waarde terug.
+	 */
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
 
 			if (!currType.equals(INT)) {
 				this.reportError("only int types are comparable with <= and >=", ctx, INT.toString(), currType.toString());
+				return Suit.ERROR;
 			}
 		}
 
@@ -656,39 +695,28 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitFunctionExpression(FunctionExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitDeclaration(DeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+	/*
+	 * Een intLiteralExpression heeft geen contextbeperkingen, en geeft een int terug.
+	 */
 	public Suit visitIntLiteralExpression(IntLiteralExpressionContext ctx) {
 		return new Suit(INT, false);
 	}
 
 	@Override
+	/*
+	 * Een smallerThanEqualsToExpression heeft twee int argumenten, en geeft een bool terug.
+	 */
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
 		for (int i = 0; i < ctx.expression().size(); i++) {
 			TypeSymbol currType = visit(ctx.expression(i)).type;
 
 			if (!currType.equals(INT)) {
 				this.reportError("only int types are comparable with <= and >=", ctx, INT.toString(), currType.toString());
+				return Suit.ERROR;
 			}
 		}
 
 		return new Suit(BOOL, false);
-	}
-
-	@Override
-	public Suit visitStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -705,20 +733,42 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitProgram(ProgramContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return visit(ctx.block());
 	}
 
 	@Override
+	/*
+	 * Een functionExpression heeft de volgende contextbeperkingen:
+	 * 	1 De functie moet gedefinieerd zijn
+	 * 	2 De gegeven argumenttypes moeten overeenkomen met de gedefinieerde argumenttypes (incl. volgorde)
+	 * Deze twee eisen worden afgevangen door te eisen dat een functiesignature (bestaande uit naam + argumenttypes) matcht in de SymbolTable.
+	 * Het return type van een functionExpression is gelijk aan de returntype zoals gedefinieerd bij de declaratie van de functie. Merk op dat dit VOID kan zijn.
+	 */
 	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		String functieNaam = ctx.IDENTIFIER().getText();
+		
+		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.expression().size()];
+		
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			argumentTypes[i] = visit(ctx.expression(i)).type;
+		}
+		
+		// Als de functionsignature klopt, zijn de argumenttypes ook goed. Deze bepalen namelijk de signature!
+		String functionSignature = FunctionSymbol.generateSignature(functieNaam, argumentTypes);
+		
+		FunctionSymbol functionSymbol = this.functionSymbolTable.resolve(functionSignature);
+		
+		if(functionSymbol == null) {
+			this.reportError("unknown function signature ('" + functionSignature + "'); check your function name/arguments", ctx);
+			return Suit.ERROR;
+		}
+		
+		return new Suit(functionSymbol.getReturnType(), false);
 	}
 
 	@Override
 	public Suit visitBoolLiteralExpression(BoolLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(BOOL, false);
 	}
 
 	@Override
@@ -1045,12 +1095,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitChildren(RuleNode arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
