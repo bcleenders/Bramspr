@@ -736,16 +736,38 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitEnumExpression(EnumExpressionContext ctx) {
 		// Dummy-returnwaarde aanmaken.
 		Suit returnSuit = Suit.VOID;
-		
+
 		// Identifiers opvragen.
 		String enumerationIdentifier = ctx.IDENTIFIER(0).getText();
 		String fieldNameIdentifier = ctx.IDENTIFIER(1).getText();
-		
-		// Symbol table lookup doen.
-		EnumSymbol enumDeclaration = enumSymbolTable.resolve(enumerationIdentifier);
 
-		
-		
+		// Symbol table lookup doen.
+		EnumSymbol declaration = enumSymbolTable.resolve(enumerationIdentifier);
+
+		// Kwam er iets uit?
+		if (declaration != null) {
+
+			// Hij is gedeclareerd! Maar heeft deze enumeration dit veld wel?
+			if (!declaration.hasValue(fieldNameIdentifier)) {
+
+				// Helaas, dit is een ongeldige waarde voor deze enumeration.
+				String errorMessage = "The enumeration " + enumerationIdentifier + " does not have value " + fieldNameIdentifier + ".";
+				reportError(errorMessage, ctx);
+				returnSuit = Suit.ERROR;
+
+			} else {
+
+				// Deze enumeration value bestaat. Mooie tijden. Dan nu het juiste type teruggeven.
+				returnSuit = new Suit(declaration, false);
+			}
+
+		} else {
+			// Blijkbaar is deze identifier noch een enumeration, noch een record.
+
+			String errorMessage = "The enumeration '" + enumerationIdentifier + "' has not yet been declared.";
+			reportError(errorMessage, ctx);
+			returnSuit = Suit.ERROR;
+		}
 		
 		return returnSuit;
 	}
