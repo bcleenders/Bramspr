@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -110,18 +110,18 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#recordAccessExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRecordAccessExpression(@NotNull BramsprParser.RecordAccessExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#recordAccessExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRecordAccessExpression(@NotNull BramsprParser.RecordAccessExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#smallerThanEqualsToExpression}.

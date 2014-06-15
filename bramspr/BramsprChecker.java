@@ -7,12 +7,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import symboltable.ArraySymbol;
 import symboltable.EnumSymbol;
-import symboltable.ErrorType;
 import symboltable.FunctionSymbol;
 import symboltable.RecordSymbol;
 import symboltable.TypeSymbol;
@@ -26,7 +24,6 @@ import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.BlockContext;
 import bramspr.BramsprParser.BoolLiteralExpressionContext;
 import bramspr.BramsprParser.CharLiteralExpressionContext;
-import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumExpressionContext;
 import bramspr.BramsprParser.EnumdeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
@@ -34,7 +31,6 @@ import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FielddeclarationContext;
 import bramspr.BramsprParser.FinaldeclarationContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
-import bramspr.BramsprParser.FunctionExpressionContext;
 import bramspr.BramsprParser.FunctiondeclarationContext;
 import bramspr.BramsprParser.GetBoolExpressionContext;
 import bramspr.BramsprParser.GetCharExpressionContext;
@@ -58,7 +54,6 @@ import bramspr.BramsprParser.RecordAccessExpressionContext;
 import bramspr.BramsprParser.RecordLiteralExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
-import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralExpressionContext;
 import bramspr.BramsprParser.SwapstatementContext;
 import bramspr.BramsprParser.TypedeclarationContext;
@@ -720,20 +715,62 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een assignment moet aan de volgende eisen voldoen:
+	 * 	1 de variabele(n) moeten gedeclareerd zijn
+	 * 	2 het type van de te assignen variabele(n) en de te assigned expression moeten overeenkomen
+	 *  3 de variabelen moeten mutable zijn "PI := 3" mag dus niet als PI een constant is
+	 * 
+	 * Het return type van de assignment is gelijk aan het type dat geassigned wordt.
+	 */
 	public Suit visitAssignment(AssignmentContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		// Alle expressions op één na zijn variabelen
+		int aantalVariabelen = ctx.expression().size() - 1;
+		
+		// De laatste expression is de value; visit de value expression om het type te achterhalen
+		TypeSymbol valueType = visit(ctx.expression(aantalVariabelen)).type;
+		
+		for (int i = 0; i < aantalVariabelen; i++) {
+			Suit variableSuit = visit(ctx.expression(i));
+			
+			if(!variableSuit.type.equals(valueType)) {
+				this.reportError("cannot assign '" + ctx.expression(i).getText() + "' to '" + ctx.expression(i).getText() + "': need same type variable/value", ctx.expression(i));
+			}
+			
+			
+			if(!variableSuit.isMutable) {
+				this.reportError("cannot assign to '" + ctx.expression(i).getText() + "': assignment requires mutable object.", ctx.expression(i));
+			}
+		}
+		
+		return new Suit(valueType, false);
 	}
 
 	@Override
+	/*
+	 * Een primitiveTypeDenoter heeft de volgende context eisen:
+	 * 	1 het (non-array) type moet bestaan. Dus bij [2][3]x, moet x gedefinieërd zijn als type.
+	 * 
+	 */
+	/**
+	 * Deze functie geeft het type terug dat de primitiveTypeDenoter voorstelt.
+	 */
 	public Suit visitPrimitiveTypeDenoter(PrimitiveTypeDenoterContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitProgram(ProgramContext ctx) {
-		return visit(ctx.block());
+		TypeSymbol lastType = this.typeSymbolTable.resolve(ctx.IDENTIFIER().getText());
+		
+		if(lastType == null) {
+			this.reportError("encountered reference to non-existing type", ctx, ctx.IDENTIFIER().getText(), null);
+		}
+		
+		Integer[] arraySizes = (Integer[]) ctx.NUMBER().toArray();
+		
+		TypeSymbol outputType = lastType;
+		// Loop er in omgekeerde volgorde doorheen; [1][2][3]int moet namelijk als (1(2(3(int)))) geparst worden; met 3 het dichtst bij int.
+		for (int i = arraySizes.length - 1; i >= 0; i++) {
+			outputType = new ArraySymbol(arraySizes[i], outputType);
+		}
+		
+		return new Suit(outputType, false);
 	}
 
 	@Override
