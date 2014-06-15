@@ -169,6 +169,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			functionSymbolTable.declare(new FunctionSymbol("getInt", INT, null));
 			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOL, null));
 			functionSymbolTable.declare(new FunctionSymbol("getBool", CHAR, null));
+			functionSymbolTable.declare(new FunctionSymbol("putInt", INT, new TypeSymbol[]{INT}));
+			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOL, new TypeSymbol[]{CHAR}));
+			functionSymbolTable.declare(new FunctionSymbol("putBool", CHAR, new TypeSymbol[]{BOOL}));
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
@@ -312,7 +315,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitParenthesisExpression(ParenthesisExpressionContext ctx) {
 		// Hier zijn geen eisen aan de inhoud van ctx die niet al door de parser
 		// zijn gecontroleerd.
-		return visit(ctx.getChild(0));
+		return visit(ctx.expression());
 	}
 
 	@Override
@@ -855,7 +858,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("encountered reference to non-existing type", ctx, ctx.IDENTIFIER().getText(), null);
 		}
 
-		Integer[] arraySizes = (Integer[]) ctx.NUMBER().toArray();
+		Integer[] arraySizes = new Integer[ctx.NUMBER().size()];
+		for (int i = 0; i < arraySizes.length; i++) {
+			arraySizes[i] = Integer.parseInt(ctx.NUMBER(i).getText());
+		}
 
 		TypeSymbol outputType = lastType;
 		// Loop er in omgekeerde volgorde doorheen; [1][2][3]int moet namelijk als (1(2(3(int)))) geparst worden; met 3 het dichtst bij int.
@@ -1206,8 +1212,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		/*
 		 * Controleren of de expressie een character is.
 		 */
-		if (!expressionSuit.type.equals("char")) {
-			reportError("The argument of putbool must be of character type.", ctx, "char", expressionSuit.type.toString());
+		if (!expressionSuit.type.equals(CHAR)) {
+			reportError("The argument of putChar must be of character type.", ctx, CHAR.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
@@ -1228,7 +1234,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Controleren of de expressie een integer is.
 		 */
 		if (!expressionSuit.type.equals(INT)) {
-			reportError("The argument of putint must be of integer type.", ctx, INT.toString(), expressionSuit.type.toString());
+			reportError("The argument of putInt must be of integer type.", ctx, INT.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;
@@ -1249,7 +1255,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Controleren of de expressie een boolean is.
 		 */
 		if (!expressionSuit.type.equals(BOOL)) {
-			reportError("The argument of putbool must be of boolean type.", ctx, BOOL.toString(), expressionSuit.type.toString());
+			reportError("The argument of putBool must be of boolean type.", ctx, BOOL.toString(), expressionSuit.type.toString());
 		}
 
 		return Suit.VOID;

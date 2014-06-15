@@ -3,23 +3,23 @@ y, z: int;
 
 x := 5;
 y := z := 10;
-putint(x);
-putint(y);
-putint(z);
-putchar('\n');
+putInt(x);
+putInt(y);
+putInt(z);
+putChar('\n');
 
 z := 2*(1+y*x);
-putint(102);
-putint(z);
-putchar('\n'); // Moet 102 zijn
+putInt(102);
+putInt(z);
+putChar('\n'); // Moet 102 zijn
 
 x := 4^3^2;
-putint(x);
-putint(4^3^2);
-putint(262144);
-putchar('\n');
+putInt(x);
+putInt(4^3^2);
+putInt(262144);
+putChar('\n');
 
 y := 2*3+2^3*4; // Moet 6+8*4=38 zijn
-putint(y);
-putint(38);
-putchar('\n');
+putInt(y);
+putInt(38);
+putChar('\n');
