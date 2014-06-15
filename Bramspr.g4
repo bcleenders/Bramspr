@@ -3,6 +3,41 @@ options { tokenVocab=BramsprLexer; }
 
 program: block;
 
+expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # parenthesisExpression
+          | (PLUS | MINUS | NOT) expression                                 # unaryExpression
+          | expression POWER <assoc=right> expression                       # powerExpression
+          | expression (MULTIPLICATION | DIVISION | MODULUS) expression     # multiplicationExpression
+          | expression (PLUS | MINUS) expression                            # additionExpression
+
+          // Comparators should be combined?
+          | expression (SMALLER_THAN expression)+                           # smallerThanExpression        
+          | expression (SMALLER_THAN_EQUALS_TO expression)+                 # smallerThanEqualsToExpression                   
+          | expression (GREATER_THAN expression)+                           # greaterThanExpression        
+          | expression (GREATER_THAN_EQUALS_TO expression)+                 # greaterThanEqualsToExpression                    
+          | expression (EQUALS_TO expression)+                              # equalsToExpression        
+          | expression (NOT_EQUALS_TO expression)+                          # notEqualsToExpression
+
+          | expression EQUALS_TO expression PLUSMINUS expression            # plusMinusExpression        
+          | expression AND expression                                       # andExpression
+          | expression OR expression                                        # orExpression
+          | LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                   # assignExpression
+          | functioncall                                                    # functionExpression
+          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE)        # arrayAccessExpression
+          | ENUM DOT IDENTIFIER DOT IDENTIFIER                              # enumExpression
+          // Let op; dit matcht zowel records als enums! Opletten in de checker.
+          | IDENTIFIER DOT IDENTIFIER                                       # fieldAccessExpression
+          | expression DOT IDENTIFIER                                       # recordAccessExpression
+          // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
+          | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression
+          // Voorbeelden: {aantal = getInt(), prijs = catalogus[1], mooi = true} of {}
+          | IDENTIFIER LEFT_BRACE ((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
+          | IDENTIFIER                                                      # variableExpression    
+          | NUMBER                                                          # intLiteralExpression
+          | BOOL                                                            # boolLiteralExpression
+          | CHARACTER                                                       # charLiteralExpression
+          | STRING                                                          # stringLiteralExpression
+          ;
+
 block: (declaration | statement | LEFT_BRACE block RIGHT_BRACE)*;
 
 declaration : variabledeclaration SEMICOLON
@@ -66,37 +101,3 @@ whilestatement: WHILE expression LEFT_BRACE block RIGHT_BRACE;
 assignment: (expression BECOMES)+ expression;
 swapstatement: expression SWAP expression;
 
-expression: LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                   # parenthesisExpression
-          | (PLUS | MINUS | NOT) expression                                 # unaryExpression
-          | expression POWER <assoc=right> expression                       # powerExpression
-          | expression (MULTIPLICATION | DIVISION | MODULUS) expression     # multiplicationExpression
-          | expression (PLUS | MINUS) expression                            # additionExpression
-
-          // Comparators should be combined?
-          | expression (SMALLER_THAN expression)+                           # smallerThanExpression        
-          | expression (SMALLER_THAN_EQUALS_TO expression)+                 # smallerThanEqualsToExpression                   
-          | expression (GREATER_THAN expression)+                           # greaterThanExpression        
-          | expression (GREATER_THAN_EQUALS_TO expression)+                 # greaterThanEqualsToExpression                    
-          | expression (EQUALS_TO expression)+                              # equalsToExpression        
-          | expression (NOT_EQUALS_TO expression)+                          # notEqualsToExpression
-
-          | expression EQUALS_TO expression PLUSMINUS expression            # plusMinusExpression        
-          | expression AND expression                                       # andExpression
-          | expression OR expression                                        # orExpression
-          | LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                   # assignExpression
-          | functioncall                                                    # functionExpression
-          | expression (LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE)        # arrayAccessExpression
-          | ENUM DOT IDENTIFIER DOT IDENTIFIER                              # enumExpression
-          // Let op; dit matcht zowel records als enums! Opletten in de checker.
-          | IDENTIFIER DOT IDENTIFIER                                       # fieldAccessExpression
-          | expression DOT IDENTIFIER                                       # recordAccessExpression
-          | IDENTIFIER                                                      # variableExpression
-          // Voorbeelden: {5, 8} of {getInt(), stoel.aantalPoten, 10} of {}
-          | LEFT_BRACE ((expression COMMA)*(expression))? RIGHT_BRACE       # arrayLiteralExpression
-          // Voorbeelden: {aantal = getInt(), prijs = catalogus[1], mooi = true} of {}
-          | IDENTIFIER LEFT_BRACE IDENTIFIER((IDENTIFIER BECOMES expression COMMA)* IDENTIFIER BECOMES expression)? RIGHT_BRACE   # recordLiteralExpression
-          | NUMBER                                                          # intLiteralExpression
-          | BOOL                                                            # boolLiteralExpression
-          | CHARACTER                                                       # charLiteralExpression
-          | STRING                                                          # stringLiteralExpression
-          ;

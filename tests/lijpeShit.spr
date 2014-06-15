@@ -1,0 +1,40 @@
+enum StoelModellen{
+	LIGSTOEL,
+	BUREAUSTOEL,
+	KRUK,
+	MASSAGESTOEL
+}
+
+type Stoel{
+	model: StoelModellen,
+	prijs: int,
+	zitLekker: bool
+}
+
+type Bibliotheek{
+	stoelen: [3]Stoel,
+	nuOpen: bool
+}
+
+ikZitLekker, jijZitLekker: bool := 
+	Bibliotheek:{stoelen := [
+			Stoel{
+					model := StoelModellen.KRUK,
+					prijs := 10,
+					zitLekker := false
+			},
+			
+			Stoel{
+					model := StoelModellen.BUREAUSTOEL,
+					prijs := 700,
+					zitLekker := true
+			},
+			
+			Stoel{
+					model := StoelModellen.MASSAGESTOEL,
+					prijs := 250,
+					zitLekker := true
+			}	
+		],
+		nuOpen := false
+	}.stoelen[2].zitLekker;

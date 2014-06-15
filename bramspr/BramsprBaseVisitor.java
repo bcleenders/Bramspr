@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -34,7 +34,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitAssignExpression(@NotNull BramsprParser.AssignExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -42,7 +42,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignExpression(@NotNull BramsprParser.AssignExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -58,7 +58,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitGetBoolExpression(@NotNull BramsprParser.GetBoolExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -66,7 +66,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGetBoolExpression(@NotNull BramsprParser.GetBoolExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -258,14 +258,6 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.
-	 */
 	@Override public T visitOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -274,7 +266,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPutCharExpression(@NotNull BramsprParser.PutCharExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -290,7 +282,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPutCharExpression(@NotNull BramsprParser.PutCharExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -298,7 +290,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -314,6 +306,14 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitEnumExpression(@NotNull BramsprParser.EnumExpressionContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -322,7 +322,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPutBoolExpression(@NotNull BramsprParser.PutBoolExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -330,7 +330,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPutBoolExpression(@NotNull BramsprParser.PutBoolExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -402,7 +402,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPutStringExpression(@NotNull BramsprParser.PutStringExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayLiteralExpression(@NotNull BramsprParser.ArrayLiteralExpressionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -410,5 +410,5 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitArrayLiteralExpression(@NotNull BramsprParser.ArrayLiteralExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPutStringExpression(@NotNull BramsprParser.PutStringExpressionContext ctx) { return visitChildren(ctx); }
 }
