@@ -6,6 +6,7 @@ program: block;
 block: (declaration | statement | LEFT_BRACE block RIGHT_BRACE)*;
 
 declaration : variabledeclaration SEMICOLON
+            | finaldeclaration SEMICOLON
             | functiondeclaration
             | typedeclaration
             | enumdeclaration
@@ -13,10 +14,9 @@ declaration : variabledeclaration SEMICOLON
 
 // x, y: integer
 // x: [11]integer (is een array van integers)
-variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter (BECOMES expression)? #variableDeclaration
-                   | IDENTIFIER (COMMA IDENTIFIER)* FINAL COLON primitiveTypeDenoter BECOMES expression #finalDeclaration
-                   ;
-   
+variabledeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON primitiveTypeDenoter (BECOMES expression)?;
+finaldeclaration: IDENTIFIER (COMMA IDENTIFIER)* FINAL COLON primitiveTypeDenoter BECOMES expression;
+                      
 // type bank {
 //      kussens, aantalPoten: integer,
 //      bezetDoor: [2]persoon
@@ -55,16 +55,12 @@ statement: ifstatement
          | assignment SEMICOLON
          | swapstatement SEMICOLON
          | expression SEMICOLON
-         | printstatement SEMICOLON
          ;
 
 ifstatement : IF expression LEFT_BRACE statement* RIGHT_BRACE 
               (ELSE LEFT_BRACE statement* RIGHT_BRACE)?;
 
 whilestatement: WHILE expression LEFT_BRACE statement* RIGHT_BRACE;
-
-// print("x = ", x);
-printstatement: PRINT LEFT_PARENTHESIS expression (COMMA expression)* RIGHT_PARENTHESIS;
 
 assignment: (expression BECOMES)+ expression;
 swapstatement: expression SWAP expression;
