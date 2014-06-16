@@ -12,39 +12,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#assignable}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignable(@NotNull BramsprParser.AssignableContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#greaterThanEqualsToExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#structure}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStructure(@NotNull BramsprParser.StructureContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#fieldAccess}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFieldAccess(@NotNull BramsprParser.FieldAccessContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#atomicExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#additionExpression}.
@@ -54,25 +26,11 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#notExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#powerExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#whileStructure}.
@@ -82,11 +40,116 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#atomic}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAtomic(@NotNull BramsprParser.AtomicContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#functionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCall(@NotNull BramsprParser.FunctionCallContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#signExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#equalsToExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#greaterThanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGreaterThanExpression(@NotNull BramsprParser.GreaterThanExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#multiplicationExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplicationExpression(@NotNull BramsprParser.MultiplicationExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#plusMinusExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#assignable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignable(@NotNull BramsprParser.AssignableContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#structure}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructure(@NotNull BramsprParser.StructureContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#greaterThanEqualsToExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaration(@NotNull BramsprParser.DeclarationContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#baseTypeDenoter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBaseTypeDenoter(@NotNull BramsprParser.BaseTypeDenoterContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#atomicExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#notExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#smallerThanEqualsToExpression}.
@@ -117,39 +180,11 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#signExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#equalsToExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#program}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitProgram(@NotNull BramsprParser.ProgramContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#greaterThanExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGreaterThanExpression(@NotNull BramsprParser.GreaterThanExpressionContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#ifStructure}.
@@ -159,11 +194,11 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitIfStructure(@NotNull BramsprParser.IfStructureContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#multiplicationExpression}.
+	 * Visit a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMultiplicationExpression(@NotNull BramsprParser.MultiplicationExpressionContext ctx);
+	T visitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#swap}.
@@ -171,13 +206,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSwap(@NotNull BramsprParser.SwapContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#plusMinusExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#blockStructure}.

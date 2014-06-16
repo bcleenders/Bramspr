@@ -48,39 +48,35 @@ arithmetic: atomic                                                        # atom
           | arithmetic ( PLUS | MINUS ) arithmetic                        # additionExpression
           ;
             
-assignable: IDENTIFIER fieldAccess
+assignable: assignable fieldAccess
           | IDENTIFIER
           ;
 
 atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS
        | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
        | assignable
-       | functionCall fieldAccess
+       | functionCall
        | literal
+       | atomic fieldAccess
        ;
 
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
 
-fieldAccess : DOT IDENTIFIER fieldAccess?
-            | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE fieldAccess?
+fieldAccess : DOT IDENTIFIER
+            | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE
             ;
 
 literal : NUMBER
         | CHARACTER
         | STRING
-        | TRUE
-        | FALSE
         | BOOL
-//        | arrayLiteral
-//        | compositeLiteral
+        | arrayLiteral
+        | compositeLiteral
         ;
 
-
-/*
-arrayLiteral : typeDenoter LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE
+arrayLiteral : LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE
              ;
 
 compositeLiteral : IDENTIFIER LEFT_BRACE (assignment (COMMA assignment)*)? RIGHT_BRACE
                  ;
-*/

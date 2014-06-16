@@ -4,7 +4,15 @@
 
 // x:= getJeMoeder(getJeMoeder().haarZoon, 2^5-1 = 8 +- -0)[5];
 
-i:= false;
-x, y, getJeMoeder: [10][5][9]int;
-z: [1]char := 'c';
-final p: bool := true;
+/*
+i : 	[3][4]int;
+i :=	[
+			[1, 2, 3, 4],
+			[10, 20, 30, 40],
+			[100, 200, 300, 400],
+			[1000, 2000, 3000, 4000]
+		];
+*/
+
+
+y := x.hallo.doei;
