@@ -7,25 +7,20 @@ structure: blockStructure
          | ifStructure
          | whileStructure
          ;
+
 blockStructure: LEFT_BRACE statement* RIGHT_BRACE;
 ifStructure: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?;
 whileStructure: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
 
 statement : structure
-//          | declaration SEMICOLON
+ //         | declaration SEMICOLON
           | assignment SEMICOLON
           | swap SEMICOLON
-//          | functionCall SEMICOLON
+          | functionCall SEMICOLON
           ;
 
 assignment: (assignable BECOMES)+ expression;
 swap: assignable SWAP assignable;
-
-/*
-expression: logicalExpression
-          | arithmeticExpression
-          ;
-*/
 
 expression: NOT expression                                            # notExpression
           | arithmetic                                                # arithmeticExpression
@@ -52,9 +47,12 @@ assignable: IDENTIFIER fieldAccess
 atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS
        | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
        | assignable
-//     | functionCall fieldAccess
+       | functionCall fieldAccess
        | literal
        ;
+
+functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
+            ;
 
 fieldAccess : DOT IDENTIFIER fieldAccess?
             | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE fieldAccess?

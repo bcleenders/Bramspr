@@ -1,1 +1,5 @@
-x := 1 + 1;
+// x: bool;
+// x := z^-2 + 3 < y * 60 < 2^(50%10-1);
+// y := stoelen[8].aantalPoten;
+
+x:= getJeMoeder(getJeMoeder().haarZoon, 2^5-1 = 8 +- -0)[5];
