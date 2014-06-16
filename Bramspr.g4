@@ -19,11 +19,16 @@ statement : structure
           | functionCall SEMICOLON
           ;
 
-declaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
-           | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
+declaration: typeDeclaration
            | functionDeclaration
-           | typeDeclaration
-           ; 
+//           | enumerationDeclaration
+           | variableDeclaration
+           ;
+
+variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
+           | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
+           ;
+
 functionDeclaration: FUNCTION IDENTIFIER 
                         LEFT_PARENTHESIS 
                            (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)? 
