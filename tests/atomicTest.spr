@@ -14,5 +14,8 @@ i :=	[
 		];
 */
 
-
-y := x.hallo.doei;
+type stoel {
+	aantalPoten: int,
+	isVanJeMoeder: bool,
+	hhahaha: [6][10][1]moeder
+};

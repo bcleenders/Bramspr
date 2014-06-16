@@ -19,9 +19,18 @@ statement : structure
           | functionCall SEMICOLON
           ;
 
-declaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
+declaration: typeDeclaration
+//           | functionDeclaration
+//           | enumerationDeclaration
+           | variableDeclaration
+           ;
+
+variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
            | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
            ; 
+
+typeDeclaration: TYPE IDENTIFIER LEFT_BRACE ((IDENTIFIER COLON typeDenoter COMMA)* IDENTIFIER COLON typeDenoter)? RIGHT_BRACE
+               ;
 
 typeDenoter: IDENTIFIER                                             # baseTypeDenoter
            | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter    # arrayTypeDenoter
