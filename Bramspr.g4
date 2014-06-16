@@ -20,7 +20,7 @@ statement : structure
           ;
 
 declaration: typeDeclaration
-//           | functionDeclaration
+           | functionDeclaration
 //           | enumerationDeclaration
            | variableDeclaration
            ;
