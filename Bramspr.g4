@@ -22,6 +22,7 @@ statement : structure
 declaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
            | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
            | functionDeclaration
+           | typeDeclaration
            ; 
 functionDeclaration: FUNCTION IDENTIFIER 
                         LEFT_PARENTHESIS 
@@ -32,6 +33,12 @@ functionDeclaration: FUNCTION IDENTIFIER
                            (RETURN expression SEMICOLON)?
                         RIGHT_BRACE
                    ;
+
+typeDeclaration: TYPE IDENTIFIER
+                    LEFT_BRACE
+                        (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)?
+                    RIGHT_BRACE
+               ;
 
 typeDenoter: IDENTIFIER                                             # baseTypeDenoter
            | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter    # arrayTypeDenoter

@@ -1,0 +1,18 @@
+type Stoel {
+    aantalPoten: int
+};
+
+type Tafel {
+    aantalPoten: int,
+    omringendeStoelen: [2]stoel
+};
+
+tafel: tafel;
+tafel.aantalPoten := 2;
+tafel.omringendeStoelen[0] := stoel{
+    aantalPoten := 4
+};
+
+tafel.omringendeStoelen[1] := stoel{
+    aantalPoten := 3 // pff, stomme kruk
+};
