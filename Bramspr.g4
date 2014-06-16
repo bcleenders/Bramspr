@@ -13,11 +13,19 @@ ifStructure: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (EL
 whileStructure: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
 
 statement : structure
- //         | declaration SEMICOLON
+          | declaration SEMICOLON
           | assignment SEMICOLON
           | swap SEMICOLON
           | functionCall SEMICOLON
           ;
+
+declaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
+           | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
+           ; 
+
+typeDenoter: IDENTIFIER                                             # baseTypeDenoter
+           | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter    # arrayTypeDenoter
+           ;
 
 assignment: (assignable BECOMES)+ expression;
 swap: assignable SWAP assignable;
@@ -61,7 +69,18 @@ fieldAccess : DOT IDENTIFIER fieldAccess?
 literal : NUMBER
         | CHARACTER
         | STRING
+        | TRUE
+        | FALSE
         | BOOL
 //        | arrayLiteral
 //        | compositeLiteral
         ;
+
+
+/*
+arrayLiteral : typeDenoter LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE
+             ;
+
+compositeLiteral : IDENTIFIER LEFT_BRACE (assignment (COMMA assignment)*)? RIGHT_BRACE
+                 ;
+*/

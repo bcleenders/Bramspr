@@ -68,11 +68,11 @@ DOT:                    '.'     ;
 /* Literals. */
 // Een apostrof, gevolgd door geescapete apostrofes en niet-specialchars. 
 // De *? (i.t.t. *) maakt hem niet-greedy, dus bij de eerste " stopt hij.
+BOOL: TRUE | FALSE;
 STRING : '"' ( ESCAPED | ~('\n'|'\r') )*? '"';
 CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 NUMBER: DIGIT+;
-BOOL: TRUE | FALSE;
 
 /* Miscellaneous. */
 COMMENT: '//' ~[\r\n]* -> skip; // Matcht alles wat na // komt
