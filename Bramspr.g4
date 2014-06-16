@@ -73,23 +73,20 @@ arithmetic: atomic                                                        # atom
           | arithmetic ( PLUS | MINUS ) arithmetic                        # additionExpression
           ;
             
-assignable: assignable fieldAccess
-          | IDENTIFIER
+assignable: assignable fieldAccess                      # assignableFieldAccessExpression
+          | IDENTIFIER                                  # identifierExpression
           ;
 
-atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS
-       | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
-       | assignable
-       | functionCall
-       | literal
-       | atomic fieldAccess
+atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS  # assignmentExpression
+       | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS  # parenthesisExpression
+       | ENUM DOT IDENTIFIER DOT IDENTIFIER             # explicitEnumExpresstion
+       | assignable                                     # assignableExpression
+       | functionCall                                   # functionCallExpression
+       | literal                                        # literalExpression
+       | atomic fieldAccess                             # fieldAccessExpression
        ;
 
-functionCall: PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
-            | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
-            | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
-            | PUTSTRING LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
-            | IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
+functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
 
 fieldAccess : DOT IDENTIFIER
