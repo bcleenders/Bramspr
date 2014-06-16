@@ -1,4 +1,4 @@
-enum StoelModellen{
+/*enum StoelModellen{
 	LIGSTOEL,
 	BUREAUSTOEL,
 	KRUK,
@@ -15,9 +15,10 @@ type Bibliotheek{
 	stoelen: [3]Stoel,
 	nuOpen: bool
 }
+*/
 
 ikZitLekker, jijZitLekker: bool := 
-	Bibliotheek:{stoelen := [
+Bibliotheek{stoelen := [
 			Stoel{
 					model := StoelModellen.KRUK,
 					prijs := 10,
