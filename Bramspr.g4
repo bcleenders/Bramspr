@@ -27,7 +27,6 @@ declaration: typeDeclaration
 
 variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
            | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
-           | functionDeclaration
            ; 
 
 functionDeclaration: FUNCTION IDENTIFIER 
@@ -40,7 +39,11 @@ functionDeclaration: FUNCTION IDENTIFIER
                         RIGHT_BRACE
                    ;
 
-typeDeclaration: TYPE IDENTIFIER LEFT_BRACE (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)? RIGHT_BRACE
+
+typeDeclaration: TYPE IDENTIFIER
+                    LEFT_BRACE
+                        (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)?
+                    RIGHT_BRACE
                ;
 
 typeDenoter: IDENTIFIER                                             # baseTypeDenoter
