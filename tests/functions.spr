@@ -1,3 +1,15 @@
+function getJeMoeder(naam: String, leeftijd: int) {
+    type stoel {
+        aantalPoten: int,
+        isVanJeMoeder: bool,
+        hhahaha: [6][10][1]moeder
+    };
+
+    x := y := (z := 345);
+
+    return getJemoeder();
+};
+
 // Declare it
 
 function foo() {

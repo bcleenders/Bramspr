@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -11,6 +11,13 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#arrayLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayLiteral(@NotNull BramsprParser.ArrayLiteralContext ctx);
+
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#fieldAccess}.
 	 * @param ctx the parse tree
@@ -33,6 +40,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDeclaration(@NotNull BramsprParser.TypeDeclarationContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#whileStructure}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -52,6 +66,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAtomic(@NotNull BramsprParser.AtomicContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#variableDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDeclaration(@NotNull BramsprParser.VariableDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#functionCall}.
@@ -199,6 +220,20 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#compositeLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompositeLiteral(@NotNull BramsprParser.CompositeLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#functionDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#swap}.
