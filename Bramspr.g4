@@ -27,7 +27,7 @@ declaration: typeDeclaration
 
 variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
            | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
-           ;
+           ; 
 
 enumerationDeclaration: ENUM IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
 
@@ -40,6 +40,7 @@ functionDeclaration: FUNCTION IDENTIFIER
                            (RETURN expression SEMICOLON)?
                         RIGHT_BRACE
                    ;
+
 
 typeDeclaration: TYPE IDENTIFIER
                     LEFT_BRACE
