@@ -1,0 +1,13 @@
+// Declare it
+
+function foo() {
+    x := 10;
+};
+
+function bar(x: int, y:int) {
+    x := x^2;
+    return x*y^2;
+};
+
+// Use it
+foo();

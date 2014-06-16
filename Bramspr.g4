@@ -27,7 +27,17 @@ declaration: typeDeclaration
 
 variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
            | FINAL? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
+           | functionDeclaration
            ; 
+functionDeclaration: FUNCTION IDENTIFIER 
+                        LEFT_PARENTHESIS 
+                           (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)? 
+                        RIGHT_PARENTHESIS 
+                        LEFT_BRACE
+                           statement*
+                           (RETURN expression SEMICOLON)?
+                        RIGHT_BRACE
+                   ;
 
 typeDeclaration: TYPE IDENTIFIER LEFT_BRACE ((IDENTIFIER COLON typeDenoter COMMA)* IDENTIFIER COLON typeDenoter)? RIGHT_BRACE
                ;
@@ -69,7 +79,11 @@ atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS
        | atomic fieldAccess
        ;
 
-functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
+functionCall: PUTBOOL LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+            | PUTCHAR LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+            | PUTINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+            | PUTSTRING LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+            | IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
 
 fieldAccess : DOT IDENTIFIER
