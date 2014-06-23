@@ -76,7 +76,7 @@ public class SymbolTable<S extends Symbol> {
 		String signature = symbol.toString();
 
 		if(this.symbolsInLevel.get(this.currentLevel).contains(symbol.toString())) {
-			throw new SymbolTableException("Identifier already '" + signature + "' contained in current scope.");
+			throw new SymbolTableException("Identifier '" + signature + "' is already declared in current scope.");
 		}
 		
 		// Add the string to the set of identifiers in this level.

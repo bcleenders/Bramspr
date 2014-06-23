@@ -5,8 +5,8 @@ import symboltable.RecordSymbol;
 import symboltable.TypeSymbol;
 
 public class Suit {
-	public static final Suit VOID = new Suit(new RecordSymbol("void", null, null), false);
-	public static final Suit ERROR = new Suit(new ErrorType(), true);
+	public static final Suit VOID = new Suit(new RecordSymbol("void", null, null), true);
+	public static final Suit ERROR = new Suit(new ErrorType(), false);
 	
 	/**
 	 * The String representation of this type.
@@ -15,15 +15,15 @@ public class Suit {
 	public TypeSymbol type;
 	
 	/**
-	 * Whether or not this variable is mutable.
+	 * Whether or not this variable is a constant expression.
 	 * For example:
-	 * 	- s.aantalPoten is mutable (s is an instance of record Stoel)
-	 * 	- foo() is not mutable.
+	 * 	- 1+1 is constant
+	 *  - 1 + getInt() is not constant, since the value of getInt() can only be determined at runtime
 	 */
-	public Boolean isMutable;
+	public Boolean isConstantExpression;
 	
-	public Suit(TypeSymbol type, Boolean isMutable) {
+	public Suit(TypeSymbol type, Boolean isConstantExpression) {
 		this.type = type;
-		this.isMutable = isMutable;
+		this.isConstantExpression = isConstantExpression;
 	}
 }

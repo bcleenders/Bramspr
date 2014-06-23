@@ -41,7 +41,6 @@ functionDeclaration: FUNCTION IDENTIFIER
                         RIGHT_BRACE
                    ;
 
-
 typeDeclaration: TYPE IDENTIFIER
                     LEFT_BRACE
                         (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)?
