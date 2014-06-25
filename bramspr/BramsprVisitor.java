@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -52,13 +52,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStringLiteral(@NotNull BramsprParser.StringLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#typeDeclaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
@@ -264,18 +257,7 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
 
 	/**
-<<<<<<< HEAD
-	 * Visit a parse tree produced by {@link BramsprParser#compositeDeclaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#characterLiteral}.
-=======
 	 * Visit a parse tree produced by {@link BramsprParser#literalExpression}.
->>>>>>> b65178192a66cdf0752796abeebea99ba805be40
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -322,6 +304,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#compositeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#assignableExpression}.
