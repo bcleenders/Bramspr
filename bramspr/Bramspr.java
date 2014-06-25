@@ -34,7 +34,7 @@ public class Bramspr {
 		ParseTree tree = parser.program(); // parse!
 		
 		System.out.println("Start checking");
-		BramsprChecker_old checker = new BramsprChecker_old();
+		BramsprChecker checker = new BramsprChecker();
 		checker.visit(tree);
 	}
 }

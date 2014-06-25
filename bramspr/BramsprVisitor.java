@@ -89,13 +89,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumExpresstion}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#equalsToExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -199,6 +192,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.

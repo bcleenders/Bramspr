@@ -130,17 +130,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumExpresstion}.
-	 * @param ctx the parse tree
-	 */
-	void enterExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumExpresstion}.
-	 * @param ctx the parse tree
-	 */
-	void exitExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#equalsToExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -304,6 +293,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.

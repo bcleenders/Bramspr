@@ -15,14 +15,15 @@ public class Suit {
 	public TypeSymbol type;
 	
 	/**
-	 * Whether or not this variable is a constant expression.
+	 * Whether or not this variable is a constant expression. 
+	 * A constant expression is an expression with a return value that can be computed compile-time.
 	 * For example:
 	 * 	- 1+1 is constant
 	 *  - 1 + getInt() is not constant, since the value of getInt() can only be determined at runtime
 	 */
-	public Boolean isConstantExpression;
+	public boolean isConstantExpression;
 	
-	public Suit(TypeSymbol type, Boolean isConstantExpression) {
+	public Suit(TypeSymbol type, boolean isConstantExpression) {
 		this.type = type;
 		this.isConstantExpression = isConstantExpression;
 	}

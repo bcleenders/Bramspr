@@ -160,19 +160,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -362,6 +349,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

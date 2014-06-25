@@ -30,7 +30,7 @@ import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
-import bramspr.BramsprParser.ExplicitEnumExpresstionContext;
+import bramspr.BramsprParser.ExplicitEnumExpressionContext;
 import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
@@ -212,7 +212,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			
 			// Check if it is still a constant array
 			allConstant = allConstant && currElementSuit.isConstantExpression;
-			// TODO overleg met Jasper; array is in zijn geheel constant of niet. Niet elementsgewijs bijhouden?
 		}
 
 		ArraySymbol arrayType = new ArraySymbol(aantalElementen, firstElementSuit.type);
@@ -323,7 +322,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitExplicitEnumExpresstion(ExplicitEnumExpresstionContext ctx) {
+	public Suit visitExplicitEnumExpression(ExplicitEnumExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
