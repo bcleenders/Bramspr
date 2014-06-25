@@ -207,11 +207,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			Suit currElementSuit = visit(ctx.expression(i));
 
 			// Check if types match
-			if(! firstElementSuit.type.equals(currElementSuit.type)) {
-				this.reportError("attempted to enter different types in array literal: use records for that!", ctx.expression(i), firstElementSuit.type.getIdentifier(),
-						currElementSuit.type.getIdentifier());
+			if (!firstElementSuit.type.equals(currElementSuit.type)) {
+				this.reportError("attempted to enter different types in array literal: use records for that!", ctx.expression(i),
+						firstElementSuit.type.getIdentifier(), currElementSuit.type.getIdentifier());
 			}
-			
+
 			// Check if it is still a constant array
 			allConstant = allConstant && currElementSuit.isConstant;
 		}
@@ -251,7 +251,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
-	
+
 	/*
 	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
 	 *  1 Een type moet een unieke naam hebben.
@@ -268,7 +268,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// We gaan de fielddeclarations stuk voor stuk doorlopen.
 		for (int i = 0; i < ctx.typeDenoter().size(); i++) {
-			fieldNames[i] = ctx.IDENTIFIER(i+1).getText();
+			fieldNames[i] = ctx.IDENTIFIER(i + 1).getText();
 			fieldTypes[i] = visit(ctx.typeDenoter(i)).type;
 		}
 
@@ -291,7 +291,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		return Suit.VOID;
 	}
-	
 
 	@Override
 	public Suit visitWhileStructure(WhileStructureContext ctx) {
@@ -307,7 +306,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
-//		boolean isConstant = (ctx.CONSTANT() != null);
+		// boolean isConstant = (ctx.CONSTANT() != null);
 		// TODO deze functie afmaken!
 		return null;
 	}
@@ -405,12 +404,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitIdentifierExpression(IdentifierExpressionContext ctx) {
 		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
-		
-		if(variable == null) {
+
+		if (variable == null) {
 			this.reportError("reference to non-existing variable '" + ctx.IDENTIFIER().getText() + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
+
 		return new Suit(variable.getReturnType(), variable.isConstant());
 	}
 
@@ -474,8 +473,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return super.visitChildren(ctx);
 	}
 
+	/*
+	 * Een composite-literal moet aan de volgende contexteisen voldoen:
+	 * 	- het composite-type moet gedeclareerd zijn;
+	 * 	- velden die een waarde toegewezen krijgen moeten bestaan in het composite-type;
+	 * 	- alle velden van het composite-type moeten een waarde toegewezen krijgen;
+	 * 	- elke waarde moet qua type overeenkomen met het veld waaraan het toegewezen wordt;
+	 *  - een veld mag niet tweemaal een waarde toegewezen krijgen.
+	 *  
+	 *  Verder is de composite-literal impliciet constant als alle toegewezen waarden constant 
+	 *  zijn. Deze methode moet dit daarom bijhouden en de teruggegeven suit zich hieraan laten
+	 *  conformeren.
+	 */
 	@Override
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
+		TypeSymbol type = typeSymbolTable.resolve((ctx.IDENTIFIER().getText()));
+		
+		
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
@@ -501,23 +515,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.statement().size(); i++) {
 			visit(ctx.statement(i));
 		}
-		
+
 		// Controleren of de (impliciete) declaratie van de variabelen wel goed gaat
 		// (ze moeten in de symboltable staan, anders kunnen we de code in de functie niet valideren)
 		for (int i = 0; i < ctx.statement().size(); i++) {
-			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i+1).getText(), argumentTypes[i], false);
+			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i + 1).getText(), argumentTypes[i], false);
 			try {
 				this.variableSymbolTable.declare(parameter);
 			} catch (SymbolTableException e) {
 				this.reportError(e.getMessage(), ctx);
 			}
 		}
-		
+
 		// Controleren of de code binnen deze functie wel geldig is:
 		for (int i = 0; i < ctx.statement().size(); i++) {
 			visit(ctx.statement(i));
 		}
-		
+
 		// Kijken wat deze functie teruggeeft.
 		boolean hasReturnStatement = (ctx.RETURN() != null);
 		Suit returnSuit;
@@ -544,12 +558,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitSwap(SwapContext ctx) {
 		TypeSymbol rightType = visit(ctx.assignable(0)).type;
 		TypeSymbol leftType = visit(ctx.assignable(1)).type;
-		
-		if(!rightType.equals(leftType)) {
+
+		if (!rightType.equals(leftType)) {
 			this.reportError("swap cannot swap variables with different types", ctx.assignable(1), leftType.getIdentifier(), rightType.getIdentifier());
 			return Suit.ERROR;
 		}
-		
+
 		return Suit.VOID;
 	}
 
@@ -558,7 +572,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.statement().size(); i++) {
 			visit(ctx.statement(i));
 		}
-		
+
 		return Suit.VOID;
 	}
 
@@ -568,48 +582,40 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return super.visitChildren(ctx);
 	}
 
-	@Override
-	public Suit visit(ParseTree arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitChildren(RuleNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitTerminal(TerminalNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/*
+	 * Een character-literal heeft geen contextbeperkingen en levert een
+	 * constant string op.
+	 */
 	@Override
 	public Suit visitStringLiteral(StringLiteralContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(STRING, true);
 	}
 
-	@Override
-	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+	/*
+	 * Een number-literal heeft geen contextbeperkingen en levert een
+	 * constant intenger op.
+	 */public Suit visitNumberLiteral(NumberLiteralContext ctx) {
+		return new Suit(INT, true);
 	}
 
+	/*
+	 * Een boolean-literal heeft geen contextbeperkingen en levert een
+	 * constant boolean op.
+	 */
 	@Override
 	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(BOOL, true);
 	}
 
+	/*
+	 * Een character-literal heeft geen contextbeperkingen en levert een
+	 * constant character op.
+	 */
 	@Override
 	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Suit(CHAR, true);
 	}
-		
+
 	/*
 	 * Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
 	 */
