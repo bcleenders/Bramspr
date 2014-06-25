@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -74,6 +74,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterProgram(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitProgram(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitProgram(this);
 			else return visitor.visitChildren(this);
@@ -127,6 +135,14 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_structure; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStructure(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStructure(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStructure(this);
@@ -186,6 +202,14 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_blockStructure; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBlockStructure(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBlockStructure(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBlockStructure(this);
@@ -247,6 +271,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ifStructure; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIfStructure(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIfStructure(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIfStructure(this);
 			else return visitor.visitChildren(this);
@@ -302,6 +334,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_whileStructure; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterWhileStructure(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitWhileStructure(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitWhileStructure(this);
 			else return visitor.visitChildren(this);
@@ -353,6 +393,14 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStatement(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStatement(this);
@@ -435,6 +483,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_declaration; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitDeclaration(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -513,6 +569,14 @@ public class BramsprParser extends Parser {
 		}
 		public PureDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPureDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPureDeclaration(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPureDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -537,6 +601,14 @@ public class BramsprParser extends Parser {
 		}
 		public TerminalNode CONSTANT() { return getToken(BramsprParser.CONSTANT, 0); }
 		public InstantiatingDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterInstantiatingDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitInstantiatingDeclaration(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitInstantiatingDeclaration(this);
@@ -638,6 +710,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_enumerationDeclaration; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumerationDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumerationDeclaration(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumerationDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -729,6 +809,14 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionDeclaration; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionDeclaration(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionDeclaration(this);
@@ -838,6 +926,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeDeclaration; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterTypeDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitTypeDeclaration(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitTypeDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -854,33 +950,26 @@ public class BramsprParser extends Parser {
 			setState(174); match(TYPE);
 			setState(175); match(IDENTIFIER);
 			setState(176); match(LEFT_BRACE);
-			setState(189);
+			setState(177); match(IDENTIFIER);
+			setState(178); match(COLON);
+			setState(179); typeDenoter();
+			setState(186);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==IDENTIFIER) {
+			while (_la==COMMA) {
 				{
-				setState(177); match(IDENTIFIER);
-				setState(178); match(COLON);
-				setState(179); typeDenoter();
-				setState(186);
+				{
+				setState(180); match(COMMA);
+				setState(181); match(IDENTIFIER);
+				setState(182); match(COLON);
+				setState(183); typeDenoter();
+				}
+				}
+				setState(188);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==COMMA) {
-					{
-					{
-					setState(180); match(COMMA);
-					setState(181); match(IDENTIFIER);
-					setState(182); match(COLON);
-					setState(183); typeDenoter();
-					}
-					}
-					setState(188);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				}
 			}
-
-			setState(191); match(RIGHT_BRACE);
+			setState(189); match(RIGHT_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -909,6 +998,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public BaseTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBaseTypeDenoter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBaseTypeDenoter(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBaseTypeDenoter(this);
 			else return visitor.visitChildren(this);
@@ -923,6 +1020,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayTypeDenoter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayTypeDenoter(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayTypeDenoter(this);
 			else return visitor.visitChildren(this);
@@ -933,23 +1038,23 @@ public class BramsprParser extends Parser {
 		TypeDenoterContext _localctx = new TypeDenoterContext(_ctx, getState());
 		enterRule(_localctx, 22, RULE_typeDenoter);
 		try {
-			setState(198);
+			setState(196);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				_localctx = new BaseTypeDenoterContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(193); match(IDENTIFIER);
+				setState(191); match(IDENTIFIER);
 				}
 				break;
 			case LEFT_BLOCKBRACE:
 				_localctx = new ArrayTypeDenoterContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(194); match(LEFT_BLOCKBRACE);
-				setState(195); match(NUMBER);
-				setState(196); match(RIGHT_BLOCKBRACE);
-				setState(197); typeDenoter();
+				setState(192); match(LEFT_BLOCKBRACE);
+				setState(193); match(NUMBER);
+				setState(194); match(RIGHT_BLOCKBRACE);
+				setState(195); typeDenoter();
 				}
 				break;
 			default:
@@ -986,6 +1091,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_assignment; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignment(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignment(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignment(this);
 			else return visitor.visitChildren(this);
@@ -999,27 +1112,27 @@ public class BramsprParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(203); 
+			setState(201); 
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
 			do {
 				switch (_alt) {
 				case 1:
 					{
 					{
-					setState(200); assignable(0);
-					setState(201); match(BECOMES);
+					setState(198); assignable(0);
+					setState(199); match(BECOMES);
 					}
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(205); 
+				setState(203); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
 			} while ( _alt!=2 && _alt!=-1 );
-			setState(207); expression(0);
+			setState(205); expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1046,6 +1159,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_swap; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSwap(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSwap(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSwap(this);
 			else return visitor.visitChildren(this);
@@ -1058,9 +1179,9 @@ public class BramsprParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+			setState(207); assignable(0);
+			setState(208); match(SWAP);
 			setState(209); assignable(0);
-			setState(210); match(SWAP);
-			setState(211); assignable(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1089,11 +1210,42 @@ public class BramsprParser extends Parser {
 			this._p = ctx._p;
 		}
 	}
+	public static class AndExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode AND() { return getToken(BramsprParser.AND, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public AndExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAndExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAndExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAndExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ArithmeticExpressionContext extends ExpressionContext {
 		public ArithmeticContext arithmetic() {
 			return getRuleContext(ArithmeticContext.class,0);
 		}
 		public ArithmeticExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArithmeticExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArithmeticExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArithmeticExpression(this);
@@ -1113,23 +1265,39 @@ public class BramsprParser extends Parser {
 		}
 		public GreaterThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanEqualsToExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanEqualsToExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanEqualsToExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class EqualsToExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<TerminalNode> EQUALS_TO() { return getTokens(BramsprParser.EQUALS_TO); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public List<ArithmeticContext> arithmetic() {
+			return getRuleContexts(ArithmeticContext.class);
+		}
+		public ArithmeticContext arithmetic(int i) {
+			return getRuleContext(ArithmeticContext.class,i);
 		}
 		public TerminalNode EQUALS_TO(int i) {
 			return getToken(BramsprParser.EQUALS_TO, i);
 		}
 		public EqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEqualsToExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEqualsToExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEqualsToExpression(this);
@@ -1149,6 +1317,14 @@ public class BramsprParser extends Parser {
 		public List<TerminalNode> GREATER_THAN() { return getTokens(BramsprParser.GREATER_THAN); }
 		public GreaterThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -1167,6 +1343,14 @@ public class BramsprParser extends Parser {
 		}
 		public SmallerThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -1179,8 +1363,39 @@ public class BramsprParser extends Parser {
 		}
 		public NotExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNotExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNotExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class OrExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(BramsprParser.OR, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterOrExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitOrExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitOrExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1195,23 +1410,39 @@ public class BramsprParser extends Parser {
 		}
 		public PlusMinusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPlusMinusExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPlusMinusExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPlusMinusExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class NotEqualsToExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<TerminalNode> NOT_EQUALS_TO() { return getTokens(BramsprParser.NOT_EQUALS_TO); }
 		public TerminalNode NOT_EQUALS_TO(int i) {
 			return getToken(BramsprParser.NOT_EQUALS_TO, i);
 		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public List<ArithmeticContext> arithmetic() {
+			return getRuleContexts(ArithmeticContext.class);
+		}
+		public ArithmeticContext arithmetic(int i) {
+			return getRuleContext(ArithmeticContext.class,i);
 		}
 		public NotEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNotEqualsToExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNotEqualsToExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotEqualsToExpression(this);
@@ -1231,6 +1462,14 @@ public class BramsprParser extends Parser {
 		}
 		public SmallerThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanEqualsToExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanEqualsToExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanEqualsToExpression(this);
 			else return visitor.visitChildren(this);
@@ -1248,16 +1487,16 @@ public class BramsprParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(251);
-			switch ( getInterpreter().adaptivePredict(_input,24,_ctx) ) {
+			setState(263);
+			switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
 			case 1:
 				{
 				_localctx = new NotExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(214); match(NOT);
-				setState(215); expression(9);
+				setState(212); match(NOT);
+				setState(213); expression(11);
 				}
 				break;
 
@@ -1266,30 +1505,46 @@ public class BramsprParser extends Parser {
 				_localctx = new ArithmeticExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(216); arithmetic(0);
+				setState(214); arithmetic(0);
 				}
 				break;
 
 			case 3:
 				{
-				_localctx = new PlusMinusExpressionContext(_localctx);
+				_localctx = new EqualsToExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(217); arithmetic(0);
-				setState(218); match(EQUALS_TO);
-				setState(219); arithmetic(0);
-				setState(220); match(PLUSMINUS);
-				setState(221); arithmetic(0);
+				setState(215); arithmetic(0);
+				setState(218); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						setState(216); match(EQUALS_TO);
+						setState(217); arithmetic(0);
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					setState(220); 
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
+				} while ( _alt!=2 && _alt!=-1 );
 				}
 				break;
 
 			case 4:
 				{
-				_localctx = new GreaterThanExpressionContext(_localctx);
+				_localctx = new NotEqualsToExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(223); arithmetic(0);
-				setState(226); 
+				setState(222); arithmetic(0);
+				setState(225); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
 				do {
@@ -1297,15 +1552,15 @@ public class BramsprParser extends Parser {
 					case 1:
 						{
 						{
-						setState(224); match(GREATER_THAN);
-						setState(225); arithmetic(0);
+						setState(223); match(NOT_EQUALS_TO);
+						setState(224); arithmetic(0);
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(228); 
+					setState(227); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
 				} while ( _alt!=2 && _alt!=-1 );
@@ -1314,11 +1569,24 @@ public class BramsprParser extends Parser {
 
 			case 5:
 				{
-				_localctx = new GreaterThanEqualsToExpressionContext(_localctx);
+				_localctx = new PlusMinusExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(230); arithmetic(0);
-				setState(233); 
+				setState(229); arithmetic(0);
+				setState(230); match(EQUALS_TO);
+				setState(231); arithmetic(0);
+				setState(232); match(PLUSMINUS);
+				setState(233); arithmetic(0);
+				}
+				break;
+
+			case 6:
+				{
+				_localctx = new GreaterThanExpressionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(235); arithmetic(0);
+				setState(238); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,21,_ctx);
 				do {
@@ -1326,28 +1594,28 @@ public class BramsprParser extends Parser {
 					case 1:
 						{
 						{
-						setState(231); match(GREATER_THAN_EQUALS_TO);
-						setState(232); arithmetic(0);
+						setState(236); match(GREATER_THAN);
+						setState(237); arithmetic(0);
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(235); 
+					setState(240); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,21,_ctx);
 				} while ( _alt!=2 && _alt!=-1 );
 				}
 				break;
 
-			case 6:
+			case 7:
 				{
-				_localctx = new SmallerThanExpressionContext(_localctx);
+				_localctx = new GreaterThanEqualsToExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(237); arithmetic(0);
-				setState(240); 
+				setState(242); arithmetic(0);
+				setState(245); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
 				do {
@@ -1355,28 +1623,28 @@ public class BramsprParser extends Parser {
 					case 1:
 						{
 						{
-						setState(238); match(SMALLER_THAN);
-						setState(239); arithmetic(0);
+						setState(243); match(GREATER_THAN_EQUALS_TO);
+						setState(244); arithmetic(0);
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(242); 
+					setState(247); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
 				} while ( _alt!=2 && _alt!=-1 );
 				}
 				break;
 
-			case 7:
+			case 8:
 				{
-				_localctx = new SmallerThanEqualsToExpressionContext(_localctx);
+				_localctx = new SmallerThanExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(244); arithmetic(0);
-				setState(247); 
+				setState(249); arithmetic(0);
+				setState(252); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,23,_ctx);
 				do {
@@ -1384,95 +1652,88 @@ public class BramsprParser extends Parser {
 					case 1:
 						{
 						{
-						setState(245); match(SMALLER_THAN_EQUALS_TO);
-						setState(246); arithmetic(0);
+						setState(250); match(SMALLER_THAN);
+						setState(251); arithmetic(0);
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(249); 
+					setState(254); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,23,_ctx);
 				} while ( _alt!=2 && _alt!=-1 );
 				}
 				break;
+
+			case 9:
+				{
+				_localctx = new SmallerThanEqualsToExpressionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(256); arithmetic(0);
+				setState(259); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,24,_ctx);
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						setState(257); match(SMALLER_THAN_EQUALS_TO);
+						setState(258); arithmetic(0);
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					setState(261); 
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,24,_ctx);
+				} while ( _alt!=2 && _alt!=-1 );
+				}
+				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(269);
+			setState(273);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(267);
-					switch ( getInterpreter().adaptivePredict(_input,27,_ctx) ) {
+					setState(271);
+					switch ( getInterpreter().adaptivePredict(_input,26,_ctx) ) {
 					case 1:
 						{
-						_localctx = new EqualsToExpressionContext(new ExpressionContext(_parentctx, _parentState, _p));
+						_localctx = new AndExpressionContext(new ExpressionContext(_parentctx, _parentState, _p));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(253);
-						if (!(7 >= _localctx._p)) throw new FailedPredicateException(this, "7 >= $_p");
-						setState(256); 
-						_errHandler.sync(this);
-						_alt = getInterpreter().adaptivePredict(_input,25,_ctx);
-						do {
-							switch (_alt) {
-							case 1:
-								{
-								{
-								setState(254); match(EQUALS_TO);
-								setState(255); expression(0);
-								}
-								}
-								break;
-							default:
-								throw new NoViableAltException(this);
-							}
-							setState(258); 
-							_errHandler.sync(this);
-							_alt = getInterpreter().adaptivePredict(_input,25,_ctx);
-						} while ( _alt!=2 && _alt!=-1 );
+						setState(265);
+						if (!(2 >= _localctx._p)) throw new FailedPredicateException(this, "2 >= $_p");
+						setState(266); match(AND);
+						setState(267); expression(3);
 						}
 						break;
 
 					case 2:
 						{
-						_localctx = new NotEqualsToExpressionContext(new ExpressionContext(_parentctx, _parentState, _p));
+						_localctx = new OrExpressionContext(new ExpressionContext(_parentctx, _parentState, _p));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(260);
-						if (!(6 >= _localctx._p)) throw new FailedPredicateException(this, "6 >= $_p");
-						setState(263); 
-						_errHandler.sync(this);
-						_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
-						do {
-							switch (_alt) {
-							case 1:
-								{
-								{
-								setState(261); match(NOT_EQUALS_TO);
-								setState(262); expression(0);
-								}
-								}
-								break;
-							default:
-								throw new NoViableAltException(this);
-							}
-							setState(265); 
-							_errHandler.sync(this);
-							_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
-						} while ( _alt!=2 && _alt!=-1 );
+						setState(268);
+						if (!(1 >= _localctx._p)) throw new FailedPredicateException(this, "1 >= $_p");
+						setState(269); match(OR);
+						setState(270); expression(2);
 						}
 						break;
 					}
 					} 
 				}
-				setState(271);
+				setState(275);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
 			}
 			}
 		}
@@ -1510,6 +1771,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public SignExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSignExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSignExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSignExpression(this);
 			else return visitor.visitChildren(this);
@@ -1520,6 +1789,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(AtomicContext.class,0);
 		}
 		public AtomicExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAtomicExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAtomicExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAtomicExpression(this);
@@ -1537,6 +1814,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public AdditionExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAdditionExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAdditionExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAdditionExpression(this);
 			else return visitor.visitChildren(this);
@@ -1551,6 +1836,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(ArithmeticContext.class,i);
 		}
 		public PowerExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPowerExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPowerExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPowerExpression(this);
@@ -1568,6 +1861,14 @@ public class BramsprParser extends Parser {
 		}
 		public TerminalNode MODULUS() { return getToken(BramsprParser.MODULUS, 0); }
 		public MultiplicationExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterMultiplicationExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitMultiplicationExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitMultiplicationExpression(this);
@@ -1587,7 +1888,7 @@ public class BramsprParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(276);
+			setState(280);
 			switch (_input.LA(1)) {
 			case PLUS:
 			case MINUS:
@@ -1596,13 +1897,13 @@ public class BramsprParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(273);
+				setState(277);
 				_la = _input.LA(1);
 				if ( !(_la==PLUS || _la==MINUS) ) {
 				_errHandler.recoverInline(this);
 				}
 				consume();
-				setState(274); arithmetic(4);
+				setState(278); arithmetic(4);
 				}
 				break;
 			case ENUM:
@@ -1617,31 +1918,31 @@ public class BramsprParser extends Parser {
 				_localctx = new AtomicExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(275); atomic(0);
+				setState(279); atomic(0);
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(289);
+			setState(293);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,30,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(287);
-					switch ( getInterpreter().adaptivePredict(_input,30,_ctx) ) {
+					setState(291);
+					switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
 					case 1:
 						{
 						_localctx = new PowerExpressionContext(new ArithmeticContext(_parentctx, _parentState, _p));
 						pushNewRecursionContext(_localctx, _startState, RULE_arithmetic);
-						setState(278);
+						setState(282);
 						if (!(3 >= _localctx._p)) throw new FailedPredicateException(this, "3 >= $_p");
-						setState(279); match(POWER);
-						setState(280); arithmetic(3);
+						setState(283); match(POWER);
+						setState(284); arithmetic(3);
 						}
 						break;
 
@@ -1649,15 +1950,15 @@ public class BramsprParser extends Parser {
 						{
 						_localctx = new MultiplicationExpressionContext(new ArithmeticContext(_parentctx, _parentState, _p));
 						pushNewRecursionContext(_localctx, _startState, RULE_arithmetic);
-						setState(281);
+						setState(285);
 						if (!(2 >= _localctx._p)) throw new FailedPredicateException(this, "2 >= $_p");
-						setState(282);
+						setState(286);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MULTIPLICATION) | (1L << DIVISION) | (1L << MODULUS))) != 0)) ) {
 						_errHandler.recoverInline(this);
 						}
 						consume();
-						setState(283); arithmetic(3);
+						setState(287); arithmetic(3);
 						}
 						break;
 
@@ -1665,23 +1966,23 @@ public class BramsprParser extends Parser {
 						{
 						_localctx = new AdditionExpressionContext(new ArithmeticContext(_parentctx, _parentState, _p));
 						pushNewRecursionContext(_localctx, _startState, RULE_arithmetic);
-						setState(284);
+						setState(288);
 						if (!(1 >= _localctx._p)) throw new FailedPredicateException(this, "1 >= $_p");
-						setState(285);
+						setState(289);
 						_la = _input.LA(1);
 						if ( !(_la==PLUS || _la==MINUS) ) {
 						_errHandler.recoverInline(this);
 						}
 						consume();
-						setState(286); arithmetic(2);
+						setState(290); arithmetic(2);
 						}
 						break;
 					}
 					} 
 				}
-				setState(291);
+				setState(295);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,30,_ctx);
 			}
 			}
 		}
@@ -1715,6 +2016,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public IdentifierExpressionContext(AssignableContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIdentifierExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIdentifierExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIdentifierExpression(this);
 			else return visitor.visitChildren(this);
@@ -1728,6 +2037,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(AssignableContext.class,0);
 		}
 		public AssignableFieldAccessExpressionContext(AssignableContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignableFieldAccessExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignableFieldAccessExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignableFieldAccessExpression(this);
@@ -1751,12 +2068,12 @@ public class BramsprParser extends Parser {
 			_ctx = _localctx;
 			_prevctx = _localctx;
 
-			setState(293); match(IDENTIFIER);
+			setState(297); match(IDENTIFIER);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(299);
+			setState(303);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,32,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -1765,15 +2082,15 @@ public class BramsprParser extends Parser {
 					{
 					_localctx = new AssignableFieldAccessExpressionContext(new AssignableContext(_parentctx, _parentState, _p));
 					pushNewRecursionContext(_localctx, _startState, RULE_assignable);
-					setState(295);
+					setState(299);
 					if (!(2 >= _localctx._p)) throw new FailedPredicateException(this, "2 >= $_p");
-					setState(296); fieldAccess();
+					setState(300); fieldAccess();
 					}
 					} 
 				}
-				setState(301);
+				setState(305);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,32,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
 			}
 			}
 		}
@@ -1811,6 +2128,14 @@ public class BramsprParser extends Parser {
 		}
 		public ParenthesisExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterParenthesisExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitParenthesisExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitParenthesisExpression(this);
 			else return visitor.visitChildren(this);
@@ -1822,6 +2147,14 @@ public class BramsprParser extends Parser {
 		}
 		public AssignableExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignableExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignableExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignableExpression(this);
 			else return visitor.visitChildren(this);
@@ -1832,6 +2165,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(LiteralContext.class,0);
 		}
 		public LiteralExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterLiteralExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitLiteralExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitLiteralExpression(this);
@@ -1845,6 +2186,14 @@ public class BramsprParser extends Parser {
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
 		public AssignmentExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignmentExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignmentExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignmentExpression(this);
@@ -1863,6 +2212,14 @@ public class BramsprParser extends Parser {
 		}
 		public ExplicitEnumExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterExplicitEnumExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitExplicitEnumExpression(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumExpression(this);
 			else return visitor.visitChildren(this);
@@ -1873,6 +2230,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public FunctionCallExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionCallExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionCallExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
@@ -1887,6 +2252,14 @@ public class BramsprParser extends Parser {
 			return getRuleContext(FieldAccessContext.class,0);
 		}
 		public FieldAccessExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFieldAccessExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFieldAccessExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccessExpression(this);
@@ -1905,17 +2278,17 @@ public class BramsprParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(319);
-			switch ( getInterpreter().adaptivePredict(_input,33,_ctx) ) {
+			setState(323);
+			switch ( getInterpreter().adaptivePredict(_input,32,_ctx) ) {
 			case 1:
 				{
 				_localctx = new AssignmentExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(303); match(LEFT_PARENTHESIS);
-				setState(304); assignment();
-				setState(305); match(RIGHT_PARENTHESIS);
+				setState(307); match(LEFT_PARENTHESIS);
+				setState(308); assignment();
+				setState(309); match(RIGHT_PARENTHESIS);
 				}
 				break;
 
@@ -1924,9 +2297,9 @@ public class BramsprParser extends Parser {
 				_localctx = new ParenthesisExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(307); match(LEFT_PARENTHESIS);
-				setState(308); expression(0);
-				setState(309); match(RIGHT_PARENTHESIS);
+				setState(311); match(LEFT_PARENTHESIS);
+				setState(312); expression(0);
+				setState(313); match(RIGHT_PARENTHESIS);
 				}
 				break;
 
@@ -1935,11 +2308,11 @@ public class BramsprParser extends Parser {
 				_localctx = new ExplicitEnumExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(311); match(ENUM);
-				setState(312); match(DOT);
-				setState(313); match(IDENTIFIER);
-				setState(314); match(DOT);
-				setState(315); match(IDENTIFIER);
+				setState(315); match(ENUM);
+				setState(316); match(DOT);
+				setState(317); match(IDENTIFIER);
+				setState(318); match(DOT);
+				setState(319); match(IDENTIFIER);
 				}
 				break;
 
@@ -1948,7 +2321,7 @@ public class BramsprParser extends Parser {
 				_localctx = new AssignableExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(316); assignable(0);
+				setState(320); assignable(0);
 				}
 				break;
 
@@ -1957,7 +2330,7 @@ public class BramsprParser extends Parser {
 				_localctx = new FunctionCallExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(317); functionCall();
+				setState(321); functionCall();
 				}
 				break;
 
@@ -1966,14 +2339,14 @@ public class BramsprParser extends Parser {
 				_localctx = new LiteralExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(318); literal();
+				setState(322); literal();
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(325);
+			setState(329);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,34,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,33,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -1982,15 +2355,15 @@ public class BramsprParser extends Parser {
 					{
 					_localctx = new FieldAccessExpressionContext(new AtomicContext(_parentctx, _parentState, _p));
 					pushNewRecursionContext(_localctx, _startState, RULE_atomic);
-					setState(321);
+					setState(325);
 					if (!(1 >= _localctx._p)) throw new FailedPredicateException(this, "1 >= $_p");
-					setState(322); fieldAccess();
+					setState(326); fieldAccess();
 					}
 					} 
 				}
-				setState(327);
+				setState(331);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,34,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,33,_ctx);
 			}
 			}
 		}
@@ -2024,6 +2397,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_functionCall; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionCall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionCall(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionCall(this);
 			else return visitor.visitChildren(this);
@@ -2037,31 +2418,31 @@ public class BramsprParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(328); match(IDENTIFIER);
-			setState(329); match(LEFT_PARENTHESIS);
-			setState(338);
+			setState(332); match(IDENTIFIER);
+			setState(333); match(LEFT_PARENTHESIS);
+			setState(342);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUM) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOL) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
 				{
-				setState(330); expression(0);
-				setState(335);
+				setState(334); expression(0);
+				setState(339);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(331); match(COMMA);
-					setState(332); expression(0);
+					setState(335); match(COMMA);
+					setState(336); expression(0);
 					}
 					}
-					setState(337);
+					setState(341);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 			}
 
-			setState(340); match(RIGHT_PARENTHESIS);
+			setState(344); match(RIGHT_PARENTHESIS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2088,6 +2469,14 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_fieldAccess; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFieldAccess(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFieldAccess(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccess(this);
 			else return visitor.visitChildren(this);
@@ -2098,21 +2487,21 @@ public class BramsprParser extends Parser {
 		FieldAccessContext _localctx = new FieldAccessContext(_ctx, getState());
 		enterRule(_localctx, 38, RULE_fieldAccess);
 		try {
-			setState(348);
+			setState(352);
 			switch (_input.LA(1)) {
 			case DOT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(342); match(DOT);
-				setState(343); match(IDENTIFIER);
+				setState(346); match(DOT);
+				setState(347); match(IDENTIFIER);
 				}
 				break;
 			case LEFT_BLOCKBRACE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(344); match(LEFT_BLOCKBRACE);
-				setState(345); expression(0);
-				setState(346); match(RIGHT_BLOCKBRACE);
+				setState(348); match(LEFT_BLOCKBRACE);
+				setState(349); expression(0);
+				setState(350); match(RIGHT_BLOCKBRACE);
 				}
 				break;
 			default:
@@ -2156,6 +2545,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayLiteral(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2164,6 +2561,14 @@ public class BramsprParser extends Parser {
 	public static class CharacterLiteralContext extends LiteralContext {
 		public TerminalNode CHARACTER() { return getToken(BramsprParser.CHARACTER, 0); }
 		public CharacterLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCharacterLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCharacterLiteral(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCharacterLiteral(this);
@@ -2174,6 +2579,14 @@ public class BramsprParser extends Parser {
 		public TerminalNode STRING() { return getToken(BramsprParser.STRING, 0); }
 		public StringLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStringLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStringLiteral(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStringLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2182,6 +2595,14 @@ public class BramsprParser extends Parser {
 	public static class BooleanLiteralContext extends LiteralContext {
 		public TerminalNode BOOL() { return getToken(BramsprParser.BOOL, 0); }
 		public BooleanLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBooleanLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBooleanLiteral(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBooleanLiteral(this);
@@ -2211,6 +2632,14 @@ public class BramsprParser extends Parser {
 		}
 		public CompositeLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCompositeLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCompositeLiteral(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCompositeLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2219,6 +2648,14 @@ public class BramsprParser extends Parser {
 	public static class NumberLiteralContext extends LiteralContext {
 		public TerminalNode NUMBER() { return getToken(BramsprParser.NUMBER, 0); }
 		public NumberLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNumberLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNumberLiteral(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNumberLiteral(this);
@@ -2231,99 +2668,92 @@ public class BramsprParser extends Parser {
 		enterRule(_localctx, 40, RULE_literal);
 		int _la;
 		try {
-			setState(383);
+			setState(386);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				_localctx = new NumberLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(350); match(NUMBER);
+				setState(354); match(NUMBER);
 				}
 				break;
 			case CHARACTER:
 				_localctx = new CharacterLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(351); match(CHARACTER);
+				setState(355); match(CHARACTER);
 				}
 				break;
 			case STRING:
 				_localctx = new StringLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(352); match(STRING);
+				setState(356); match(STRING);
 				}
 				break;
 			case BOOL:
 				_localctx = new BooleanLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(353); match(BOOL);
+				setState(357); match(BOOL);
 				}
 				break;
 			case LEFT_BLOCKBRACE:
 				_localctx = new ArrayLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(354); match(LEFT_BLOCKBRACE);
-				setState(363);
+				setState(358); match(LEFT_BLOCKBRACE);
+				setState(367);
 				_la = _input.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUM) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOL) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
 					{
-					setState(355); expression(0);
-					setState(360);
+					setState(359); expression(0);
+					setState(364);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==COMMA) {
 						{
 						{
-						setState(356); match(COMMA);
-						setState(357); expression(0);
+						setState(360); match(COMMA);
+						setState(361); expression(0);
 						}
 						}
-						setState(362);
+						setState(366);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
 					}
 				}
 
-				setState(365); match(RIGHT_BLOCKBRACE);
+				setState(369); match(RIGHT_BLOCKBRACE);
 				}
 				break;
 			case IDENTIFIER:
 				_localctx = new CompositeLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(366); match(IDENTIFIER);
-				setState(367); match(LEFT_BRACE);
-				setState(380);
+				setState(370); match(IDENTIFIER);
+				setState(371); match(LEFT_BRACE);
+				setState(372); match(IDENTIFIER);
+				setState(373); match(BECOMES);
+				setState(374); expression(0);
+				setState(381);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (_la==IDENTIFIER) {
+				while (_la==COMMA) {
 					{
-					setState(368); match(IDENTIFIER);
-					setState(369); match(BECOMES);
-					setState(370); expression(0);
-					setState(377);
+					{
+					setState(375); match(COMMA);
+					setState(376); match(IDENTIFIER);
+					setState(377); match(BECOMES);
+					setState(378); expression(0);
+					}
+					}
+					setState(383);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					while (_la==COMMA) {
-						{
-						{
-						setState(371); match(COMMA);
-						setState(372); match(IDENTIFIER);
-						setState(373); match(BECOMES);
-						setState(374); expression(0);
-						}
-						}
-						setState(379);
-						_errHandler.sync(this);
-						_la = _input.LA(1);
-					}
-					}
 				}
-
-				setState(382); match(RIGHT_BRACE);
+				setState(384); match(RIGHT_BRACE);
 				}
 				break;
 			default:
@@ -2355,9 +2785,9 @@ public class BramsprParser extends Parser {
 	}
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return 7 >= _localctx._p;
+		case 0: return 2 >= _localctx._p;
 
-		case 1: return 6 >= _localctx._p;
+		case 1: return 1 >= _localctx._p;
 		}
 		return true;
 	}
@@ -2385,7 +2815,7 @@ public class BramsprParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3\61\u0184\4\2\t\2"+
+		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3\61\u0187\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\3\2\7\2.\n\2\f\2\16\2\61\13\2"+
@@ -2398,134 +2828,135 @@ public class BramsprParser extends Parser {
 		"\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\7\13\u009a\n\13\f\13"+
 		"\16\13\u009d\13\13\5\13\u009f\n\13\3\13\3\13\3\13\7\13\u00a4\n\13\f\13"+
 		"\16\13\u00a7\13\13\3\13\3\13\3\13\3\13\5\13\u00ad\n\13\3\13\3\13\3\f\3"+
-		"\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\f\u00bb\n\f\f\f\16\f\u00be\13\f\5"+
-		"\f\u00c0\n\f\3\f\3\f\3\r\3\r\3\r\3\r\3\r\5\r\u00c9\n\r\3\16\3\16\3\16"+
-		"\6\16\u00ce\n\16\r\16\16\16\u00cf\3\16\3\16\3\17\3\17\3\17\3\17\3\20\3"+
-		"\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\6\20\u00e5"+
-		"\n\20\r\20\16\20\u00e6\3\20\3\20\3\20\6\20\u00ec\n\20\r\20\16\20\u00ed"+
-		"\3\20\3\20\3\20\6\20\u00f3\n\20\r\20\16\20\u00f4\3\20\3\20\3\20\6\20\u00fa"+
-		"\n\20\r\20\16\20\u00fb\5\20\u00fe\n\20\3\20\3\20\3\20\6\20\u0103\n\20"+
-		"\r\20\16\20\u0104\3\20\3\20\3\20\6\20\u010a\n\20\r\20\16\20\u010b\7\20"+
-		"\u010e\n\20\f\20\16\20\u0111\13\20\3\21\3\21\3\21\3\21\5\21\u0117\n\21"+
-		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\7\21\u0122\n\21\f\21\16"+
-		"\21\u0125\13\21\3\22\3\22\3\22\3\22\3\22\7\22\u012c\n\22\f\22\16\22\u012f"+
-		"\13\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23"+
-		"\3\23\3\23\3\23\3\23\5\23\u0142\n\23\3\23\3\23\7\23\u0146\n\23\f\23\16"+
-		"\23\u0149\13\23\3\24\3\24\3\24\3\24\3\24\7\24\u0150\n\24\f\24\16\24\u0153"+
-		"\13\24\5\24\u0155\n\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u015f"+
-		"\n\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\7\26\u0169\n\26\f\26\16"+
-		"\26\u016c\13\26\5\26\u016e\n\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
-		"\3\26\3\26\7\26\u017a\n\26\f\26\16\26\u017d\13\26\5\26\u017f\n\26\3\26"+
-		"\5\26\u0182\n\26\3\26\2\27\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$"+
-		"&(*\2\4\3\2\5\6\3\2\7\t\u01ad\2/\3\2\2\2\4\65\3\2\2\2\6\67\3\2\2\2\b@"+
-		"\3\2\2\2\nI\3\2\2\2\f\\\3\2\2\2\16b\3\2\2\2\20~\3\2\2\2\22\u0080\3\2\2"+
-		"\2\24\u008f\3\2\2\2\26\u00b0\3\2\2\2\30\u00c8\3\2\2\2\32\u00cd\3\2\2\2"+
-		"\34\u00d3\3\2\2\2\36\u00fd\3\2\2\2 \u0116\3\2\2\2\"\u0126\3\2\2\2$\u0141"+
-		"\3\2\2\2&\u014a\3\2\2\2(\u015e\3\2\2\2*\u0181\3\2\2\2,.\5\f\7\2-,\3\2"+
-		"\2\2.\61\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60\3\3\2\2\2\61/\3\2\2\2\62\66"+
-		"\5\6\4\2\63\66\5\b\5\2\64\66\5\n\6\2\65\62\3\2\2\2\65\63\3\2\2\2\65\64"+
-		"\3\2\2\2\66\5\3\2\2\2\67;\7$\2\28:\5\f\7\298\3\2\2\2:=\3\2\2\2;9\3\2\2"+
-		"\2;<\3\2\2\2<>\3\2\2\2=;\3\2\2\2>?\7%\2\2?\7\3\2\2\2@A\7\27\2\2AB\7\""+
-		"\2\2BC\5\36\20\2CD\7#\2\2DG\5\6\4\2EF\7\31\2\2FH\5\6\4\2GE\3\2\2\2GH\3"+
-		"\2\2\2H\t\3\2\2\2IJ\7\32\2\2JK\7\"\2\2KL\5\36\20\2LM\7#\2\2MN\5\6\4\2"+
-		"N\13\3\2\2\2O]\5\4\3\2PQ\5\16\b\2QR\7!\2\2R]\3\2\2\2ST\5\32\16\2TU\7!"+
-		"\2\2U]\3\2\2\2VW\5\34\17\2WX\7!\2\2X]\3\2\2\2YZ\5&\24\2Z[\7!\2\2[]\3\2"+
-		"\2\2\\O\3\2\2\2\\P\3\2\2\2\\S\3\2\2\2\\V\3\2\2\2\\Y\3\2\2\2]\r\3\2\2\2"+
-		"^c\5\26\f\2_c\5\24\13\2`c\5\22\n\2ac\5\20\t\2b^\3\2\2\2b_\3\2\2\2b`\3"+
-		"\2\2\2ba\3\2\2\2c\17\3\2\2\2di\7-\2\2ef\7(\2\2fh\7-\2\2ge\3\2\2\2hk\3"+
-		"\2\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2lm\7 \2\2m\177\5\30\r\2"+
-		"np\7\37\2\2on\3\2\2\2op\3\2\2\2pq\3\2\2\2qv\7-\2\2rs\7(\2\2su\7-\2\2t"+
-		"r\3\2\2\2ux\3\2\2\2vt\3\2\2\2vw\3\2\2\2wy\3\2\2\2xv\3\2\2\2yz\7 \2\2z"+
-		"{\5\30\r\2{|\7\3\2\2|}\5\36\20\2}\177\3\2\2\2~d\3\2\2\2~o\3\2\2\2\177"+
-		"\21\3\2\2\2\u0080\u0081\7\35\2\2\u0081\u0082\7-\2\2\u0082\u008b\7$\2\2"+
-		"\u0083\u0088\7-\2\2\u0084\u0085\7(\2\2\u0085\u0087\7-\2\2\u0086\u0084"+
-		"\3\2\2\2\u0087\u008a\3\2\2\2\u0088\u0086\3\2\2\2\u0088\u0089\3\2\2\2\u0089"+
-		"\u008c\3\2\2\2\u008a\u0088\3\2\2\2\u008b\u0083\3\2\2\2\u008b\u008c\3\2"+
-		"\2\2\u008c\u008d\3\2\2\2\u008d\u008e\7%\2\2\u008e\23\3\2\2\2\u008f\u0090"+
-		"\7\33\2\2\u0090\u0091\7-\2\2\u0091\u009e\7\"\2\2\u0092\u0093\7-\2\2\u0093"+
-		"\u0094\7 \2\2\u0094\u009b\5\30\r\2\u0095\u0096\7(\2\2\u0096\u0097\7-\2"+
-		"\2\u0097\u0098\7 \2\2\u0098\u009a\5\30\r\2\u0099\u0095\3\2\2\2\u009a\u009d"+
-		"\3\2\2\2\u009b\u0099\3\2\2\2\u009b\u009c\3\2\2\2\u009c\u009f\3\2\2\2\u009d"+
-		"\u009b\3\2\2\2\u009e\u0092\3\2\2\2\u009e\u009f\3\2\2\2\u009f\u00a0\3\2"+
-		"\2\2\u00a0\u00a1\7#\2\2\u00a1\u00a5\7$\2\2\u00a2\u00a4\5\f\7\2\u00a3\u00a2"+
-		"\3\2\2\2\u00a4\u00a7\3\2\2\2\u00a5\u00a3\3\2\2\2\u00a5\u00a6\3\2\2\2\u00a6"+
-		"\u00ac\3\2\2\2\u00a7\u00a5\3\2\2\2\u00a8\u00a9\7\36\2\2\u00a9\u00aa\5"+
-		"\36\20\2\u00aa\u00ab\7!\2\2\u00ab\u00ad\3\2\2\2\u00ac\u00a8\3\2\2\2\u00ac"+
-		"\u00ad\3\2\2\2\u00ad\u00ae\3\2\2\2\u00ae\u00af\7%\2\2\u00af\25\3\2\2\2"+
-		"\u00b0\u00b1\7\34\2\2\u00b1\u00b2\7-\2\2\u00b2\u00bf\7$\2\2\u00b3\u00b4"+
-		"\7-\2\2\u00b4\u00b5\7 \2\2\u00b5\u00bc\5\30\r\2\u00b6\u00b7\7(\2\2\u00b7"+
-		"\u00b8\7-\2\2\u00b8\u00b9\7 \2\2\u00b9\u00bb\5\30\r\2\u00ba\u00b6\3\2"+
-		"\2\2\u00bb\u00be\3\2\2\2\u00bc\u00ba\3\2\2\2\u00bc\u00bd\3\2\2\2\u00bd"+
-		"\u00c0\3\2\2\2\u00be\u00bc\3\2\2\2\u00bf\u00b3\3\2\2\2\u00bf\u00c0\3\2"+
-		"\2\2\u00c0\u00c1\3\2\2\2\u00c1\u00c2\7%\2\2\u00c2\27\3\2\2\2\u00c3\u00c9"+
-		"\7-\2\2\u00c4\u00c5\7&\2\2\u00c5\u00c6\7.\2\2\u00c6\u00c7\7\'\2\2\u00c7"+
-		"\u00c9\5\30\r\2\u00c8\u00c3\3\2\2\2\u00c8\u00c4\3\2\2\2\u00c9\31\3\2\2"+
-		"\2\u00ca\u00cb\5\"\22\2\u00cb\u00cc\7\3\2\2\u00cc\u00ce\3\2\2\2\u00cd"+
-		"\u00ca\3\2\2\2\u00ce\u00cf\3\2\2\2\u00cf\u00cd\3\2\2\2\u00cf\u00d0\3\2"+
-		"\2\2\u00d0\u00d1\3\2\2\2\u00d1\u00d2\5\36\20\2\u00d2\33\3\2\2\2\u00d3"+
-		"\u00d4\5\"\22\2\u00d4\u00d5\7\4\2\2\u00d5\u00d6\5\"\22\2\u00d6\35\3\2"+
-		"\2\2\u00d7\u00d8\b\20\1\2\u00d8\u00d9\7\22\2\2\u00d9\u00fe\5\36\20\2\u00da"+
-		"\u00fe\5 \21\2\u00db\u00dc\5 \21\2\u00dc\u00dd\7\16\2\2\u00dd\u00de\5"+
-		" \21\2\u00de\u00df\7\20\2\2\u00df\u00e0\5 \21\2\u00e0\u00fe\3\2\2\2\u00e1"+
-		"\u00e4\5 \21\2\u00e2\u00e3\7\f\2\2\u00e3\u00e5\5 \21\2\u00e4\u00e2\3\2"+
-		"\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e4\3\2\2\2\u00e6\u00e7\3\2\2\2\u00e7"+
-		"\u00fe\3\2\2\2\u00e8\u00eb\5 \21\2\u00e9\u00ea\7\r\2\2\u00ea\u00ec\5 "+
-		"\21\2\u00eb\u00e9\3\2\2\2\u00ec\u00ed\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed"+
-		"\u00ee\3\2\2\2\u00ee\u00fe\3\2\2\2\u00ef\u00f2\5 \21\2\u00f0\u00f1\7\n"+
-		"\2\2\u00f1\u00f3\5 \21\2\u00f2\u00f0\3\2\2\2\u00f3\u00f4\3\2\2\2\u00f4"+
-		"\u00f2\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00fe\3\2\2\2\u00f6\u00f9\5 "+
-		"\21\2\u00f7\u00f8\7\13\2\2\u00f8\u00fa\5 \21\2\u00f9\u00f7\3\2\2\2\u00fa"+
-		"\u00fb\3\2\2\2\u00fb\u00f9\3\2\2\2\u00fb\u00fc\3\2\2\2\u00fc\u00fe\3\2"+
-		"\2\2\u00fd\u00d7\3\2\2\2\u00fd\u00da\3\2\2\2\u00fd\u00db\3\2\2\2\u00fd"+
-		"\u00e1\3\2\2\2\u00fd\u00e8\3\2\2\2\u00fd\u00ef\3\2\2\2\u00fd\u00f6\3\2"+
-		"\2\2\u00fe\u010f\3\2\2\2\u00ff\u0102\6\20\2\3\u0100\u0101\7\16\2\2\u0101"+
-		"\u0103\5\36\20\2\u0102\u0100\3\2\2\2\u0103\u0104\3\2\2\2\u0104\u0102\3"+
-		"\2\2\2\u0104\u0105\3\2\2\2\u0105\u010e\3\2\2\2\u0106\u0109\6\20\3\3\u0107"+
-		"\u0108\7\17\2\2\u0108\u010a\5\36\20\2\u0109\u0107\3\2\2\2\u010a\u010b"+
-		"\3\2\2\2\u010b\u0109\3\2\2\2\u010b\u010c\3\2\2\2\u010c\u010e\3\2\2\2\u010d"+
-		"\u00ff\3\2\2\2\u010d\u0106\3\2\2\2\u010e\u0111\3\2\2\2\u010f\u010d\3\2"+
-		"\2\2\u010f\u0110\3\2\2\2\u0110\37\3\2\2\2\u0111\u010f\3\2\2\2\u0112\u0113"+
-		"\b\21\1\2\u0113\u0114\t\2\2\2\u0114\u0117\5 \21\2\u0115\u0117\5$\23\2"+
-		"\u0116\u0112\3\2\2\2\u0116\u0115\3\2\2\2\u0117\u0123\3\2\2\2\u0118\u0119"+
-		"\6\21\4\3\u0119\u011a\7\21\2\2\u011a\u0122\5 \21\2\u011b\u011c\6\21\5"+
-		"\3\u011c\u011d\t\3\2\2\u011d\u0122\5 \21\2\u011e\u011f\6\21\6\3\u011f"+
-		"\u0120\t\2\2\2\u0120\u0122\5 \21\2\u0121\u0118\3\2\2\2\u0121\u011b\3\2"+
-		"\2\2\u0121\u011e\3\2\2\2\u0122\u0125\3\2\2\2\u0123\u0121\3\2\2\2\u0123"+
-		"\u0124\3\2\2\2\u0124!\3\2\2\2\u0125\u0123\3\2\2\2\u0126\u0127\b\22\1\2"+
-		"\u0127\u0128\7-\2\2\u0128\u012d\3\2\2\2\u0129\u012a\6\22\7\3\u012a\u012c"+
-		"\5(\25\2\u012b\u0129\3\2\2\2\u012c\u012f\3\2\2\2\u012d\u012b\3\2\2\2\u012d"+
-		"\u012e\3\2\2\2\u012e#\3\2\2\2\u012f\u012d\3\2\2\2\u0130\u0131\b\23\1\2"+
-		"\u0131\u0132\7\"\2\2\u0132\u0133\5\32\16\2\u0133\u0134\7#\2\2\u0134\u0142"+
-		"\3\2\2\2\u0135\u0136\7\"\2\2\u0136\u0137\5\36\20\2\u0137\u0138\7#\2\2"+
-		"\u0138\u0142\3\2\2\2\u0139\u013a\7\35\2\2\u013a\u013b\7)\2\2\u013b\u013c"+
-		"\7-\2\2\u013c\u013d\7)\2\2\u013d\u0142\7-\2\2\u013e\u0142\5\"\22\2\u013f"+
-		"\u0142\5&\24\2\u0140\u0142\5*\26\2\u0141\u0130\3\2\2\2\u0141\u0135\3\2"+
-		"\2\2\u0141\u0139\3\2\2\2\u0141\u013e\3\2\2\2\u0141\u013f\3\2\2\2\u0141"+
-		"\u0140\3\2\2\2\u0142\u0147\3\2\2\2\u0143\u0144\6\23\b\3\u0144\u0146\5"+
-		"(\25\2\u0145\u0143\3\2\2\2\u0146\u0149\3\2\2\2\u0147\u0145\3\2\2\2\u0147"+
-		"\u0148\3\2\2\2\u0148%\3\2\2\2\u0149\u0147\3\2\2\2\u014a\u014b\7-\2\2\u014b"+
-		"\u0154\7\"\2\2\u014c\u0151\5\36\20\2\u014d\u014e\7(\2\2\u014e\u0150\5"+
-		"\36\20\2\u014f\u014d\3\2\2\2\u0150\u0153\3\2\2\2\u0151\u014f\3\2\2\2\u0151"+
-		"\u0152\3\2\2\2\u0152\u0155\3\2\2\2\u0153\u0151\3\2\2\2\u0154\u014c\3\2"+
-		"\2\2\u0154\u0155\3\2\2\2\u0155\u0156\3\2\2\2\u0156\u0157\7#\2\2\u0157"+
-		"\'\3\2\2\2\u0158\u0159\7)\2\2\u0159\u015f\7-\2\2\u015a\u015b\7&\2\2\u015b"+
-		"\u015c\5\36\20\2\u015c\u015d\7\'\2\2\u015d\u015f\3\2\2\2\u015e\u0158\3"+
-		"\2\2\2\u015e\u015a\3\2\2\2\u015f)\3\2\2\2\u0160\u0182\7.\2\2\u0161\u0182"+
-		"\7,\2\2\u0162\u0182\7+\2\2\u0163\u0182\7*\2\2\u0164\u016d\7&\2\2\u0165"+
-		"\u016a\5\36\20\2\u0166\u0167\7(\2\2\u0167\u0169\5\36\20\2\u0168\u0166"+
-		"\3\2\2\2\u0169\u016c\3\2\2\2\u016a\u0168\3\2\2\2\u016a\u016b\3\2\2\2\u016b"+
-		"\u016e\3\2\2\2\u016c\u016a\3\2\2\2\u016d\u0165\3\2\2\2\u016d\u016e\3\2"+
-		"\2\2\u016e\u016f\3\2\2\2\u016f\u0182\7\'\2\2\u0170\u0171\7-\2\2\u0171"+
-		"\u017e\7$\2\2\u0172\u0173\7-\2\2\u0173\u0174\7\3\2\2\u0174\u017b\5\36"+
-		"\20\2\u0175\u0176\7(\2\2\u0176\u0177\7-\2\2\u0177\u0178\7\3\2\2\u0178"+
-		"\u017a\5\36\20\2\u0179\u0175\3\2\2\2\u017a\u017d\3\2\2\2\u017b\u0179\3"+
-		"\2\2\2\u017b\u017c\3\2\2\2\u017c\u017f\3\2\2\2\u017d\u017b\3\2\2\2\u017e"+
-		"\u0172\3\2\2\2\u017e\u017f\3\2\2\2\u017f\u0180\3\2\2\2\u0180\u0182\7%"+
-		"\2\2\u0181\u0160\3\2\2\2\u0181\u0161\3\2\2\2\u0181\u0162\3\2\2\2\u0181"+
-		"\u0163\3\2\2\2\u0181\u0164\3\2\2\2\u0181\u0170\3\2\2\2\u0182+\3\2\2\2"+
-		"-/\65;G\\biov~\u0088\u008b\u009b\u009e\u00a5\u00ac\u00bc\u00bf\u00c8\u00cf"+
-		"\u00e6\u00ed\u00f4\u00fb\u00fd\u0104\u010b\u010d\u010f\u0116\u0121\u0123"+
-		"\u012d\u0141\u0147\u0151\u0154\u015e\u016a\u016d\u017b\u017e\u0181";
+		"\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\f\u00bb\n\f\f\f\16\f\u00be\13\f\3"+
+		"\f\3\f\3\r\3\r\3\r\3\r\3\r\5\r\u00c7\n\r\3\16\3\16\3\16\6\16\u00cc\n\16"+
+		"\r\16\16\16\u00cd\3\16\3\16\3\17\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3"+
+		"\20\3\20\3\20\6\20\u00dd\n\20\r\20\16\20\u00de\3\20\3\20\3\20\6\20\u00e4"+
+		"\n\20\r\20\16\20\u00e5\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\6"+
+		"\20\u00f1\n\20\r\20\16\20\u00f2\3\20\3\20\3\20\6\20\u00f8\n\20\r\20\16"+
+		"\20\u00f9\3\20\3\20\3\20\6\20\u00ff\n\20\r\20\16\20\u0100\3\20\3\20\3"+
+		"\20\6\20\u0106\n\20\r\20\16\20\u0107\5\20\u010a\n\20\3\20\3\20\3\20\3"+
+		"\20\3\20\3\20\7\20\u0112\n\20\f\20\16\20\u0115\13\20\3\21\3\21\3\21\3"+
+		"\21\5\21\u011b\n\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\7\21"+
+		"\u0126\n\21\f\21\16\21\u0129\13\21\3\22\3\22\3\22\3\22\3\22\7\22\u0130"+
+		"\n\22\f\22\16\22\u0133\13\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3"+
+		"\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\5\23\u0146\n\23\3\23\3\23"+
+		"\7\23\u014a\n\23\f\23\16\23\u014d\13\23\3\24\3\24\3\24\3\24\3\24\7\24"+
+		"\u0154\n\24\f\24\16\24\u0157\13\24\5\24\u0159\n\24\3\24\3\24\3\25\3\25"+
+		"\3\25\3\25\3\25\3\25\5\25\u0163\n\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
+		"\3\26\7\26\u016d\n\26\f\26\16\26\u0170\13\26\5\26\u0172\n\26\3\26\3\26"+
+		"\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\7\26\u017e\n\26\f\26\16\26\u0181"+
+		"\13\26\3\26\3\26\5\26\u0185\n\26\3\26\2\27\2\4\6\b\n\f\16\20\22\24\26"+
+		"\30\32\34\36 \"$&(*\2\4\3\2\5\6\3\2\7\t\u01b0\2/\3\2\2\2\4\65\3\2\2\2"+
+		"\6\67\3\2\2\2\b@\3\2\2\2\nI\3\2\2\2\f\\\3\2\2\2\16b\3\2\2\2\20~\3\2\2"+
+		"\2\22\u0080\3\2\2\2\24\u008f\3\2\2\2\26\u00b0\3\2\2\2\30\u00c6\3\2\2\2"+
+		"\32\u00cb\3\2\2\2\34\u00d1\3\2\2\2\36\u0109\3\2\2\2 \u011a\3\2\2\2\"\u012a"+
+		"\3\2\2\2$\u0145\3\2\2\2&\u014e\3\2\2\2(\u0162\3\2\2\2*\u0184\3\2\2\2,"+
+		".\5\f\7\2-,\3\2\2\2.\61\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60\3\3\2\2\2\61"+
+		"/\3\2\2\2\62\66\5\6\4\2\63\66\5\b\5\2\64\66\5\n\6\2\65\62\3\2\2\2\65\63"+
+		"\3\2\2\2\65\64\3\2\2\2\66\5\3\2\2\2\67;\7$\2\28:\5\f\7\298\3\2\2\2:=\3"+
+		"\2\2\2;9\3\2\2\2;<\3\2\2\2<>\3\2\2\2=;\3\2\2\2>?\7%\2\2?\7\3\2\2\2@A\7"+
+		"\27\2\2AB\7\"\2\2BC\5\36\20\2CD\7#\2\2DG\5\6\4\2EF\7\31\2\2FH\5\6\4\2"+
+		"GE\3\2\2\2GH\3\2\2\2H\t\3\2\2\2IJ\7\32\2\2JK\7\"\2\2KL\5\36\20\2LM\7#"+
+		"\2\2MN\5\6\4\2N\13\3\2\2\2O]\5\4\3\2PQ\5\16\b\2QR\7!\2\2R]\3\2\2\2ST\5"+
+		"\32\16\2TU\7!\2\2U]\3\2\2\2VW\5\34\17\2WX\7!\2\2X]\3\2\2\2YZ\5&\24\2Z"+
+		"[\7!\2\2[]\3\2\2\2\\O\3\2\2\2\\P\3\2\2\2\\S\3\2\2\2\\V\3\2\2\2\\Y\3\2"+
+		"\2\2]\r\3\2\2\2^c\5\26\f\2_c\5\24\13\2`c\5\22\n\2ac\5\20\t\2b^\3\2\2\2"+
+		"b_\3\2\2\2b`\3\2\2\2ba\3\2\2\2c\17\3\2\2\2di\7-\2\2ef\7(\2\2fh\7-\2\2"+
+		"ge\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2lm\7 \2\2"+
+		"m\177\5\30\r\2np\7\37\2\2on\3\2\2\2op\3\2\2\2pq\3\2\2\2qv\7-\2\2rs\7("+
+		"\2\2su\7-\2\2tr\3\2\2\2ux\3\2\2\2vt\3\2\2\2vw\3\2\2\2wy\3\2\2\2xv\3\2"+
+		"\2\2yz\7 \2\2z{\5\30\r\2{|\7\3\2\2|}\5\36\20\2}\177\3\2\2\2~d\3\2\2\2"+
+		"~o\3\2\2\2\177\21\3\2\2\2\u0080\u0081\7\35\2\2\u0081\u0082\7-\2\2\u0082"+
+		"\u008b\7$\2\2\u0083\u0088\7-\2\2\u0084\u0085\7(\2\2\u0085\u0087\7-\2\2"+
+		"\u0086\u0084\3\2\2\2\u0087\u008a\3\2\2\2\u0088\u0086\3\2\2\2\u0088\u0089"+
+		"\3\2\2\2\u0089\u008c\3\2\2\2\u008a\u0088\3\2\2\2\u008b\u0083\3\2\2\2\u008b"+
+		"\u008c\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u008e\7%\2\2\u008e\23\3\2\2\2"+
+		"\u008f\u0090\7\33\2\2\u0090\u0091\7-\2\2\u0091\u009e\7\"\2\2\u0092\u0093"+
+		"\7-\2\2\u0093\u0094\7 \2\2\u0094\u009b\5\30\r\2\u0095\u0096\7(\2\2\u0096"+
+		"\u0097\7-\2\2\u0097\u0098\7 \2\2\u0098\u009a\5\30\r\2\u0099\u0095\3\2"+
+		"\2\2\u009a\u009d\3\2\2\2\u009b\u0099\3\2\2\2\u009b\u009c\3\2\2\2\u009c"+
+		"\u009f\3\2\2\2\u009d\u009b\3\2\2\2\u009e\u0092\3\2\2\2\u009e\u009f\3\2"+
+		"\2\2\u009f\u00a0\3\2\2\2\u00a0\u00a1\7#\2\2\u00a1\u00a5\7$\2\2\u00a2\u00a4"+
+		"\5\f\7\2\u00a3\u00a2\3\2\2\2\u00a4\u00a7\3\2\2\2\u00a5\u00a3\3\2\2\2\u00a5"+
+		"\u00a6\3\2\2\2\u00a6\u00ac\3\2\2\2\u00a7\u00a5\3\2\2\2\u00a8\u00a9\7\36"+
+		"\2\2\u00a9\u00aa\5\36\20\2\u00aa\u00ab\7!\2\2\u00ab\u00ad\3\2\2\2\u00ac"+
+		"\u00a8\3\2\2\2\u00ac\u00ad\3\2\2\2\u00ad\u00ae\3\2\2\2\u00ae\u00af\7%"+
+		"\2\2\u00af\25\3\2\2\2\u00b0\u00b1\7\34\2\2\u00b1\u00b2\7-\2\2\u00b2\u00b3"+
+		"\7$\2\2\u00b3\u00b4\7-\2\2\u00b4\u00b5\7 \2\2\u00b5\u00bc\5\30\r\2\u00b6"+
+		"\u00b7\7(\2\2\u00b7\u00b8\7-\2\2\u00b8\u00b9\7 \2\2\u00b9\u00bb\5\30\r"+
+		"\2\u00ba\u00b6\3\2\2\2\u00bb\u00be\3\2\2\2\u00bc\u00ba\3\2\2\2\u00bc\u00bd"+
+		"\3\2\2\2\u00bd\u00bf\3\2\2\2\u00be\u00bc\3\2\2\2\u00bf\u00c0\7%\2\2\u00c0"+
+		"\27\3\2\2\2\u00c1\u00c7\7-\2\2\u00c2\u00c3\7&\2\2\u00c3\u00c4\7.\2\2\u00c4"+
+		"\u00c5\7\'\2\2\u00c5\u00c7\5\30\r\2\u00c6\u00c1\3\2\2\2\u00c6\u00c2\3"+
+		"\2\2\2\u00c7\31\3\2\2\2\u00c8\u00c9\5\"\22\2\u00c9\u00ca\7\3\2\2\u00ca"+
+		"\u00cc\3\2\2\2\u00cb\u00c8\3\2\2\2\u00cc\u00cd\3\2\2\2\u00cd\u00cb\3\2"+
+		"\2\2\u00cd\u00ce\3\2\2\2\u00ce\u00cf\3\2\2\2\u00cf\u00d0\5\36\20\2\u00d0"+
+		"\33\3\2\2\2\u00d1\u00d2\5\"\22\2\u00d2\u00d3\7\4\2\2\u00d3\u00d4\5\"\22"+
+		"\2\u00d4\35\3\2\2\2\u00d5\u00d6\b\20\1\2\u00d6\u00d7\7\22\2\2\u00d7\u010a"+
+		"\5\36\20\2\u00d8\u010a\5 \21\2\u00d9\u00dc\5 \21\2\u00da\u00db\7\16\2"+
+		"\2\u00db\u00dd\5 \21\2\u00dc\u00da\3\2\2\2\u00dd\u00de\3\2\2\2\u00de\u00dc"+
+		"\3\2\2\2\u00de\u00df\3\2\2\2\u00df\u010a\3\2\2\2\u00e0\u00e3\5 \21\2\u00e1"+
+		"\u00e2\7\17\2\2\u00e2\u00e4\5 \21\2\u00e3\u00e1\3\2\2\2\u00e4\u00e5\3"+
+		"\2\2\2\u00e5\u00e3\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u010a\3\2\2\2\u00e7"+
+		"\u00e8\5 \21\2\u00e8\u00e9\7\16\2\2\u00e9\u00ea\5 \21\2\u00ea\u00eb\7"+
+		"\20\2\2\u00eb\u00ec\5 \21\2\u00ec\u010a\3\2\2\2\u00ed\u00f0\5 \21\2\u00ee"+
+		"\u00ef\7\f\2\2\u00ef\u00f1\5 \21\2\u00f0\u00ee\3\2\2\2\u00f1\u00f2\3\2"+
+		"\2\2\u00f2\u00f0\3\2\2\2\u00f2\u00f3\3\2\2\2\u00f3\u010a\3\2\2\2\u00f4"+
+		"\u00f7\5 \21\2\u00f5\u00f6\7\r\2\2\u00f6\u00f8\5 \21\2\u00f7\u00f5\3\2"+
+		"\2\2\u00f8\u00f9\3\2\2\2\u00f9\u00f7\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa"+
+		"\u010a\3\2\2\2\u00fb\u00fe\5 \21\2\u00fc\u00fd\7\n\2\2\u00fd\u00ff\5 "+
+		"\21\2\u00fe\u00fc\3\2\2\2\u00ff\u0100\3\2\2\2\u0100\u00fe\3\2\2\2\u0100"+
+		"\u0101\3\2\2\2\u0101\u010a\3\2\2\2\u0102\u0105\5 \21\2\u0103\u0104\7\13"+
+		"\2\2\u0104\u0106\5 \21\2\u0105\u0103\3\2\2\2\u0106\u0107\3\2\2\2\u0107"+
+		"\u0105\3\2\2\2\u0107\u0108\3\2\2\2\u0108\u010a\3\2\2\2\u0109\u00d5\3\2"+
+		"\2\2\u0109\u00d8\3\2\2\2\u0109\u00d9\3\2\2\2\u0109\u00e0\3\2\2\2\u0109"+
+		"\u00e7\3\2\2\2\u0109\u00ed\3\2\2\2\u0109\u00f4\3\2\2\2\u0109\u00fb\3\2"+
+		"\2\2\u0109\u0102\3\2\2\2\u010a\u0113\3\2\2\2\u010b\u010c\6\20\2\3\u010c"+
+		"\u010d\7\23\2\2\u010d\u0112\5\36\20\2\u010e\u010f\6\20\3\3\u010f\u0110"+
+		"\7\24\2\2\u0110\u0112\5\36\20\2\u0111\u010b\3\2\2\2\u0111\u010e\3\2\2"+
+		"\2\u0112\u0115\3\2\2\2\u0113\u0111\3\2\2\2\u0113\u0114\3\2\2\2\u0114\37"+
+		"\3\2\2\2\u0115\u0113\3\2\2\2\u0116\u0117\b\21\1\2\u0117\u0118\t\2\2\2"+
+		"\u0118\u011b\5 \21\2\u0119\u011b\5$\23\2\u011a\u0116\3\2\2\2\u011a\u0119"+
+		"\3\2\2\2\u011b\u0127\3\2\2\2\u011c\u011d\6\21\4\3\u011d\u011e\7\21\2\2"+
+		"\u011e\u0126\5 \21\2\u011f\u0120\6\21\5\3\u0120\u0121\t\3\2\2\u0121\u0126"+
+		"\5 \21\2\u0122\u0123\6\21\6\3\u0123\u0124\t\2\2\2\u0124\u0126\5 \21\2"+
+		"\u0125\u011c\3\2\2\2\u0125\u011f\3\2\2\2\u0125\u0122\3\2\2\2\u0126\u0129"+
+		"\3\2\2\2\u0127\u0125\3\2\2\2\u0127\u0128\3\2\2\2\u0128!\3\2\2\2\u0129"+
+		"\u0127\3\2\2\2\u012a\u012b\b\22\1\2\u012b\u012c\7-\2\2\u012c\u0131\3\2"+
+		"\2\2\u012d\u012e\6\22\7\3\u012e\u0130\5(\25\2\u012f\u012d\3\2\2\2\u0130"+
+		"\u0133\3\2\2\2\u0131\u012f\3\2\2\2\u0131\u0132\3\2\2\2\u0132#\3\2\2\2"+
+		"\u0133\u0131\3\2\2\2\u0134\u0135\b\23\1\2\u0135\u0136\7\"\2\2\u0136\u0137"+
+		"\5\32\16\2\u0137\u0138\7#\2\2\u0138\u0146\3\2\2\2\u0139\u013a\7\"\2\2"+
+		"\u013a\u013b\5\36\20\2\u013b\u013c\7#\2\2\u013c\u0146\3\2\2\2\u013d\u013e"+
+		"\7\35\2\2\u013e\u013f\7)\2\2\u013f\u0140\7-\2\2\u0140\u0141\7)\2\2\u0141"+
+		"\u0146\7-\2\2\u0142\u0146\5\"\22\2\u0143\u0146\5&\24\2\u0144\u0146\5*"+
+		"\26\2\u0145\u0134\3\2\2\2\u0145\u0139\3\2\2\2\u0145\u013d\3\2\2\2\u0145"+
+		"\u0142\3\2\2\2\u0145\u0143\3\2\2\2\u0145\u0144\3\2\2\2\u0146\u014b\3\2"+
+		"\2\2\u0147\u0148\6\23\b\3\u0148\u014a\5(\25\2\u0149\u0147\3\2\2\2\u014a"+
+		"\u014d\3\2\2\2\u014b\u0149\3\2\2\2\u014b\u014c\3\2\2\2\u014c%\3\2\2\2"+
+		"\u014d\u014b\3\2\2\2\u014e\u014f\7-\2\2\u014f\u0158\7\"\2\2\u0150\u0155"+
+		"\5\36\20\2\u0151\u0152\7(\2\2\u0152\u0154\5\36\20\2\u0153\u0151\3\2\2"+
+		"\2\u0154\u0157\3\2\2\2\u0155\u0153\3\2\2\2\u0155\u0156\3\2\2\2\u0156\u0159"+
+		"\3\2\2\2\u0157\u0155\3\2\2\2\u0158\u0150\3\2\2\2\u0158\u0159\3\2\2\2\u0159"+
+		"\u015a\3\2\2\2\u015a\u015b\7#\2\2\u015b\'\3\2\2\2\u015c\u015d\7)\2\2\u015d"+
+		"\u0163\7-\2\2\u015e\u015f\7&\2\2\u015f\u0160\5\36\20\2\u0160\u0161\7\'"+
+		"\2\2\u0161\u0163\3\2\2\2\u0162\u015c\3\2\2\2\u0162\u015e\3\2\2\2\u0163"+
+		")\3\2\2\2\u0164\u0185\7.\2\2\u0165\u0185\7,\2\2\u0166\u0185\7+\2\2\u0167"+
+		"\u0185\7*\2\2\u0168\u0171\7&\2\2\u0169\u016e\5\36\20\2\u016a\u016b\7("+
+		"\2\2\u016b\u016d\5\36\20\2\u016c\u016a\3\2\2\2\u016d\u0170\3\2\2\2\u016e"+
+		"\u016c\3\2\2\2\u016e\u016f\3\2\2\2\u016f\u0172\3\2\2\2\u0170\u016e\3\2"+
+		"\2\2\u0171\u0169\3\2\2\2\u0171\u0172\3\2\2\2\u0172\u0173\3\2\2\2\u0173"+
+		"\u0185\7\'\2\2\u0174\u0175\7-\2\2\u0175\u0176\7$\2\2\u0176\u0177\7-\2"+
+		"\2\u0177\u0178\7\3\2\2\u0178\u017f\5\36\20\2\u0179\u017a\7(\2\2\u017a"+
+		"\u017b\7-\2\2\u017b\u017c\7\3\2\2\u017c\u017e\5\36\20\2\u017d\u0179\3"+
+		"\2\2\2\u017e\u0181\3\2\2\2\u017f\u017d\3\2\2\2\u017f\u0180\3\2\2\2\u0180"+
+		"\u0182\3\2\2\2\u0181\u017f\3\2\2\2\u0182\u0183\7%\2\2\u0183\u0185\3\2"+
+		"\2\2\u0184\u0164\3\2\2\2\u0184\u0165\3\2\2\2\u0184\u0166\3\2\2\2\u0184"+
+		"\u0167\3\2\2\2\u0184\u0168\3\2\2\2\u0184\u0174\3\2\2\2\u0185+\3\2\2\2"+
+		"+/\65;G\\biov~\u0088\u008b\u009b\u009e\u00a5\u00ac\u00bc\u00c6\u00cd\u00de"+
+		"\u00e5\u00f2\u00f9\u0100\u0107\u0109\u0111\u0113\u011a\u0125\u0127\u0131"+
+		"\u0145\u014b\u0155\u0158\u0162\u016e\u0171\u017f\u0184";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {

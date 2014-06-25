@@ -1,15 +1,11 @@
 package bramspr;
 
-import java.util.Iterator;
 import java.util.List;
-
-import javax.lang.model.type.ArrayType;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import symboltable.ArraySymbol;
@@ -19,14 +15,13 @@ import symboltable.RecordSymbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
-import bramspr.BramsprParser.ArithmeticExpressionContext;
+import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableExpressionContext;
 import bramspr.BramsprParser.AssignableFieldAccessExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
-import bramspr.BramsprParser.AtomicExpressionContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
 import bramspr.BramsprParser.BooleanLiteralContext;
@@ -46,12 +41,12 @@ import bramspr.BramsprParser.GreaterThanExpressionContext;
 import bramspr.BramsprParser.IdentifierExpressionContext;
 import bramspr.BramsprParser.IfStructureContext;
 import bramspr.BramsprParser.InstantiatingDeclarationContext;
-import bramspr.BramsprParser.LiteralContext;
 import bramspr.BramsprParser.LiteralExpressionContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
 import bramspr.BramsprParser.NotEqualsToExpressionContext;
 import bramspr.BramsprParser.NotExpressionContext;
 import bramspr.BramsprParser.NumberLiteralContext;
+import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
@@ -234,6 +229,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een additionExpression (+,-) heeft twee int argumenten, en levert een int op. 
+	 * De return value is constant als en slechts als beide input values constant zijn.
+	 */
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit rightExpression = visit(ctx.arithmetic(1));
@@ -254,8 +253,22 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit baseSuit = visit(ctx.arithmetic(0));
+		Suit exponentSuit = visit(ctx.arithmetic(1));
+
+		if (!baseSuit.type.equals(INT)) {
+			this.reportError("exponentiation requires an int base", ctx.arithmetic(0), INT.toString(), baseSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		if (!exponentSuit.type.equals(INT)) {
+			this.reportError("exponentiation requires an int power", ctx.arithmetic(1), INT.toString(), exponentSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = baseSuit.isConstant && exponentSuit.isConstant;
+
+		return new Suit(INT, bothConstant);
 	}
 
 	/*
@@ -305,9 +318,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een notEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) {
+				this.reportError("=/= can only compare int values", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
@@ -317,9 +346,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een signexpression heeft één int argument, en geeft een type int terug.
+	 * De return value is constant als en slechts als de input value constant is.
+	 */
 	public Suit visitSignExpression(SignExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit expressionSuit = visit(ctx.arithmetic());
+
+		if (!INT.equals(expressionSuit.type)) {
+			this.reportError("cannot use +/- on non-int values", ctx.arithmetic(), INT.getIdentifier(), expressionSuit.type.getIdentifier());
+			return Suit.ERROR;
+		}
+
+		return expressionSuit;
 	}
 
 	@Override
@@ -329,27 +368,91 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een notEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) { //TODO Hier gaat het mis; merkt niet dat INT en INT overeenkomt. (ook bij notequals)
+				this.reportError("= can only compare int values", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
+	/*
+	 * Een greaterThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) {
+				this.reportError("only int types are comparable with >", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
+	/*
+	 * Een greaterThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) {
+				this.reportError("only int types are comparable with <", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
+	/*
+	 * Een multiplicationExpression (*, /, %) heeft twee int argumenten, en levert een int op. 
+	 * De return value is constant als en slechts als beide input values constant zijn.
+	 */
 	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit rightExpression = visit(ctx.arithmetic(1));
+
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), leftExpression.type.toString());
+		}
+
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), rightExpression.type.toString());
+		}
+
+		boolean bothConstant = leftExpression.isConstant && rightExpression.isConstant;
+
+		return new Suit(INT, bothConstant);
 	}
 
 	@Override
@@ -359,9 +462,33 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een plusMinuxExpression heeft drie int argumenten, en geeft een bool waarde terug.
+	 * De output value is constant als en slechts als alle drie de input argumenten constant zijn.
+	 */
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit middleExpression = visit(ctx.arithmetic(1));
+		Suit rightExpression = visit(ctx.arithmetic(2));
+
+		if (!leftExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(0), INT.toString(),
+					leftExpression.type.toString());
+		}
+
+		if (!middleExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(1), INT.toString(),
+					middleExpression.type.toString());
+		}
+
+		if (!rightExpression.type.equals(INT)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(2), INT.toString(),
+					rightExpression.type.toString());
+		}
+
+		boolean allConstant = leftExpression.isConstant && middleExpression.isConstant && rightExpression.isConstant;
+
+		return new Suit(BOOL, allConstant);
 	}
 
 	@Override
@@ -371,9 +498,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een greaterThanEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) {
+				this.reportError("only int types are comparable with >=", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
@@ -407,9 +550,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een notExpression heeft één bool argument, en geeft een bool terug.
+	 * De return value is constant als en slechts als het argument constant is.
+	 */
 	public Suit visitNotExpression(NotExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit argSuit = visit(ctx.expression());
+
+		if (!argSuit.type.equals(BOOL)) {
+			reportError("illegal argument", ctx, BOOL.toString(), null);
+		}
+		return argSuit;
 	}
 
 	@Override
@@ -418,10 +569,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return super.visitChildren(ctx);
 	}
 
-	@Override
+	/*
+	 * Een smallerThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INT)) {
+				this.reportError("only int types are comparable with <=", ctx, INT.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INT, allConstant);
 	}
 
 	@Override
@@ -451,11 +617,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
 		int size = Integer.parseInt(ctx.NUMBER().getText());
-		
+
 		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
-		
+
 		ArraySymbol arrayType = new ArraySymbol(size, elementType);
-		
+
 		return new Suit(arrayType, false);
 	}
 
@@ -615,7 +781,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			try {
 				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, false));
-				System.out.println("declaration of " + variableName + " successful");
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
@@ -645,12 +810,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Even kijken wat wordt teruggegeven door de expression
 		Suit expressionSuit = visit(ctx.expression());
-		
+
 		// Eis #2 wordt in de visit al getest
 		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
 
 		// Eis #3 testen
-		if (! targetType.equals(expressionSuit.type)) {
+		if (!targetType.equals(expressionSuit.type)) {
 			this.reportError("declared type and actual type do not match", ctx.expression(), targetType.getIdentifier(), expressionSuit.type.getIdentifier());
 		}
 
@@ -670,7 +835,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 			try {
 				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, isConstant));
-				System.out.println("declaration of " + variableName + " successful (dirty)");
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
@@ -679,7 +843,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
-	 */
+	@Override
+	public Suit visitOrExpression(OrExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitAndExpression(AndExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
+
 }

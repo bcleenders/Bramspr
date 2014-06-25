@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class Bramspr {
 	public static void main(String[] args) throws Exception {
-		System.out.println("**** Bramspr Compiler v0.0.1 ****");
+		System.out.println("**** Bramspr Compiler v0.1.0 ****");
 		
 		String inputFile = null;
 		if (args.length > 0)

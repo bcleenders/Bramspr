@@ -42,17 +42,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitFieldAccess(@NotNull BramsprParser.FieldAccessContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#additionExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#additionExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#pureDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -62,6 +51,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#additionExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#additionExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#stringLiteral}.
@@ -75,17 +75,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitStringLiteral(@NotNull BramsprParser.StringLiteralContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#powerExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#powerExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#typeDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -95,17 +84,6 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTypeDeclaration(@NotNull BramsprParser.TypeDeclarationContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#whileStructure}.
-	 * @param ctx the parse tree
-	 */
-	void enterWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#whileStructure}.
-	 * @param ctx the parse tree
-	 */
-	void exitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
@@ -119,17 +97,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#numberLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#numberLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#functionCall}.
 	 * @param ctx the parse tree
 	 */
@@ -139,28 +106,6 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCall(@NotNull BramsprParser.FunctionCallContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#signExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#signExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#equalsToExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#equalsToExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#greaterThanExpression}.
@@ -174,17 +119,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitGreaterThanExpression(@NotNull BramsprParser.GreaterThanExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#smallerThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#multiplicationExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -194,39 +128,6 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultiplicationExpression(@NotNull BramsprParser.MultiplicationExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#enumerationDeclaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#enumerationDeclaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#plusMinusExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#plusMinusExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#structure}.
-	 * @param ctx the parse tree
-	 */
-	void enterStructure(@NotNull BramsprParser.StructureContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#structure}.
-	 * @param ctx the parse tree
-	 */
-	void exitStructure(@NotNull BramsprParser.StructureContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#greaterThanEqualsToExpression}.
@@ -240,15 +141,15 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitGreaterThanEqualsToExpression(@NotNull BramsprParser.GreaterThanEqualsToExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#literalExpression}.
+	 * Enter a parse tree produced by {@link BramsprParser#structure}.
 	 * @param ctx the parse tree
 	 */
-	void enterLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx);
+	void enterStructure(@NotNull BramsprParser.StructureContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link BramsprParser#literalExpression}.
+	 * Exit a parse tree produced by {@link BramsprParser#structure}.
 	 * @param ctx the parse tree
 	 */
-	void exitLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx);
+	void exitStructure(@NotNull BramsprParser.StructureContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#declaration}.
@@ -284,17 +185,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitAssignmentExpression(@NotNull BramsprParser.AssignmentExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#atomicExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#atomicExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#identifierExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -317,39 +207,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#booleanLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#booleanLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#smallerThanEqualsToExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -370,50 +227,6 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStatement(@NotNull BramsprParser.StatementContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignment(@NotNull BramsprParser.AssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#arithmeticExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#arithmeticExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#assignableExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#assignableExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#characterLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#characterLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#program}.
@@ -449,17 +262,6 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link BramsprParser#functionCallExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -482,15 +284,235 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitCompositeLiteral(@NotNull BramsprParser.CompositeLiteralContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#functionDeclaration}.
+	 * Enter a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx);
+	void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link BramsprParser#functionDeclaration}.
+	 * Exit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx);
+	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#orExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrExpression(@NotNull BramsprParser.OrExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#orExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrExpression(@NotNull BramsprParser.OrExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#powerExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#powerExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#whileStructure}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#whileStructure}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#numberLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#numberLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#andExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndExpression(@NotNull BramsprParser.AndExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#andExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndExpression(@NotNull BramsprParser.AndExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#signExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#signExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#equalsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#equalsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#smallerThanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#enumerationDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#enumerationDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#plusMinusExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#plusMinusExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#literalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#literalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#atomicExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#atomicExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#booleanLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#booleanLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#arithmeticExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#arithmeticExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#assignableExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#assignableExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#characterLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#characterLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#swap}.
@@ -504,6 +526,17 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitSwap(@NotNull BramsprParser.SwapContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link BramsprParser#functionDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#functionDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link BramsprParser#blockStructure}.
 	 * @param ctx the parse tree
 	 */
@@ -513,15 +546,4 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBlockStructure(@NotNull BramsprParser.BlockStructureContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
 }
