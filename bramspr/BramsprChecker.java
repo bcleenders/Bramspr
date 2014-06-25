@@ -11,7 +11,6 @@ import symboltable.ArraySymbol;
 import symboltable.EnumSymbol;
 import symboltable.FunctionSymbol;
 import symboltable.RecordSymbol;
-import symboltable.Symbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
@@ -308,8 +307,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+//		boolean isFinal = (ctx.FINAL() != null);
+		// TODO deze functie afmaken!
+		return null;
 	}
 
 	@Override
@@ -403,15 +403,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitAtomicExpression(AtomicExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
-	@Override
 	public Suit visitIdentifierExpression(IdentifierExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
+		
+		if(variable == null) {
+			this.reportError("reference to non-existing variable '" + ctx.IDENTIFIER().getText() + "'.", ctx);
+			return Suit.ERROR;
+		}
+		
+		return new Suit(variable.getReturnType(), variable.isFinal());
 	}
 
 	@Override
