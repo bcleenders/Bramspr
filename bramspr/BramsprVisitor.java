@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -68,18 +68,18 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitTypeDeclaration(@NotNull BramsprParser.TypeDeclarationContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#whileStructure}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#whileStructure}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#numberLiteral}.
