@@ -14,7 +14,6 @@ import symboltable.RecordSymbol;
 import symboltable.Symbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
-
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.ArithmeticExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
@@ -30,7 +29,7 @@ import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
-import bramspr.BramsprParser.ExplicitEnumExpresstionContext;
+import bramspr.BramsprParser.ExplicitEnumExpressionContext;
 import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
@@ -323,7 +322,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitExplicitEnumExpresstion(ExplicitEnumExpresstionContext ctx) {
+	public Suit visitExplicitEnumExpression(ExplicitEnumExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}

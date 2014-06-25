@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -87,13 +87,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumExpresstion}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExplicitEnumExpresstion(@NotNull BramsprParser.ExplicitEnumExpresstionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#equalsToExpression}.
@@ -199,6 +192,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
