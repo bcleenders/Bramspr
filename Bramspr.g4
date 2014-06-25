@@ -78,7 +78,7 @@ assignable: assignable fieldAccess                      # assignableFieldAccessE
 
 atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS  # assignmentExpression
        | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS  # parenthesisExpression
-       | ENUM DOT IDENTIFIER DOT IDENTIFIER             # explicitEnumExpresstion
+       | ENUM DOT IDENTIFIER DOT IDENTIFIER             # explicitEnumExpression
        | assignable                                     # assignableExpression
        | functionCall                                   # functionCallExpression
        | literal                                        # literalExpression
