@@ -1,5 +1,6 @@
 package bramspr;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -484,11 +485,88 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
-		TypeSymbol type = typeSymbolTable.resolve((ctx.IDENTIFIER().getText()));
+		// Eerst kijken van welk composite-type deze literal is.
+		String compositeTypeIdentifier = ctx.IDENTIFIER(0).getText();
+		RecordSymbol compositeType = typeSymbolTable.resolve(compositeTypeIdentifier);
+
+		// Composite-type opvragen in symbol table en kijken of deze wel bestaat.
+		if (compositeType == null) {
+			// Hij bestaat niet. Error reporten en error-suit teruggeven.
+			String errorMessage = "Composite type " + compositeTypeIdentifier + " has not (yet) been declared.";
+			reportError(errorMessage, ctx);
+			return Suit.ERROR;
+		}
+
+		/*
+		 * Het composite-type bestaat! Dan nu de field-assignments aflopen.
+		 * We willen bijhouden of ze allemaal constant zijn, dus daarvoor een 
+		 * boolean aanmaken, en we willen de assignments vergelijken met de 
+		 * velden van het composite-type, dus die gaan we bijhouden in een set.
+		 */
+		boolean isConstant = true;
+		HashSet<String> assignedFields = new HashSet<String>();
+
+		// Beginnen op 1; de eerste identifier was die van het composite type.
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			String fieldName = ctx.IDENTIFIER(i).getText();
+
+			// Kijken of dit veld niet al een waarde toegewezen heeft gekregen in deze literal.
+			if (assignedFields.contains(fieldName)) {
+				// Het veld is al eerder behandeld. Error reporten en error-suit teruggeven.
+				String errorMessage = "Field '" + fieldName + "' has already been assigned a value earlier on in this literal.";
+				this.reportError(errorMessage, ctx.expression(i - 1));
+				return Suit.ERROR;
+			}
+
+			// Het veld is nog niet eerder genoemd. Nu kijken of het bestaat in het composite-type, en wat zijn type is.
+			TypeSymbol fieldType = compositeType.getFieldType(fieldName);
+
+			if (fieldType == null) {
+				// Het veld bestaat niet. Error reporten en error-suit teruggeven.
+				String errorMessage = "Field '" + fieldName + "' is not a member of composite type '" + compositeTypeIdentifier + "'.";
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			}
+
+			/*
+			 * Het veld bestaat. Type opvragen en kijken of de toegewezen waarde hiermee matcht.
+			 * De expression-indices lopen steeds één achter op de identifier-indices; de eerste 
+			 * identifier was immers die van het composite type.
+			 */
+			Suit expressionSuit = visit(ctx.expression(i - 1));
+
+			if (!expressionSuit.type.equals(fieldType)) {
+				// De expressie is niet van hetzelfde type. Error reporten en error-suit teruggeven.
+				String errorMessage = "The type of expression '" + ctx.expression(i - 1).getText() + "' does not match with the type of field '" + fieldName
+						+ "'.";
+				reportError(errorMessage, ctx, fieldType.toString(), expressionSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			// De toewijzing klopt. Nu kijken of de toewijzing constant is, en de isConstant-boolean updaten.
+			isConstant = (isConstant && expressionSuit.isConstant);
+
+			// Nu rest ons alleen nog de toewijzing toevoegen aan de lijst.
+			assignedFields.add(fieldName);
+		}
+
+		/*
+		 *  Controleren of alle velden wel een waarde toegewezen hebben gekregen. Omdat we al gecontroleerd
+		 *  hebben dat alle velden waaraan is toegewezen, bestaan, en dat geen veld meermaals genoemd is,
+		 *  is het voldoende om het aantal toegewezen velden te vergelijken met het aantal velen van het
+		 *  composite-type.
+		 */
+		int amountOfMissingFieldAssignments = compositeType.getNumberOfFields() - assignedFields.size();
+		if (!(amountOfMissingFieldAssignments == 0)) {
+			// Er missen er inderdaad een paar. Error reporten en error-suit teruggeven.
+			String errorMessage = "Not all fields of composite type " + compositeTypeIdentifier + " have been assigned a value. "
+					+ amountOfMissingFieldAssignments + " of " + compositeType.getNumberOfFields() + " are missing.";
+			this.reportError(errorMessage, ctx);
+			return Suit.ERROR;
+		}
 		
-		
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		// Alles klopt. Nu de juiste suit teruggeven.
+		return new Suit(compositeType, isConstant);
 	}
 
 	@Override
@@ -667,12 +745,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		}
 
 		// Eis #4 testen
-		if(isConstant) {
-			if(! expressionSuit.isConstant) {
+		if (isConstant) {
+			if (!expressionSuit.isConstant) {
 				this.reportError("assigning non-constant value to constant", ctx.expression());
 			}
 		}
-		
+
 		// Alle identifiers opvragen.
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 
