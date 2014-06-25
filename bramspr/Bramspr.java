@@ -36,5 +36,6 @@ public class Bramspr {
 		System.out.println("Start checking");
 		BramsprChecker checker = new BramsprChecker();
 		checker.visit(tree);
+		System.out.println("Finished checking");
 	}
 }

@@ -1,5 +1,8 @@
 package bramspr;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -40,6 +43,7 @@ import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
 import bramspr.BramsprParser.IdentifierExpressionContext;
 import bramspr.BramsprParser.IfStructureContext;
+import bramspr.BramsprParser.InstantiatingDeclarationContext;
 import bramspr.BramsprParser.LiteralContext;
 import bramspr.BramsprParser.LiteralExpressionContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
@@ -50,6 +54,7 @@ import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
+import bramspr.BramsprParser.PureDeclarationContext;
 import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
@@ -58,7 +63,6 @@ import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.StructureContext;
 import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.TypeDeclarationContext;
-import bramspr.BramsprParser.VariableDeclarationContext;
 import bramspr.BramsprParser.WhileStructureContext;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
@@ -302,13 +306,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
-	}
-
-	@Override
-	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
-		// boolean isConstant = (ctx.CONSTANT() != null);
-		// TODO deze functie afmaken!
-		return null;
 	}
 
 	@Override
@@ -598,6 +595,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INT, true);
 	}
 
+	@Override
+	public Suit visitAtomicExpression(AtomicExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	 * Een boolean-literal heeft geen contextbeperkingen en levert een
 	 * constant boolean op.
@@ -608,12 +611,84 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/*
+	 * De contextuele eisen voor de declaratie van een variabele zijn:
+	 * 	1 de naam moet binnen de scope niet eerder gedefinieerd zijn
+	 * 	2 het type moet reeds gedeclareerd zijn
+	 */
+	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
+		// Alle identifiers opvragen.
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		// Kijken wat het bedoelde type is.
+		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
+
+		for (int i = 0; i < identifiers.size(); i++) {
+			String variableName = identifiers.get(i).getText();
+
+			try {
+				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, false));
+				System.out.println("declaration of " + variableName + " successful");
+			} catch (SymbolTableException e) {
+				reportError(e.getMessage(), ctx);
+			}
+		}
+
+		return Suit.VOID;
+	}
+
+	/*
 	 * Een character-literal heeft geen contextbeperkingen en levert een
 	 * constant character op.
 	 */
 	@Override
 	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
 		return new Suit(CHAR, true);
+	}
+
+	/*
+	 * De contextuele eisen voor de declaratie van een variabele zijn:
+	 * 	1 de naam moet binnen de scope niet eerder gedefinieerd zijn
+	 * 	2 het type moet reeds gedeclareerd zijn
+	 *  3 het gedeclareerde type en het type van de expression moeten overeenkomen
+	 *  4 als een constante gedeclareerd wordt, dan moet de expression ook constant zijn
+	 */
+	public Suit visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+		boolean isConstant = (ctx.CONSTANT() != null);
+
+		// Even kijken wat wordt teruggegeven door de expression
+		Suit expressionSuit = visit(ctx.expression());
+
+		// Eis #2 wordt in de visit al getest
+		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
+
+		// Eis #3 testen
+		if (expressionSuit.type.equals(targetType)) {
+			this.reportError("declared type and actual type do not match", ctx.expression(), targetType.getIdentifier(), expressionSuit.type.getIdentifier());
+		}
+
+		// Eis #4 testen
+		if(isConstant) {
+			if(! expressionSuit.isConstant) {
+				this.reportError("assigning non-constant value to constant", ctx.expression());
+			}
+		}
+		
+		// Alle identifiers opvragen.
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		// Variabelen declareren in symboltable (eis #1)
+		for (int i = 0; i < identifiers.size(); i++) {
+			String variableName = identifiers.get(i).getText();
+
+			try {
+				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, isConstant));
+				System.out.println("declaration of " + variableName + " successful (dirty)");
+			} catch (SymbolTableException e) {
+				reportError(e.getMessage(), ctx);
+			}
+		}
+
+		return Suit.VOID;
 	}
 
 	/*

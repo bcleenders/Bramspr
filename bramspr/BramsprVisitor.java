@@ -1,4 +1,4 @@
-// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -38,6 +38,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#pureDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#stringLiteral}.
@@ -80,13 +87,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#variableDeclaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariableDeclaration(@NotNull BramsprParser.VariableDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#functionCall}.
@@ -283,6 +283,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIfStructure(@NotNull BramsprParser.IfStructureContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#instantiatingDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#arrayTypeDenoter}.
