@@ -223,7 +223,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitFieldAccess(FieldAccessContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 	
 	/*
@@ -295,193 +295,193 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitWhileStructure(WhileStructureContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitFunctionCall(FunctionCallContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitSignExpression(SignExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitExplicitEnumExpresstion(ExplicitEnumExpresstionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitStructure(StructureContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitLiteralExpression(LiteralExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitDeclaration(DeclarationContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitBaseTypeDenoter(BaseTypeDenoterContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitAtomicExpression(AtomicExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitIdentifierExpression(IdentifierExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitNotExpression(NotExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitAssignableFieldAccessExpression(AssignableFieldAccessExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitStatement(StatementContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitArithmeticExpression(ArithmeticExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitAssignableExpression(AssignableExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitIfStructure(IfStructureContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
 	}
 
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
-		String functieNaam = ctx.IDENTIFIER().getText();
+		String functieNaam = ctx.IDENTIFIER(0).getText();
 
 		this.openScope();
 
@@ -489,19 +489,35 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		 * Nu moeten we kijken of de functie signature wel uniek is!
 		 * (dit declareerd de parameter-variabelen ook direct)
 		 */
-		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.argument().size()];
+		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.typeDenoter().size()];
 
-		for (int i = 0; i < ctx.argument().size(); i++) {
-			argumentTypes[i] = visit(ctx.argument(i)).type;
+		for (int i = 0; i < ctx.typeDenoter().size(); i++) {
+			argumentTypes[i] = visit(ctx.typeDenoter(i)).type;
 		}
 
 		// De functie declaratie is gecontroleerd; nu nog controleren of de inhoud ook valide code is.
 		for (int i = 0; i < ctx.statement().size(); i++) {
 			visit(ctx.statement(i));
 		}
-
+		
+		// Controleren of de (impliciete) declaratie van de variabelen wel goed gaat
+		// (ze moeten in de symboltable staan, anders kunnen we de code in de functie niet valideren)
+		for (int i = 0; i < ctx.statement().size(); i++) {
+			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i+1).getText(), argumentTypes[i], false);
+			try {
+				this.variableSymbolTable.declare(parameter);
+			} catch (SymbolTableException e) {
+				this.reportError(e.getMessage(), ctx);
+			}
+		}
+		
+		// Controleren of de code binnen deze functie wel geldig is:
+		for (int i = 0; i < ctx.statement().size(); i++) {
+			visit(ctx.statement(i));
+		}
+		
 		// Kijken wat deze functie teruggeeft.
-		boolean hasReturnStatement = ctx.RETURN() != null;
+		boolean hasReturnStatement = (ctx.RETURN() != null);
 		Suit returnSuit;
 		if (hasReturnStatement) {
 			returnSuit = visit(ctx.expression());
@@ -520,25 +536,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		}
 
 		return returnSuit;
-	}
-
-	@Override
-	public Suit visitArgument(ArgumentContext ctx) {
-		String argumentName = ctx.IDENTIFIER().getText();
-		TypeSymbol argumentType = visit(ctx.typeDenoter()).type;
-		try {
-			this.variableSymbolTable.declare(new VariableSymbol(argumentName, argumentType, false));
-			/* TODO: overleg met Jasper
-			 * foo(2) is constant
-			 * foo(getInt()) is niet constant
-			 * Dus; gaan we functies bij hun gebruik nog een keer checken?
-			 * (gaat over de constructie van het nieuwe variablesymbol hierboven)
-			 */
-		} catch (SymbolTableException e) {
-			this.reportError(e.getMessage(), ctx);
-		}
-		
-		return new Suit(argumentType, false);
 	}
 
 	@Override
@@ -566,34 +563,16 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.visitChildren(ctx);
+	}
+	
+	@Override
+	public Suit visitLiteral(LiteralContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitChildren(ctx);
 	}
 	
 	/*
 	 * Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
 	 */
-
-	@Override
-	public Suit visit(ParseTree arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitChildren(RuleNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitTerminal(TerminalNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Suit visitLiteral(LiteralContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
