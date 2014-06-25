@@ -92,16 +92,10 @@ fieldAccess : DOT IDENTIFIER
             | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE
             ;
 
-literal : NUMBER
-        | CHARACTER
-        | STRING
-        | BOOL
-        | arrayLiteral
-        | compositeLiteral
+literal : NUMBER                                                                    # numberLiteral
+        | CHARACTER                                                                 # characterLiteral
+        | STRING                                                                    # stringLiteral
+        | BOOL                                                                      # booleanLiteral
+        | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE        # arrayLiteral
+        | IDENTIFIER LEFT_BRACE (assignment (COMMA assignment)*)? RIGHT_BRACE       # compositeLiteral
         ;
-
-arrayLiteral : LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE
-             ;
-
-compositeLiteral : IDENTIFIER LEFT_BRACE (assignment (COMMA assignment)*)? RIGHT_BRACE
-                 ;

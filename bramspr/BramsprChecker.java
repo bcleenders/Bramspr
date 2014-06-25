@@ -25,6 +25,8 @@ import bramspr.BramsprParser.AssignmentExpressionContext;
 import bramspr.BramsprParser.AtomicExpressionContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
+import bramspr.BramsprParser.BooleanLiteralContext;
+import bramspr.BramsprParser.CharacterLiteralContext;
 import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
@@ -44,6 +46,7 @@ import bramspr.BramsprParser.LiteralExpressionContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
 import bramspr.BramsprParser.NotEqualsToExpressionContext;
 import bramspr.BramsprParser.NotExpressionContext;
+import bramspr.BramsprParser.NumberLiteralContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
@@ -52,6 +55,7 @@ import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StatementContext;
+import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.StructureContext;
 import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.TypeDeclarationContext;
@@ -563,13 +567,49 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
-	
+
 	@Override
-	public Suit visitLiteral(LiteralContext ctx) {
+	public Suit visit(ParseTree arg0) {
 		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		return null;
 	}
-	
+
+	@Override
+	public Suit visitChildren(RuleNode arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitTerminal(TerminalNode arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitStringLiteral(StringLiteralContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
 	/*
 	 * Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
 	 */
