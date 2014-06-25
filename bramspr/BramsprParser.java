@@ -17,9 +17,9 @@ public class BramsprParser extends Parser {
 	public static final int
 		RIGHT_BRACE=35, FUNCTION=25, XOR=19, LOGIC=20, GREATER_THAN=10, WHILE=24, 
 		SWAP=2, PLUSMINUS=14, ELSE=23, NUMBER=44, BOOL=40, BECOMES=1, WHITESPACE=47, 
-		POWER=15, SEMICOLON=31, NOT=16, MINUS=4, AND=17, CHARACTER=42, EQUALS_TO=12, 
-		RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, TYPE=26, IF=21, COLON=30, ENUM=27, 
-		THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, IDENTIFIER=43, 
+		POWER=15, COMPOSITE=26, SEMICOLON=31, NOT=16, MINUS=4, AND=17, CHARACTER=42, 
+		EQUALS_TO=12, RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, IF=21, COLON=30, 
+		ENUM=27, THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, IDENTIFIER=43, 
 		LEFT_BRACE=34, LEFT_PARENTHESIS=32, MODULUS=7, OR=18, RETURN=28, CONSTANT=29, 
 		DIVISION=6, BLOCKCOMMENT=46, MULTIPLICATION=5, PLUS=3, NOT_EQUALS_TO=13, 
 		GREATER_THAN_EQUALS_TO=11, COMMENT=45, DOT=39, STRING=41, SMALLER_THAN_EQUALS_TO=9;
@@ -27,21 +27,21 @@ public class BramsprParser extends Parser {
 		"<INVALID>", "':='", "'<>'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", 
 		"'<='", "'>'", "'>='", "'='", "'=/='", "'+-'", "'^'", "'!'", "'&'", "'|'", 
 		"'!&'", "LOGIC", "'if'", "'then'", "'else'", "'while'", "'function'", 
-		"'type'", "'enum'", "'return'", "'constant'", "':'", "';'", "'('", "')'", 
-		"'{'", "'}'", "'['", "']'", "','", "'.'", "BOOL", "STRING", "CHARACTER", 
+		"'composite'", "'enum'", "'return'", "'constant'", "':'", "';'", "'('", 
+		"')'", "'{'", "'}'", "'['", "']'", "','", "'.'", "BOOL", "STRING", "CHARACTER", 
 		"IDENTIFIER", "NUMBER", "COMMENT", "BLOCKCOMMENT", "WHITESPACE"
 	};
 	public static final int
 		RULE_program = 0, RULE_structure = 1, RULE_blockStructure = 2, RULE_ifStructure = 3, 
 		RULE_whileStructure = 4, RULE_statement = 5, RULE_declaration = 6, RULE_variableDeclaration = 7, 
-		RULE_enumerationDeclaration = 8, RULE_functionDeclaration = 9, RULE_typeDeclaration = 10, 
+		RULE_enumerationDeclaration = 8, RULE_functionDeclaration = 9, RULE_compositeDeclaration = 10, 
 		RULE_typeDenoter = 11, RULE_assignment = 12, RULE_swap = 13, RULE_expression = 14, 
 		RULE_arithmetic = 15, RULE_assignable = 16, RULE_atomic = 17, RULE_functionCall = 18, 
 		RULE_fieldAccess = 19, RULE_literal = 20;
 	public static final String[] ruleNames = {
 		"program", "structure", "blockStructure", "ifStructure", "whileStructure", 
 		"statement", "declaration", "variableDeclaration", "enumerationDeclaration", 
-		"functionDeclaration", "typeDeclaration", "typeDenoter", "assignment", 
+		"functionDeclaration", "compositeDeclaration", "typeDenoter", "assignment", 
 		"swap", "expression", "arithmetic", "assignable", "atomic", "functionCall", 
 		"fieldAccess", "literal"
 	};
@@ -90,7 +90,7 @@ public class BramsprParser extends Parser {
 			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(42); statement();
@@ -204,7 +204,7 @@ public class BramsprParser extends Parser {
 			setState(57);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(54); statement();
@@ -421,11 +421,11 @@ public class BramsprParser extends Parser {
 		public FunctionDeclarationContext functionDeclaration() {
 			return getRuleContext(FunctionDeclarationContext.class,0);
 		}
-		public TypeDeclarationContext typeDeclaration() {
-			return getRuleContext(TypeDeclarationContext.class,0);
-		}
 		public EnumerationDeclarationContext enumerationDeclaration() {
 			return getRuleContext(EnumerationDeclarationContext.class,0);
+		}
+		public CompositeDeclarationContext compositeDeclaration() {
+			return getRuleContext(CompositeDeclarationContext.class,0);
 		}
 		public VariableDeclarationContext variableDeclaration() {
 			return getRuleContext(VariableDeclarationContext.class,0);
@@ -447,10 +447,10 @@ public class BramsprParser extends Parser {
 		try {
 			setState(96);
 			switch (_input.LA(1)) {
-			case TYPE:
+			case COMPOSITE:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(92); typeDeclaration();
+				setState(92); compositeDeclaration();
 				}
 				break;
 			case FUNCTION:
@@ -777,7 +777,7 @@ public class BramsprParser extends Parser {
 			setState(163);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(160); statement();
@@ -811,11 +811,12 @@ public class BramsprParser extends Parser {
 		return _localctx;
 	}
 
-	public static class TypeDeclarationContext extends ParserRuleContext {
+	public static class CompositeDeclarationContext extends ParserRuleContext {
 		public TerminalNode RIGHT_BRACE() { return getToken(BramsprParser.RIGHT_BRACE, 0); }
 		public TypeDenoterContext typeDenoter(int i) {
 			return getRuleContext(TypeDenoterContext.class,i);
 		}
+		public TerminalNode COMPOSITE() { return getToken(BramsprParser.COMPOSITE, 0); }
 		public List<TypeDenoterContext> typeDenoter() {
 			return getRuleContexts(TypeDenoterContext.class);
 		}
@@ -832,26 +833,25 @@ public class BramsprParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(BramsprParser.COMMA, i);
 		}
-		public TerminalNode TYPE() { return getToken(BramsprParser.TYPE, 0); }
-		public TypeDeclarationContext(ParserRuleContext parent, int invokingState) {
+		public CompositeDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_typeDeclaration; }
+		@Override public int getRuleIndex() { return RULE_compositeDeclaration; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitTypeDeclaration(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCompositeDeclaration(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final TypeDeclarationContext typeDeclaration() throws RecognitionException {
-		TypeDeclarationContext _localctx = new TypeDeclarationContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_typeDeclaration);
+	public final CompositeDeclarationContext compositeDeclaration() throws RecognitionException {
+		CompositeDeclarationContext _localctx = new CompositeDeclarationContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_compositeDeclaration);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(174); match(TYPE);
+			setState(174); match(COMPOSITE);
 			setState(175); match(IDENTIFIER);
 			setState(176); match(LEFT_BRACE);
 			setState(189);

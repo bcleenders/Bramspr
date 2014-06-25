@@ -32,6 +32,7 @@ import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
 import bramspr.BramsprParser.BooleanLiteralContext;
 import bramspr.BramsprParser.CharacterLiteralContext;
+import bramspr.BramsprParser.CompositeDeclarationContext;
 import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.DeclarationContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
@@ -65,7 +66,6 @@ import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.StructureContext;
 import bramspr.BramsprParser.SwapContext;
-import bramspr.BramsprParser.TypeDeclarationContext;
 import bramspr.BramsprParser.WhileStructureContext;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
@@ -266,7 +266,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *  3 Alle velden in het type moeten een geldig type hebben.
 	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
 	 */
-	public Suit visitTypeDeclaration(TypeDeclarationContext ctx) {
+	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER(0).getText();
 
 		// We weten nu hoe 't beestje heet, maar welke velden heeft 'ie?

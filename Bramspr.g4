@@ -19,7 +19,7 @@ statement : structure
           | functionCall SEMICOLON
           ;
 
-declaration: typeDeclaration
+declaration: compositeDeclaration
            | functionDeclaration
            | enumerationDeclaration
            | variableDeclaration
@@ -41,7 +41,7 @@ functionDeclaration: FUNCTION IDENTIFIER
                         RIGHT_BRACE
                    ;
 
-typeDeclaration: TYPE IDENTIFIER
+compositeDeclaration: COMPOSITE IDENTIFIER
                     LEFT_BRACE
                         (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)?
                     RIGHT_BRACE

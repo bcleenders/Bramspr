@@ -1,0 +1,16 @@
+composite stoel{aantalPoten:int, kleur:string};
+composite bank{kleur:string, zitLekker:bool};
+
+i: stoel;
+
+i := stoel{aantalPoten := 4, kleur := "Blauw"};
+i := stoel{aantalPoten := 4};
+i := stoel{aantalPoten := 4, kleur := "Blauw", zitLekker := true};
+i := stoel{aantalPoten := 4, aantalPoten := 8, kleur := "Blauw"};
+i := stoel{aantalPoten := "Blauw", kleur := "Blauw"};
+i := bank{kleur := "Brown", zitLekker := true};
+i := kruk{kleur := "Brown", zitLekker := true};
+
+
+
+

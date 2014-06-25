@@ -61,13 +61,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#typeDeclaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeDeclaration(@NotNull BramsprParser.TypeDeclarationContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#notEqualsToExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -262,6 +255,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#compositeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#characterLiteral}.

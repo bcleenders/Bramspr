@@ -38,7 +38,7 @@ THEN:                   'then';
 ELSE:                   'else';
 WHILE:                  'while';
 FUNCTION:               'function';
-TYPE:                   'type';
+COMPOSITE:              'composite';
 ENUM:                   'enum';
 RETURN:                 'return';
 CONSTANT:               'constant';
