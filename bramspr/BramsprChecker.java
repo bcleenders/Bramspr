@@ -226,8 +226,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.getChild(0));
-		Suit rightExpression = visit(ctx.getChild(2));
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit rightExpression = visit(ctx.arithmetic(1));
 
 		if (!leftExpression.type.equals(INT)) {
 			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), leftExpression.type.toString());
