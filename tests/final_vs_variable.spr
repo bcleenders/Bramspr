@@ -2,7 +2,7 @@
 Ehm... Tja... Dat zijn dus geen floats :/
 */
 constant PHI: int := 2;
-constant PI: int := 3;
+constant PI: int := -3;
 constant TAU: int := 6;
 
 {   // Even omhoog afronden!

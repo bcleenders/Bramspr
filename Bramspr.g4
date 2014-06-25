@@ -43,7 +43,7 @@ functionDeclaration: FUNCTION IDENTIFIER
 
 compositeDeclaration: COMPOSITE IDENTIFIER
                     LEFT_BRACE
-                        (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)?
+                        IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*
                     RIGHT_BRACE
                ;
 
@@ -56,13 +56,15 @@ swap: assignable SWAP assignable;
 
 expression: NOT expression                                            # notExpression
           | arithmetic                                                # arithmeticExpression
-          | expression (EQUALS_TO expression)+                        # equalsToExpression 
-          | expression (NOT_EQUALS_TO expression)+                    # notEqualsToExpression
+          | arithmetic (EQUALS_TO arithmetic)+                        # equalsToExpression 
+          | arithmetic (NOT_EQUALS_TO arithmetic)+                    # notEqualsToExpression
           | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic      # plusMinusExpression                  
           | arithmetic (GREATER_THAN arithmetic)+                     # greaterThanExpression        
           | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+           # greaterThanEqualsToExpression            
           | arithmetic (SMALLER_THAN arithmetic)+                     # smallerThanExpression        
-          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+           # smallerThanEqualsToExpression                   
+          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+           # smallerThanEqualsToExpression
+          | expression AND expression                                 # andExpression
+          | expression OR expression                                  # orExpression
           ;
 
 arithmetic: atomic                                                        # atomicExpression
@@ -97,6 +99,6 @@ literal : NUMBER                                                                
         | STRING                                                                                                          # stringLiteral
         | BOOL                                                                                                            # booleanLiteral
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
-        | IDENTIFIER LEFT_BRACE (IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)*)? RIGHT_BRACE       # compositeLiteral
+        | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE        # compositeLiteral
         ;
 

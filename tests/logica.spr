@@ -1,0 +1,16 @@
+x, y, z : int;
+constant X: int := 1;
+constant Y: int := 2;
+
+b: bool;
+constant B: bool := true;
+
+x := 1;
+y := Y;
+z := 3;
+b := true;
+
+b := x =/= y =/= z;
+b := b;
+
+// TODO: and/or toevoegen
