@@ -14,7 +14,6 @@ import symboltable.RecordSymbol;
 import symboltable.Symbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
-
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.ArithmeticExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
