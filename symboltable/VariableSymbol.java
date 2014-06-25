@@ -1,7 +1,7 @@
 package symboltable;
 
 public class VariableSymbol extends ValueYieldingSymbol {
-	boolean isFinal;
+	boolean isConstant;
 		
 	public VariableSymbol(String identifier, TypeSymbol returnType, boolean isFinal) {
 		super(identifier, returnType);
@@ -11,7 +11,7 @@ public class VariableSymbol extends ValueYieldingSymbol {
 		return this.identifier;
 	}
 	
-	public boolean isFinal() {
-		return this.isFinal;
+	public boolean isConstant() {
+		return this.isConstant;
 	}
 }

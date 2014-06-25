@@ -18,16 +18,16 @@ public class BramsprParser extends Parser {
 		RIGHT_BRACE=35, FUNCTION=25, XOR=19, LOGIC=20, GREATER_THAN=10, WHILE=24, 
 		SWAP=2, PLUSMINUS=14, ELSE=23, NUMBER=44, BOOL=40, BECOMES=1, WHITESPACE=47, 
 		POWER=15, SEMICOLON=31, NOT=16, MINUS=4, AND=17, CHARACTER=42, EQUALS_TO=12, 
-		RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, TYPE=26, IF=21, COLON=30, FINAL=29, 
-		ENUM=27, THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, IDENTIFIER=43, 
-		LEFT_BRACE=34, LEFT_PARENTHESIS=32, MODULUS=7, OR=18, RETURN=28, DIVISION=6, 
-		BLOCKCOMMENT=46, MULTIPLICATION=5, PLUS=3, NOT_EQUALS_TO=13, GREATER_THAN_EQUALS_TO=11, 
-		COMMENT=45, DOT=39, STRING=41, SMALLER_THAN_EQUALS_TO=9;
+		RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, TYPE=26, IF=21, COLON=30, ENUM=27, 
+		THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, IDENTIFIER=43, 
+		LEFT_BRACE=34, LEFT_PARENTHESIS=32, MODULUS=7, OR=18, RETURN=28, CONSTANT=29, 
+		DIVISION=6, BLOCKCOMMENT=46, MULTIPLICATION=5, PLUS=3, NOT_EQUALS_TO=13, 
+		GREATER_THAN_EQUALS_TO=11, COMMENT=45, DOT=39, STRING=41, SMALLER_THAN_EQUALS_TO=9;
 	public static final String[] tokenNames = {
 		"<INVALID>", "':='", "'<>'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", 
 		"'<='", "'>'", "'>='", "'='", "'=/='", "'+-'", "'^'", "'!'", "'&'", "'|'", 
 		"'!&'", "LOGIC", "'if'", "'then'", "'else'", "'while'", "'function'", 
-		"'type'", "'enum'", "'return'", "'final'", "':'", "';'", "'('", "')'", 
+		"'type'", "'enum'", "'return'", "'constant'", "':'", "';'", "'('", "')'", 
 		"'{'", "'}'", "'['", "']'", "','", "'.'", "BOOL", "STRING", "CHARACTER", 
 		"IDENTIFIER", "NUMBER", "COMMENT", "BLOCKCOMMENT", "WHITESPACE"
 	};
@@ -90,7 +90,7 @@ public class BramsprParser extends Parser {
 			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << FINAL) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(42); statement();
@@ -204,7 +204,7 @@ public class BramsprParser extends Parser {
 			setState(57);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << FINAL) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(54); statement();
@@ -465,7 +465,7 @@ public class BramsprParser extends Parser {
 				setState(94); enumerationDeclaration();
 				}
 				break;
-			case FINAL:
+			case CONSTANT:
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 4);
 				{
@@ -488,7 +488,6 @@ public class BramsprParser extends Parser {
 	}
 
 	public static class VariableDeclarationContext extends ParserRuleContext {
-		public TerminalNode FINAL() { return getToken(BramsprParser.FINAL, 0); }
 		public TypeDenoterContext typeDenoter() {
 			return getRuleContext(TypeDenoterContext.class,0);
 		}
@@ -505,6 +504,7 @@ public class BramsprParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(BramsprParser.COMMA, i);
 		}
+		public TerminalNode CONSTANT() { return getToken(BramsprParser.CONSTANT, 0); }
 		public VariableDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -551,9 +551,9 @@ public class BramsprParser extends Parser {
 				{
 				setState(109);
 				_la = _input.LA(1);
-				if (_la==FINAL) {
+				if (_la==CONSTANT) {
 					{
-					setState(108); match(FINAL);
+					setState(108); match(CONSTANT);
 					}
 				}
 
@@ -747,7 +747,7 @@ public class BramsprParser extends Parser {
 			setState(163);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << FINAL) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << TYPE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(160); statement();

@@ -21,10 +21,10 @@ public class Suit {
 	 * 	- 1+1 is constant
 	 *  - 1 + getInt() is not constant, since the value of getInt() can only be determined at runtime
 	 */
-	public boolean isConstantExpression;
+	public boolean isConstant;
 	
-	public Suit(TypeSymbol type, boolean isConstantExpression) {
+	public Suit(TypeSymbol type, boolean isConstant) {
 		this.type = type;
-		this.isConstantExpression = isConstantExpression;
+		this.isConstant = isConstant;
 	}
 }

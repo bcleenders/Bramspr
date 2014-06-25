@@ -213,7 +213,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 			
 			// Check if it is still a constant array
-			allConstant = allConstant && currElementSuit.isConstantExpression;
+			allConstant = allConstant && currElementSuit.isConstant;
 		}
 
 		ArraySymbol arrayType = new ArraySymbol(aantalElementen, firstElementSuit.type);
@@ -242,7 +242,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			return Suit.ERROR;
 		}
 
-		boolean isConstant = leftExpression.isConstantExpression && rightExpression.isConstantExpression;
+		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
 		return new Suit(INT, isConstant);
 	}
 
@@ -307,7 +307,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitVariableDeclaration(VariableDeclarationContext ctx) {
-//		boolean isFinal = (ctx.FINAL() != null);
+//		boolean isConstant = (ctx.CONSTANT() != null);
 		// TODO deze functie afmaken!
 		return null;
 	}
@@ -411,7 +411,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			return Suit.ERROR;
 		}
 		
-		return new Suit(variable.getReturnType(), variable.isFinal());
+		return new Suit(variable.getReturnType(), variable.isConstant());
 	}
 
 	@Override

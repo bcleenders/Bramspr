@@ -41,7 +41,7 @@ FUNCTION:               'function';
 TYPE:                   'type';
 ENUM:                   'enum';
 RETURN:                 'return';
-FINAL:                  'final';
+CONSTANT:               'constant';
 
 /* Symbols. */
 COLON:                  ':'     ;
