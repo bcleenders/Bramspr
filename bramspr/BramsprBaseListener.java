@@ -69,6 +69,32 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterStringLiteral(@NotNull BramsprParser.StringLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitStringLiteral(@NotNull BramsprParser.StringLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -121,13 +147,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterVariableDeclaration(@NotNull BramsprParser.VariableDeclarationContext ctx) { }
+	@Override public void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitVariableDeclaration(@NotNull BramsprParser.VariableDeclarationContext ctx) { }
+	@Override public void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -368,6 +394,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -446,6 +485,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterProgram(@NotNull BramsprParser.ProgramContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -466,6 +518,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitIfStructure(@NotNull BramsprParser.IfStructureContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -544,19 +609,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitBlockStructure(@NotNull BramsprParser.BlockStructureContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterLiteral(@NotNull BramsprParser.LiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitLiteral(@NotNull BramsprParser.LiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

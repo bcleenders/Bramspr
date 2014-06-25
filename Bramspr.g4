@@ -25,8 +25,8 @@ declaration: typeDeclaration
            | variableDeclaration
            ;
 
-variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter
-           | CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression
+variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                       # pureDeclaration
+           | CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression  # instantiatingDeclaration
            ; 
 
 enumerationDeclaration: ENUM IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
