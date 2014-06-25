@@ -3,6 +3,8 @@ package bramspr;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.lang.model.type.ArrayType;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -375,21 +377,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitLiteralExpression(LiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
-	@Override
-	public Suit visitDeclaration(DeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
-	@Override
 	public Suit visitBaseTypeDenoter(BaseTypeDenoterContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		String typeName = ctx.IDENTIFIER().getText();
+		TypeSymbol type = this.typeSymbolTable.resolve(typeName);
+
+		if (type == null) {
+			this.reportError("reference to non-existing type '" + typeName + "'.", ctx);
+			return Suit.ERROR;
+		}
+		return new Suit(type, false);
 	}
 
 	@Override
@@ -441,12 +437,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitArithmeticExpression(ArithmeticExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
-	@Override
 	public Suit visitAssignableExpression(AssignableExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
@@ -460,8 +450,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		int size = Integer.parseInt(ctx.NUMBER().getText());
+		
+		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
+		
+		ArraySymbol arrayType = new ArraySymbol(size, elementType);
+		
+		return new Suit(arrayType, false);
 	}
 
 	@Override
@@ -484,9 +479,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
-		TypeSymbol type = typeSymbolTable.resolve((ctx.IDENTIFIER().getText()));
-		
-		
+		// TypeSymbol type = typeSymbolTable.resolve((ctx.IDENTIFIER().getText()));
+
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
@@ -595,12 +589,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INT, true);
 	}
 
-	@Override
-	public Suit visitAtomicExpression(AtomicExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/*
 	 * Een boolean-literal heeft geen contextbeperkingen en levert een
 	 * constant boolean op.
@@ -657,22 +645,22 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Even kijken wat wordt teruggegeven door de expression
 		Suit expressionSuit = visit(ctx.expression());
-
+		
 		// Eis #2 wordt in de visit al getest
 		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
 
 		// Eis #3 testen
-		if (expressionSuit.type.equals(targetType)) {
+		if (! targetType.equals(expressionSuit.type)) {
 			this.reportError("declared type and actual type do not match", ctx.expression(), targetType.getIdentifier(), expressionSuit.type.getIdentifier());
 		}
 
 		// Eis #4 testen
-		if(isConstant) {
-			if(! expressionSuit.isConstant) {
+		if (isConstant) {
+			if (!expressionSuit.isConstant) {
 				this.reportError("assigning non-constant value to constant", ctx.expression());
 			}
 		}
-		
+
 		// Alle identifiers opvragen.
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 
