@@ -1,6 +1,7 @@
 package bramspr;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -19,6 +20,7 @@ import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
+import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignableExpressionContext;
 import bramspr.BramsprParser.AssignableFieldAccessExpressionContext;
 import bramspr.BramsprParser.AssignmentContext;
@@ -631,10 +633,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(type, false);
 	}
 
+	
+	/*
+	 * Een assignment-expression bestaat uit niets meer dan een assignment
+	 * tussen haakjes, en geeft dan ook de suit van de assignment terug.
+	 */
 	@Override
 	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		return visit(ctx.assignment());
 	}
 
 	@Override
@@ -696,10 +702,46 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return super.visitChildren(ctx);
 	}
 
+	/*
+	 * Een assignment moet aan de volgende eisen voldoen:
+	 *  - de assignable(s) moet bestaan, dat wil zeggen: de variabele moet gedeclareerd zijn / het veld moet bestaan;
+	 *  - de assignable(s) mogen niet constant zijn;
+	 * 	- het type van de assignable(s) en de expressie moeten overeenkomen.
+	 * 
+	 * De eerste eis wordt in de visit-methode van de assignable(s) al gecontroleerd.
+	 * 
+	 * Het return suit van de assignment is de suit van de expressie.
+	 */
 	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		// Alle assignables opvragen.
+		List<AssignableContext> assignables = ctx.assignable();
+		
+		// Type van de expressie opvragen.
+		Suit expressionSuit = visit(ctx.expression());
+		TypeSymbol expressionType = expressionSuit.type;
+				
+		for (AssignableContext assignable : assignables){
+			// Suit van de assignable opvragen.
+			Suit assignableSuit = visit(assignable);
+			
+			if (assignableSuit.isConstant){
+				// Oh oh, deze assignable is constant. Dat mag niet. Error reporten en error-suit teruggeven.
+				String errorMessage = "The variable '" + assignable.getText() + "' is constant. After initialisation, constant variables can not be assigned new values.";
+				reportError(errorMessage, assignable);
+				return Suit.ERROR;
+			}
+			
+			if (!assignableSuit.type.equals(expressionType)){
+				// Onjuist type. Error reporten en error-suit teruggeven.
+				String errorMessage = "Expression '" + ctx.expression().getText() + "' yields the wrong type of value for variable '" + assignable.getText() + "'.";
+				reportError(errorMessage, assignable, assignableSuit.type.toString(), expressionType.toString());
+				return Suit.ERROR;
+			}
+		}
+		
+		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
+		return expressionSuit;	
 	}
 
 	@Override

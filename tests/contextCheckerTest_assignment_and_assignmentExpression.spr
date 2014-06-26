@@ -1,0 +1,12 @@
+x: integer;
+y: integer;
+constant hahaIkBenNietAssignbaar: boolean := false;
+meenJeDitNou: boolean;
+
+x := y := 4;
+meenJeDitNou := true;
+hahaIkBenNietAssignbaar := 5;
+x := meenJeDitNou := 8;
+meenJeDitNou := (meenJeDitNou := false);
+x := (meenJeDitNou := true);
+y := z := (x := 4) + 5;
