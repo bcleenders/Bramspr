@@ -1,9 +1,9 @@
 type Stoel {
-    aantalPoten: int
+    aantalPoten: integer
 };
 
 type Tafel {
-    aantalPoten: int,
+    aantalPoten: integer,
     omringendeStoelen: [2]stoel
 };
 

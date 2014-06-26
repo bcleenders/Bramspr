@@ -1,5 +1,5 @@
-composite stoel{aantalPoten:int, kleur:string};
-composite bank{kleur:string, zitLekker:bool};
+composite stoel{aantalPoten:integer, kleur:string};
+composite bank{kleur:string, zitLekker:boolean};
 
 i: stoel;
 

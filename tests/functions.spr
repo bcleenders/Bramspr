@@ -1,7 +1,7 @@
-function getJeMoeder(naam: String, leeftijd: int) {
+function getJeMoeder(naam: String, leeftijd: integer) {
     type stoel {
-        aantalPoten: int,
-        isVanJeMoeder: bool,
+        aantalPoten: integer,
+        isVanJeMoeder: boolean,
         hhahaha: [6][10][1]moeder
     };
 
@@ -16,7 +16,7 @@ function foo() {
     x := 10;
 };
 
-function bar(x: int, y:int) {
+function bar(x: integer, y:integer) {
     x := x^2;
     return x*y^2;
 };

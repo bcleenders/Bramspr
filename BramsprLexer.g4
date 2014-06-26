@@ -39,7 +39,7 @@ ELSE:                   'else';
 WHILE:                  'while';
 FUNCTION:               'function';
 COMPOSITE:              'composite';
-ENUM:                   'enum';
+ENUMERATION:            'enumeration';
 RETURN:                 'return';
 CONSTANT:               'constant';
 
@@ -58,7 +58,7 @@ DOT:                    '.'     ;
 /* Literals. */
 // Een apostrof, gevolgd door geescapete apostrofes en niet-specialchars. 
 // De *? (i.t.t. *) maakt hem niet-greedy, dus bij de eerste " stopt hij.
-BOOL: 'true' | 'false';
+BOOLEAN: 'true' | 'false';
 STRING : '"' ( ESCAPED | ~('\n'|'\r') )*? '"';
 CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;

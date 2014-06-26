@@ -1,0 +1,9 @@
+function berekenDieShit(moetIkDitEchtDoen: boolean, hoeVaakDan: integer){
+	return true;
+};
+
+berekenDieShit(true, 5);
+berekenDieShit();
+berekenDieShit(false);
+berekenDieShit("Onee", 15);
+berekenDieShit("Hahaha", 15, true, 'x');

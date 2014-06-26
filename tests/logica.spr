@@ -1,9 +1,9 @@
-x, y, z : int;
-constant X: int := 1;
-constant Y: int := 2;
+x, y, z : integer;
+constant X: integer := 1;
+constant Y: integer := 2;
 
-b: bool;
-constant B: bool := true;
+b: boolean;
+constant B: boolean := true;
 
 x := 1;
 y := Y;

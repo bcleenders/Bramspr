@@ -2,8 +2,8 @@
 Eerst even wat nummertjes!
 */
 
-x, y: int;
-z: int := 3;
+x, y: integer;
+z: integer := 3;
 constant X: int := 5;
 
 x := 2;
@@ -11,5 +11,5 @@ y := x;
 z := X;
 
 // Nu zijn x, y en z allemaal niet constant, maar X wel.
-constant Z: int := z + X; // Dit mag dus niet
-constant Z: int := (X*X) + X^(X+X); // Dit mag wel; alleen constantes gebruikt
+constant Z: integer := z + X; // Dit mag dus niet
+constant Z: integer := (X*X) + X^(X+X); // Dit mag wel; alleen constantes gebruikt

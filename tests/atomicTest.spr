@@ -1,11 +1,11 @@
-// x: bool;
+// x: boolean;
 // x := z^-2 + 3 < y * 60 < 2^(50%10-1);
 // y := stoelen[8].aantalPoten;
 
 // x:= getJeMoeder(getJeMoeder().haarZoon, 2^5-1 = 8 +- -0)[5];
 
 /*
-i : 	[3][4]int;
+i : 	[3][4]integer;
 i :=	[
 			[1, 2, 3, 4],
 			[10, 20, 30, 40],
@@ -15,10 +15,10 @@ i :=	[
 */
 
 
-function getJeMoeder(naam: String, leeftijd: int) {
+function getJeMoeder(naam: String, leeftijd: integer) {
 	type stoel {
-		aantalPoten: int,
-		isVanJeMoeder: bool,
+		aantalPoten: integer,
+		isVanJeMoeder: boolean,
 		hhahaha: [6][10][1]moeder
 	};
 

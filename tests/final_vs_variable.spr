@@ -1,14 +1,14 @@
 /*
 Ehm... Tja... Dat zijn dus geen floats :/
 */
-constant PHI: int := 2;
-constant PI: int := -3;
-constant TAU: int := 6;
+constant PHI: integer := 2;
+constant PI: integer := -3;
+constant TAU: integer := 6;
 
 {   // Even omhoog afronden!
-    phi: int := 2;
-    pi: int := 4;
-    tau: int := 7;
+    phi: integer := 2;
+    pi: integer := 4;
+    tau: integer := 7;
 
     if(pi = PI + 1) {
         putString("Geslaagd; je mag finals bij elkaar optellen en vergelijken.\n");

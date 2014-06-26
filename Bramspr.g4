@@ -8,9 +8,9 @@ structure: blockStructure
          | whileStructure
          ;
 
-blockStructure: LEFT_BRACE statement* RIGHT_BRACE;
-ifStructure: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?;
-whileStructure: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
+blockStructure:     LEFT_BRACE statement* RIGHT_BRACE;
+ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?;
+whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
 
 statement : structure
           | declaration SEMICOLON
@@ -25,13 +25,13 @@ declaration: compositeDeclaration
            | variableDeclaration
            ;
 
-variableDeclaration: IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                       # pureDeclaration
-           | CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression  # instantiatingDeclaration
+variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureDeclaration
+           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration
            ; 
 
-enumerationDeclaration: ENUM IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
+enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
 
-functionDeclaration: FUNCTION IDENTIFIER 
+functionDeclaration:    FUNCTION IDENTIFIER 
                         LEFT_PARENTHESIS 
                            (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)? 
                         RIGHT_PARENTHESIS 
@@ -41,50 +41,50 @@ functionDeclaration: FUNCTION IDENTIFIER
                         RIGHT_BRACE
                    ;
 
-compositeDeclaration: COMPOSITE IDENTIFIER
-                    LEFT_BRACE
-                        IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*
-                    RIGHT_BRACE
-               ;
+compositeDeclaration:   COMPOSITE IDENTIFIER
+                        LEFT_BRACE
+                            IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*
+                        RIGHT_BRACE
+                    ;
 
-typeDenoter: IDENTIFIER                                             # baseTypeDenoter
-           | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter    # arrayTypeDenoter
+typeDenoter: IDENTIFIER                                                     # baseTypeDenoter
+           | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter
            ;
 
 assignment: (assignable BECOMES)+ expression;
-swap: assignable SWAP assignable;
+swap:       assignable SWAP assignable;
 
-expression: NOT expression                                            # notExpression
-          | arithmetic                                                # arithmeticExpression
-          | arithmetic (EQUALS_TO arithmetic)+                        # equalsToExpression 
-          | arithmetic (NOT_EQUALS_TO arithmetic)+                    # notEqualsToExpression
-          | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic      # plusMinusExpression                  
-          | arithmetic (GREATER_THAN arithmetic)+                     # greaterThanExpression        
-          | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+           # greaterThanEqualsToExpression            
-          | arithmetic (SMALLER_THAN arithmetic)+                     # smallerThanExpression        
-          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+           # smallerThanEqualsToExpression
-          | expression AND expression                                 # andExpression
-          | expression OR expression                                  # orExpression
+expression: NOT expression                                                  # notExpression
+          | arithmetic                                                      # arithmeticExpression
+          | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
+          | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
+          | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic            # plusMinusExpression                  
+          | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression        
+          | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression            
+          | arithmetic (SMALLER_THAN arithmetic)+                           # smallerThanExpression        
+          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+                 # smallerThanEqualsToExpression
+          | expression AND expression                                       # andExpression
+          | expression OR expression                                        # orExpression
           ;
 
-arithmetic: atomic                                                        # atomicExpression
-          | (PLUS | MINUS) arithmetic                                     # signExpression
-          | arithmetic POWER <assoc=right> arithmetic                     # powerExpression
-          | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic # multiplicationExpression
-          | arithmetic ( PLUS | MINUS ) arithmetic                        # additionExpression
+arithmetic: atomic                                                          # atomicExpression
+          | (PLUS | MINUS) arithmetic                                       # signExpression
+          | arithmetic POWER <assoc=right> arithmetic                       # powerExpression
+          | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic   # multiplicationExpression
+          | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
             
-assignable: assignable fieldAccess                      # assignableFieldAccessExpression
-          | IDENTIFIER                                  # identifierExpression
+assignable: assignable fieldAccess                                          # assignableFieldAccessExpression
+          | IDENTIFIER                                                      # identifierExpression
           ;
 
-atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS  # assignmentExpression
-       | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS  # parenthesisExpression
-       | ENUM DOT IDENTIFIER DOT IDENTIFIER             # explicitEnumExpression
-       | assignable                                     # assignableExpression
-       | functionCall                                   # functionCallExpression
-       | literal                                        # literalExpression
-       | atomic fieldAccess                             # fieldAccessExpression
+atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # assignmentExpression
+       | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      # parenthesisExpression
+       | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                          # explicitEnumerationExpression
+       | assignable                                                         # assignableExpression
+       | functionCall                                                       # functionCallExpression
+       | literal                                                            # literalExpression
+       | atomic fieldAccess                                                 # fieldAccessExpression
        ;
 
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
@@ -97,8 +97,8 @@ fieldAccess : DOT IDENTIFIER
 literal : NUMBER                                                                                                          # numberLiteral
         | CHARACTER                                                                                                       # characterLiteral
         | STRING                                                                                                          # stringLiteral
-        | BOOL                                                                                                            # booleanLiteral
+        | BOOLEAN                                                                                                         # booleanLiteral
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
-        | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE        # compositeLiteral
+        | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
         ;
 

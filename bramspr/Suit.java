@@ -1,11 +1,11 @@
 package bramspr;
 
 import symboltable.ErrorType;
-import symboltable.RecordSymbol;
+import symboltable.CompositeSymbol;
 import symboltable.TypeSymbol;
 
 public class Suit {
-	public static final Suit VOID = new Suit(new RecordSymbol("void", null, null), true);
+	public static final Suit VOID = new Suit(new CompositeSymbol("void", null, null), true);
 	public static final Suit ERROR = new Suit(new ErrorType(), false);
 	
 	/**

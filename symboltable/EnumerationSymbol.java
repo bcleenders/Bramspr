@@ -2,10 +2,10 @@ package symboltable;
 
 import java.util.HashSet;
 
-public class EnumSymbol extends TypeSymbol {
+public class EnumerationSymbol extends TypeSymbol {
 	HashSet<String> constants;
 	
-	public EnumSymbol(String identifier, String[] constants) {
+	public EnumerationSymbol(String identifier, String[] constants) {
 		super(identifier);
 
 		for (String string : constants) {

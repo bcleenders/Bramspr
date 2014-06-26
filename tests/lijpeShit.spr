@@ -7,17 +7,17 @@
 
 type Stoel{
 	model: StoelModellen,
-	prijs: int,
-	zitLekker: bool
+	prijs: integer,
+	zitLekker: boolean
 }
 
 type Bibliotheek{
 	stoelen: [3]Stoel,
-	nuOpen: bool
+	nuOpen: boolean
 }
 */
 
-ikZitLekker, jijZitLekker: bool := 
+ikZitLekker, jijZitLekker: boolean := 
 	Bibliotheek{stoelen := [
 			Stoel{
 					model := StoelModellen.KRUK,

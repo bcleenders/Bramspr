@@ -10,9 +10,9 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import symboltable.ArraySymbol;
-import symboltable.EnumSymbol;
+import symboltable.CompositeSymbol;
+import symboltable.EnumerationSymbol;
 import symboltable.FunctionSymbol;
-import symboltable.RecordSymbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AdditionExpressionContext;
@@ -31,7 +31,7 @@ import bramspr.BramsprParser.CompositeDeclarationContext;
 import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
-import bramspr.BramsprParser.ExplicitEnumExpressionContext;
+import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
 import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
@@ -66,29 +66,29 @@ import bramspr.symboltable.SymbolTableException;
 //public class BramsprChecker implements BramsprVisitor<Suit> {
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
-	public static final RecordSymbol INT = new RecordSymbol("int", null, null);
-	public static final RecordSymbol VOID = new RecordSymbol("void", null, null);
-	public static final RecordSymbol CHAR = new RecordSymbol("char", null, null);
-	public static final RecordSymbol BOOL = new RecordSymbol("bool", null, null);
-	public static final RecordSymbol STRING = new RecordSymbol("string", null, null);
+	public static final CompositeSymbol INTEGER = new CompositeSymbol("integer", null, null);
+	public static final CompositeSymbol VOID = new CompositeSymbol("void", null, null);
+	public static final CompositeSymbol CHARACTER = new CompositeSymbol("character", null, null);
+	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("boolean", null, null);
+	public static final CompositeSymbol STRING = new CompositeSymbol("string", null, null);
 
 	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>(); // functienamen (e.g. foo)
 	private SymbolTable<VariableSymbol> variableSymbolTable = new SymbolTable<VariableSymbol>(); // variabelenamen (e.g. x)
-	private SymbolTable<RecordSymbol> typeSymbolTable = new SymbolTable<RecordSymbol>(); // typenamen (e.g. Stoel)
-	private SymbolTable<EnumSymbol> enumSymbolTable = new SymbolTable<EnumSymbol>(); // enumnamen (e.g. DAYS)
+	private SymbolTable<CompositeSymbol> typeSymbolTable = new SymbolTable<CompositeSymbol>(); // typenamen (e.g. Stoel)
+	private SymbolTable<EnumerationSymbol> enumerationSymbolTable = new SymbolTable<EnumerationSymbol>(); // enumnamen (e.g. DAYS)
 
 	private void openScope() {
 		functionSymbolTable.openScope();
 		variableSymbolTable.openScope();
 		typeSymbolTable.openScope();
-		enumSymbolTable.openScope();
+		enumerationSymbolTable.openScope();
 	}
 
 	private void closeScope() {
 		functionSymbolTable.closeScope();
 		variableSymbolTable.closeScope();
 		typeSymbolTable.closeScope();
-		enumSymbolTable.closeScope();
+		enumerationSymbolTable.closeScope();
 	}
 
 	private ParseTreeProperty<ParseTree> declarationPointers;
@@ -113,18 +113,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Error ");
 		sb.append(errorCount);
-		sb.append(": ");
-		sb.append(message);
-		sb.append(" on line ");
+		sb.append(" (line ");
 		sb.append(erroneousNode.getStart().getLine());
 		sb.append(':');
 		sb.append(erroneousNode.getStart().getCharPositionInLine());
-		sb.append('.');
+		sb.append("): ");
+		sb.append(message);
 
 		System.err.println(sb.toString());
 
 		if (expected != null) {
-			System.err.print("Expected " + expected);
+			System.err.print("                    Expected " + expected);
 			if (encountered != null) {
 				System.err.print(", but found " + encountered);
 			}
@@ -146,19 +145,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitProgram(ProgramContext ctx) {
 		this.openScope();
 		try {
-			typeSymbolTable.declare(INT);
+			typeSymbolTable.declare(INTEGER);
 			typeSymbolTable.declare(VOID);
-			typeSymbolTable.declare(CHAR);
-			typeSymbolTable.declare(BOOL);
+			typeSymbolTable.declare(CHARACTER);
+			typeSymbolTable.declare(BOOLEAN);
 			typeSymbolTable.declare(STRING);
 
-			functionSymbolTable.declare(new FunctionSymbol("getInt", INT, null));
-			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOL, null));
-			functionSymbolTable.declare(new FunctionSymbol("getBool", CHAR, null));
-			functionSymbolTable.declare(new FunctionSymbol("putInt", INT, new TypeSymbol[] { INT }));
-			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOL, new TypeSymbol[] { CHAR }));
-			functionSymbolTable.declare(new FunctionSymbol("putBool", CHAR, new TypeSymbol[] { BOOL }));
-			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }));
+			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false));
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
@@ -222,12 +221,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitFieldAccess(FieldAccessContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
-	@Override
 	/*
 	 * Een additionExpression (+,-) heeft twee int argumenten, en levert een int op. 
 	 * De return value is constant als en slechts als beide input values constant zijn.
@@ -236,18 +229,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit rightExpression = visit(ctx.arithmetic(1));
 
-		if (!leftExpression.type.equals(INT)) {
-			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), leftExpression.type.toString());
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
 			return Suit.ERROR;
 		}
 
-		if (!rightExpression.type.equals(INT)) {
-			this.reportError("addition/substraction only works for int values", ctx, INT.toString(), rightExpression.type.toString());
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
 			return Suit.ERROR;
 		}
 
 		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
-		return new Suit(INT, isConstant);
+		return new Suit(INTEGER, isConstant);
 	}
 
 	@Override
@@ -255,19 +248,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit baseSuit = visit(ctx.arithmetic(0));
 		Suit exponentSuit = visit(ctx.arithmetic(1));
 
-		if (!baseSuit.type.equals(INT)) {
-			this.reportError("exponentiation requires an int base", ctx.arithmetic(0), INT.toString(), baseSuit.type.toString());
+		if (!baseSuit.type.equals(INTEGER)) {
+			this.reportError("exponentiation requires an int base", ctx.arithmetic(0), INTEGER.toString(), baseSuit.type.toString());
 			return Suit.ERROR;
 		}
 
-		if (!exponentSuit.type.equals(INT)) {
-			this.reportError("exponentiation requires an int power", ctx.arithmetic(1), INT.toString(), exponentSuit.type.toString());
+		if (!exponentSuit.type.equals(INTEGER)) {
+			this.reportError("exponentiation requires an int power", ctx.arithmetic(1), INTEGER.toString(), exponentSuit.type.toString());
 			return Suit.ERROR;
 		}
 
 		boolean bothConstant = baseSuit.isConstant && exponentSuit.isConstant;
 
-		return new Suit(INT, bothConstant);
+		return new Suit(INTEGER, bothConstant);
 	}
 
 	/*
@@ -299,7 +292,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 		}
 
-		RecordSymbol symbol = new RecordSymbol(typeNaam, fieldNames, fieldTypes);
+		CompositeSymbol symbol = new CompositeSymbol(typeNaam, fieldNames, fieldTypes);
 
 		try {
 			this.typeSymbolTable.declare(symbol);
@@ -310,10 +303,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
+	/*
+	 * De conditie-expressie van een while-structure moet een boolean waarde opleveren.
+	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
+	 */
 	@Override
 	public Suit visitWhileStructure(WhileStructureContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit conditionSuit = visit(ctx.expression());
+
+		if (!conditionSuit.type.equals(BOOLEAN)) {
+			// Helaas, hij levert geen boolean waarde op. Error reporten.
+			String errorMessage = "The condition for while-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
+					+ "' does not.";
+			reportError(errorMessage, ctx, BOOLEAN.toString(), conditionSuit.type.toString());
+		}
+
+		visit(ctx.blockStructure());
+		return Suit.VOID;
 	}
 
 	@Override
@@ -327,21 +333,83 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) {
-				this.reportError("=/= can only compare int values", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("=/= can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
+	/*
+	 * Een function call heeft de volgende contextbeperkingen:
+	 * - de functie moet gedeclareerd zijn;
+	 * - de types van de gegeven argumenten moeten overeenkomen met de typen van de parameters;
+	 * - (de argumenten moeten op dezelfde volgorde staan als de parameters stonden bij de declaratie.)
+	 * 
+	 * De return suit van de functie komt, als alles klopt, overeen met die van de gedeclareerde 
+	 * functie (merk op dat dit de void-suit kan zijn). Zijn er echter fouten, dan wordt de
+	 * error-suit teruggegeven.
+	 */
 	@Override
 	public Suit visitFunctionCall(FunctionCallContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		/*
+		 * We maken van de identifier + de argumenttypes de function signature, 
+		 * en doorzoeken hiermee de symbol table. Het mooie is dat als er een match
+		 * is, we ook gelijk de argumenttypes en -volgorde gecontroleerd hebben. 
+		 * Deze bepalen immers de signature.
+		 */
+
+		String functionIdentifier = ctx.IDENTIFIER().getText();
+
+		// De types van de argumenten opvragen en in een lijst bijhouden.
+		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.expression().size()];
+
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			argumentTypes[i] = visit(ctx.expression(i)).type;
+		}
+
+		// Identifier + argumenttypes combineren tot function signature.
+		String functionSignature = FunctionSymbol.generateSignature(functionIdentifier, argumentTypes);
+
+		FunctionSymbol functionSymbol = this.functionSymbolTable.resolve(functionSignature);
+
+		if (functionSymbol == null) {
+
+			// Helaas, een dergelijke functie is niet gedeclareerd. Error reporten en error-suit teruggeven.
+			StringBuilder errorMessage = new StringBuilder();
+			errorMessage.append("A function called '" + functionIdentifier + "' and having ");
+
+			if (argumentTypes.length == 0) {
+				errorMessage.append("no parameters ");
+			} else if (argumentTypes.length == 1) {
+				errorMessage.append("one " + argumentTypes[0].toString() + "-typed parameter ");
+			} else if (argumentTypes.length == 2) {
+				errorMessage.append("parameters of type " + argumentTypes[0].toString() + " ");
+				errorMessage.append("and " + argumentTypes[1].toString() + ", ");
+				errorMessage.append("in this order, ");
+			} else {
+				errorMessage.append("parameters of type ");
+
+				for (int i = 0; i < argumentTypes.length - 2; i++) {
+					errorMessage.append(argumentTypes[i].toString() + ", ");
+				}
+
+				errorMessage.append(argumentTypes[argumentTypes.length - 2] + " and " + argumentTypes[argumentTypes.length - 1].toString() + ", ");
+				errorMessage.append("in this order, ");
+
+			}
+
+			errorMessage.append("has not (yet) been declared.");
+			this.reportError(errorMessage.toString(), ctx);
+			return Suit.ERROR;
+		}
+
+		// De functie bestaat. Corresponderende return suit teruggeven.
+		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
 	}
 
 	@Override
@@ -352,8 +420,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitSignExpression(SignExpressionContext ctx) {
 		Suit expressionSuit = visit(ctx.arithmetic());
 
-		if (!INT.equals(expressionSuit.type)) {
-			this.reportError("cannot use +/- on non-int values", ctx.arithmetic(), INT.getIdentifier(), expressionSuit.type.getIdentifier());
+		if (!INTEGER.equals(expressionSuit.type)) {
+			this.reportError("cannot use +/- on non-int values", ctx.arithmetic(), INTEGER.getIdentifier(), expressionSuit.type.getIdentifier());
 			return Suit.ERROR;
 		}
 
@@ -361,7 +429,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitExplicitEnumExpression(ExplicitEnumExpressionContext ctx) {
+	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}
@@ -377,15 +445,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) { //TODO Hier gaat het mis; merkt niet dat INT en INT overeenkomt. (ook bij notequals)
-				this.reportError("= can only compare int values", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) { // TODO Hier gaat het mis; merkt niet dat INT en INT overeenkomt. (ook bij notequals)
+				this.reportError("= can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
 	@Override
@@ -399,15 +467,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) {
-				this.reportError("only int types are comparable with >", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with >", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
 	@Override
@@ -421,15 +489,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) {
-				this.reportError("only int types are comparable with <", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with <", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
 	@Override
@@ -441,17 +509,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit rightExpression = visit(ctx.arithmetic(1));
 
-		if (!leftExpression.type.equals(INT)) {
-			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), leftExpression.type.toString());
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals(INT)) {
-			this.reportError("multiplication/division/modulo only works for int values", ctx, INT.toString(), rightExpression.type.toString());
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
 		}
 
 		boolean bothConstant = leftExpression.isConstant && rightExpression.isConstant;
 
-		return new Suit(INT, bothConstant);
+		return new Suit(INTEGER, bothConstant);
 	}
 
 	@Override
@@ -470,24 +538,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit middleExpression = visit(ctx.arithmetic(1));
 		Suit rightExpression = visit(ctx.arithmetic(2));
 
-		if (!leftExpression.type.equals(INT)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(0), INT.toString(),
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(0), INTEGER.toString(),
 					leftExpression.type.toString());
 		}
 
-		if (!middleExpression.type.equals(INT)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(1), INT.toString(),
+		if (!middleExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(1), INTEGER.toString(),
 					middleExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals(INT)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(2), INT.toString(),
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(2), INTEGER.toString(),
 					rightExpression.type.toString());
 		}
 
 		boolean allConstant = leftExpression.isConstant && middleExpression.isConstant && rightExpression.isConstant;
 
-		return new Suit(BOOL, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	@Override
@@ -507,15 +575,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) {
-				this.reportError("only int types are comparable with >=", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with >=", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
 	@Override
@@ -556,8 +624,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitNotExpression(NotExpressionContext ctx) {
 		Suit argSuit = visit(ctx.expression());
 
-		if (!argSuit.type.equals(BOOL)) {
-			reportError("illegal argument", ctx, BOOL.toString(), null);
+		if (!argSuit.type.equals(BOOLEAN)) {
+			reportError("illegal argument", ctx, BOOLEAN.toString(), null);
 		}
 		return argSuit;
 	}
@@ -578,15 +646,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INT)) {
-				this.reportError("only int types are comparable with <=", ctx, INT.toString(), currentSuit.type.toString());
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with <=", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INT, allConstant);
+		return new Suit(INTEGER, allConstant);
 	}
 
 	@Override
@@ -646,7 +714,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
 		// Eerst kijken van welk composite-type deze literal is.
 		String compositeTypeIdentifier = ctx.IDENTIFIER(0).getText();
-		RecordSymbol compositeType = typeSymbolTable.resolve(compositeTypeIdentifier);
+		CompositeSymbol compositeType = typeSymbolTable.resolve(compositeTypeIdentifier);
 
 		// Composite-type opvragen in symbol table en kijken of deze wel bestaat.
 		if (compositeType == null) {
@@ -723,7 +791,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage, ctx);
 			return Suit.ERROR;
 		}
-		
+
 		// Alles klopt. Nu de juiste suit teruggeven.
 		return new Suit(compositeType, isConstant);
 	}
@@ -777,7 +845,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		this.closeScope();
 
-		FunctionSymbol symbol = new FunctionSymbol(functieNaam, returnSuit.type, argumentTypes);
+		FunctionSymbol symbol = new FunctionSymbol(functieNaam, returnSuit.type, argumentTypes, returnSuit.isConstant);
 
 		try {
 			this.functionSymbolTable.declare(symbol);
@@ -829,7 +897,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * Een number-literal heeft geen contextbeperkingen en levert een
 	 * constant intenger op.
 	 */public Suit visitNumberLiteral(NumberLiteralContext ctx) {
-		return new Suit(INT, true);
+		return new Suit(INTEGER, true);
 	}
 
 	/*
@@ -838,7 +906,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
-		return new Suit(BOOL, true);
+		return new Suit(BOOLEAN, true);
 	}
 
 	/*
@@ -872,7 +940,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
-		return new Suit(CHAR, true);
+		return new Suit(CHARACTER, true);
 	}
 
 	/*

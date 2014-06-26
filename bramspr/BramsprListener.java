@@ -430,12 +430,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
+	void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
+	void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#booleanLiteral}.

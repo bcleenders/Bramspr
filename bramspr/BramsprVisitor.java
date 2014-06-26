@@ -271,13 +271,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#booleanLiteral}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -304,6 +297,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignment(@NotNull BramsprParser.AssignmentContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumerationExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#compositeDeclaration}.

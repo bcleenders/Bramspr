@@ -21,8 +21,8 @@ public class FunctionSymbol extends ValueYieldingSymbol {
 		return sb.toString();
 	}
 
-	public FunctionSymbol(String identifier, TypeSymbol returnType, TypeSymbol[] arguments) {
-		super(identifier, returnType);
+	public FunctionSymbol(String identifier, TypeSymbol returnType, TypeSymbol[] arguments, boolean isConstant) {
+		super(identifier, returnType, isConstant);
 		this.arguments = arguments;
 	}
 

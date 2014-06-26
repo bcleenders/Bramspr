@@ -1,4 +1,4 @@
-x, y, z: int;
+x, y, z: integer;
 
 z := 0; x := 1; y := 2;
 

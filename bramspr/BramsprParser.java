@@ -16,20 +16,20 @@ public class BramsprParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		RIGHT_BRACE=35, FUNCTION=25, XOR=19, LOGIC=20, GREATER_THAN=10, WHILE=24, 
-		SWAP=2, PLUSMINUS=14, ELSE=23, NUMBER=44, BOOL=40, BECOMES=1, WHITESPACE=47, 
-		POWER=15, COMPOSITE=26, SEMICOLON=31, NOT=16, MINUS=4, AND=17, CHARACTER=42, 
-		EQUALS_TO=12, RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, IF=21, COLON=30, 
-		ENUM=27, THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, IDENTIFIER=43, 
-		LEFT_BRACE=34, LEFT_PARENTHESIS=32, MODULUS=7, OR=18, RETURN=28, CONSTANT=29, 
-		DIVISION=6, BLOCKCOMMENT=46, MULTIPLICATION=5, PLUS=3, NOT_EQUALS_TO=13, 
+		SWAP=2, PLUSMINUS=14, ELSE=23, NUMBER=44, BECOMES=1, WHITESPACE=47, POWER=15, 
+		COMPOSITE=26, SEMICOLON=31, NOT=16, MINUS=4, AND=17, CHARACTER=42, EQUALS_TO=12, 
+		RIGHT_BLOCKBRACE=37, LEFT_BLOCKBRACE=36, IF=21, COLON=30, BOOLEAN=40, 
+		THEN=22, RIGHT_PARENTHESIS=33, SMALLER_THAN=8, COMMA=38, ENUMERATION=27, 
+		IDENTIFIER=43, LEFT_BRACE=34, LEFT_PARENTHESIS=32, MODULUS=7, OR=18, RETURN=28, 
+		CONSTANT=29, DIVISION=6, BLOCKCOMMENT=46, MULTIPLICATION=5, PLUS=3, NOT_EQUALS_TO=13, 
 		GREATER_THAN_EQUALS_TO=11, COMMENT=45, DOT=39, STRING=41, SMALLER_THAN_EQUALS_TO=9;
 	public static final String[] tokenNames = {
 		"<INVALID>", "':='", "'<>'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", 
 		"'<='", "'>'", "'>='", "'='", "'=/='", "'+-'", "'^'", "'!'", "'&'", "'|'", 
 		"'!&'", "LOGIC", "'if'", "'then'", "'else'", "'while'", "'function'", 
-		"'composite'", "'enum'", "'return'", "'constant'", "':'", "';'", "'('", 
-		"')'", "'{'", "'}'", "'['", "']'", "','", "'.'", "BOOL", "STRING", "CHARACTER", 
-		"IDENTIFIER", "NUMBER", "COMMENT", "BLOCKCOMMENT", "WHITESPACE"
+		"'composite'", "'enumeration'", "'return'", "'constant'", "':'", "';'", 
+		"'('", "')'", "'{'", "'}'", "'['", "']'", "','", "'.'", "BOOLEAN", "STRING", 
+		"CHARACTER", "IDENTIFIER", "NUMBER", "COMMENT", "BLOCKCOMMENT", "WHITESPACE"
 	};
 	public static final int
 		RULE_program = 0, RULE_structure = 1, RULE_blockStructure = 2, RULE_ifStructure = 3, 
@@ -90,7 +90,7 @@ public class BramsprParser extends Parser {
 			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUMERATION) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(42); statement();
@@ -204,7 +204,7 @@ public class BramsprParser extends Parser {
 			setState(57);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUMERATION) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(54); statement();
@@ -459,7 +459,7 @@ public class BramsprParser extends Parser {
 				setState(93); functionDeclaration();
 				}
 				break;
-			case ENUM:
+			case ENUMERATION:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(94); enumerationDeclaration();
@@ -623,11 +623,11 @@ public class BramsprParser extends Parser {
 
 	public static class EnumerationDeclarationContext extends ParserRuleContext {
 		public TerminalNode RIGHT_BRACE() { return getToken(BramsprParser.RIGHT_BRACE, 0); }
-		public TerminalNode ENUM() { return getToken(BramsprParser.ENUM, 0); }
 		public TerminalNode IDENTIFIER(int i) {
 			return getToken(BramsprParser.IDENTIFIER, i);
 		}
 		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
+		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(BramsprParser.COMMA); }
 		public TerminalNode LEFT_BRACE() { return getToken(BramsprParser.LEFT_BRACE, 0); }
 		public TerminalNode COMMA(int i) {
@@ -651,7 +651,7 @@ public class BramsprParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(126); match(ENUM);
+			setState(126); match(ENUMERATION);
 			setState(127); match(IDENTIFIER);
 			setState(128); match(LEFT_BRACE);
 			setState(137);
@@ -777,7 +777,7 @@ public class BramsprParser extends Parser {
 			setState(163);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUM) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << FUNCTION) | (1L << COMPOSITE) | (1L << ENUMERATION) | (1L << CONSTANT) | (1L << LEFT_BRACE) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(160); statement();
@@ -1650,10 +1650,10 @@ public class BramsprParser extends Parser {
 				setState(278); arithmetic(4);
 				}
 				break;
-			case ENUM:
+			case ENUMERATION:
 			case LEFT_PARENTHESIS:
 			case LEFT_BLOCKBRACE:
-			case BOOL:
+			case BOOLEAN:
 			case STRING:
 			case CHARACTER:
 			case IDENTIFIER:
@@ -1861,6 +1861,23 @@ public class BramsprParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class ExplicitEnumerationExpressionContext extends AtomicContext {
+		public List<TerminalNode> DOT() { return getTokens(BramsprParser.DOT); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(BramsprParser.IDENTIFIER, i);
+		}
+		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
+		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
+		public TerminalNode DOT(int i) {
+			return getToken(BramsprParser.DOT, i);
+		}
+		public ExplicitEnumerationExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumerationExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class AssignableExpressionContext extends AtomicContext {
 		public AssignableContext assignable() {
 			return getRuleContext(AssignableContext.class,0);
@@ -1893,23 +1910,6 @@ public class BramsprParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignmentExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ExplicitEnumExpressionContext extends AtomicContext {
-		public TerminalNode ENUM() { return getToken(BramsprParser.ENUM, 0); }
-		public List<TerminalNode> DOT() { return getTokens(BramsprParser.DOT); }
-		public TerminalNode IDENTIFIER(int i) {
-			return getToken(BramsprParser.IDENTIFIER, i);
-		}
-		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
-		public TerminalNode DOT(int i) {
-			return getToken(BramsprParser.DOT, i);
-		}
-		public ExplicitEnumExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1977,10 +1977,10 @@ public class BramsprParser extends Parser {
 
 			case 3:
 				{
-				_localctx = new ExplicitEnumExpressionContext(_localctx);
+				_localctx = new ExplicitEnumerationExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(315); match(ENUM);
+				setState(315); match(ENUMERATION);
 				setState(316); match(DOT);
 				setState(317); match(IDENTIFIER);
 				setState(318); match(DOT);
@@ -2086,7 +2086,7 @@ public class BramsprParser extends Parser {
 			setState(333); match(LEFT_PARENTHESIS);
 			setState(342);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUM) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOL) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUMERATION) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOLEAN) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
 				{
 				setState(334); expression(0);
 				setState(339);
@@ -2225,7 +2225,7 @@ public class BramsprParser extends Parser {
 		}
 	}
 	public static class BooleanLiteralContext extends LiteralContext {
-		public TerminalNode BOOL() { return getToken(BramsprParser.BOOL, 0); }
+		public TerminalNode BOOLEAN() { return getToken(BramsprParser.BOOLEAN, 0); }
 		public BooleanLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -2299,11 +2299,11 @@ public class BramsprParser extends Parser {
 				setState(356); match(STRING);
 				}
 				break;
-			case BOOL:
+			case BOOLEAN:
 				_localctx = new BooleanLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(357); match(BOOL);
+				setState(357); match(BOOLEAN);
 				}
 				break;
 			case LEFT_BLOCKBRACE:
@@ -2313,7 +2313,7 @@ public class BramsprParser extends Parser {
 				setState(358); match(LEFT_BLOCKBRACE);
 				setState(367);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUM) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOL) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PLUS) | (1L << MINUS) | (1L << NOT) | (1L << ENUMERATION) | (1L << LEFT_PARENTHESIS) | (1L << LEFT_BLOCKBRACE) | (1L << BOOLEAN) | (1L << STRING) | (1L << CHARACTER) | (1L << IDENTIFIER) | (1L << NUMBER))) != 0)) {
 					{
 					setState(359); expression(0);
 					setState(364);

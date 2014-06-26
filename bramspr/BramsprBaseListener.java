@@ -511,13 +511,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx) { }
+	@Override public void enterExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumExpressionContext ctx) { }
+	@Override public void exitExplicitEnumExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

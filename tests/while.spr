@@ -1,5 +1,5 @@
-x: int;
-y, z: int;
+x: integer;
+y, z: integer;
 
 x := 1;
 z := 10;

@@ -2,10 +2,10 @@ package symboltable;
 
 import java.util.HashMap;
 
-public class RecordSymbol extends TypeSymbol {
+public class CompositeSymbol extends TypeSymbol {
 	HashMap<String, TypeSymbol> fields = new HashMap<String, TypeSymbol>();
 	
-	public RecordSymbol(String identifier, String[] fieldNames, TypeSymbol[] fieldTypes) {
+	public CompositeSymbol(String identifier, String[] fieldNames, TypeSymbol[] fieldTypes) {
 		super(identifier);
 		
 		for (int i = 0; fieldNames != null && i < fieldNames.length; i++) {
