@@ -188,12 +188,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#identifierExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdentifierExpression(@NotNull BramsprParser.IdentifierExpressionContext ctx);
+	void enterIdentifierExpression(@NotNull BramsprParser.BasicAssignableContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#identifierExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitIdentifierExpression(@NotNull BramsprParser.IdentifierExpressionContext ctx);
+	void exitIdentifierExpression(@NotNull BramsprParser.BasicAssignableContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#notExpression}.
@@ -452,12 +452,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
+	void enterAssignableFieldAccessExpression(@NotNull BramsprParser.FieldAccessAssignableContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
+	void exitAssignableFieldAccessExpression(@NotNull BramsprParser.FieldAccessAssignableContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#arithmeticExpression}.

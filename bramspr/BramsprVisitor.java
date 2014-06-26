@@ -117,18 +117,18 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAssignmentExpression(@NotNull BramsprParser.AssignmentExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#identifierExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdentifierExpression(@NotNull BramsprParser.IdentifierExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#notExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#fieldAccessAssignable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldAccessAssignable(@NotNull BramsprParser.FieldAccessAssignableContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#smallerThanEqualsToExpression}.
@@ -236,6 +236,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#basicAssignable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBasicAssignable(@NotNull BramsprParser.BasicAssignableContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#smallerThanExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -276,13 +283,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#assignableFieldAccessExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#arithmeticExpression}.

@@ -1,7 +1,6 @@
 package bramspr;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -22,7 +21,7 @@ import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignableExpressionContext;
-import bramspr.BramsprParser.AssignableFieldAccessExpressionContext;
+import bramspr.BramsprParser.FieldAccessAssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
@@ -34,14 +33,13 @@ import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
-import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
 import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
-import bramspr.BramsprParser.IdentifierExpressionContext;
+import bramspr.BramsprParser.BasicAssignableContext;
 import bramspr.BramsprParser.IfStructureContext;
 import bramspr.BramsprParser.InstantiatingDeclarationContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
@@ -59,7 +57,6 @@ import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralContext;
-import bramspr.BramsprParser.StructureContext;
 import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.WhileStructureContext;
 import bramspr.symboltable.SymbolTable;
@@ -93,6 +90,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		enumerationSymbolTable.closeScope();
 	}
 
+	// TODO: moeten we hier nog wat mee doen? Wel hè?
 	private ParseTreeProperty<ParseTree> declarationPointers;
 
 	private int errorCount = 0;
@@ -644,7 +642,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitIdentifierExpression(IdentifierExpressionContext ctx) {
+	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
 		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
 
 		if (variable == null) {
@@ -670,7 +668,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitAssignableFieldAccessExpression(AssignableFieldAccessExpressionContext ctx) {
+	public Suit visitFieldAccessAssignable(FieldAccessAssignableContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ctx);
 	}

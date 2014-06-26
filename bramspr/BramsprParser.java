@@ -1756,26 +1756,26 @@ public class BramsprParser extends Parser {
 			this._p = ctx._p;
 		}
 	}
-	public static class IdentifierExpressionContext extends AssignableContext {
+	public static class BasicAssignableContext extends AssignableContext {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
-		public IdentifierExpressionContext(AssignableContext ctx) { copyFrom(ctx); }
+		public BasicAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIdentifierExpression(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBasicAssignable(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class AssignableFieldAccessExpressionContext extends AssignableContext {
+	public static class FieldAccessAssignableContext extends AssignableContext {
 		public FieldAccessContext fieldAccess() {
 			return getRuleContext(FieldAccessContext.class,0);
 		}
 		public AssignableContext assignable() {
 			return getRuleContext(AssignableContext.class,0);
 		}
-		public AssignableFieldAccessExpressionContext(AssignableContext ctx) { copyFrom(ctx); }
+		public FieldAccessAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignableFieldAccessExpression(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccessAssignable(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1792,7 +1792,7 @@ public class BramsprParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			_localctx = new IdentifierExpressionContext(_localctx);
+			_localctx = new BasicAssignableContext(_localctx);
 			_ctx = _localctx;
 			_prevctx = _localctx;
 
@@ -1808,7 +1808,7 @@ public class BramsprParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new AssignableFieldAccessExpressionContext(new AssignableContext(_parentctx, _parentState, _p));
+					_localctx = new FieldAccessAssignableContext(new AssignableContext(_parentctx, _parentState, _p));
 					pushNewRecursionContext(_localctx, _startState, RULE_assignable);
 					setState(299);
 					if (!(2 >= _localctx._p)) throw new FailedPredicateException(this, "2 >= $_p");

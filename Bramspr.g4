@@ -74,8 +74,8 @@ arithmetic: atomic                                                          # at
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
             
-assignable: assignable fieldAccess                                          # assignableFieldAccessExpression
-          | IDENTIFIER                                                      # identifierExpression
+assignable: assignable fieldAccess                                          # fieldAccessAssignable
+          | IDENTIFIER                                                      # basicAssignable
           ;
 
 atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # assignmentExpression

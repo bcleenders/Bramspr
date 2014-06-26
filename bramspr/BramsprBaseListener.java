@@ -225,13 +225,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterIdentifierExpression(@NotNull BramsprParser.IdentifierExpressionContext ctx) { }
+	@Override public void enterIdentifierExpression(@NotNull BramsprParser.BasicAssignableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitIdentifierExpression(@NotNull BramsprParser.IdentifierExpressionContext ctx) { }
+	@Override public void exitIdentifierExpression(@NotNull BramsprParser.BasicAssignableContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -537,13 +537,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx) { }
+	@Override public void enterAssignableFieldAccessExpression(@NotNull BramsprParser.FieldAccessAssignableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitAssignableFieldAccessExpression(@NotNull BramsprParser.AssignableFieldAccessExpressionContext ctx) { }
+	@Override public void exitAssignableFieldAccessExpression(@NotNull BramsprParser.FieldAccessAssignableContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
