@@ -750,10 +750,30 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return super.visitChildren(ctx);
 	}
 
+	/*
+	 * De conditie-expressie van een if-structure moet een boolean waarde opleveren.
+	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
+	 */
 	@Override
 	public Suit visitIfStructure(IfStructureContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		Suit conditionSuit = visit(ctx.expression());
+
+		if (!conditionSuit.type.equals(BOOLEAN)) {
+			// Helaas, hij levert geen boolean waarde op. Error reporten.
+			String errorMessage = "The condition for if-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
+					+ "' does not.";
+			reportError(errorMessage, ctx.expression(), BOOLEAN.toString(), conditionSuit.type.toString());
+		}
+
+		// Het if-block visiten.
+		visit(ctx.blockStructure(0));
+		
+		// Er is misschien een else-deel. Dit block dan ook visiten.
+		if (ctx.blockStructure(1) != null){
+			visit(ctx.blockStructure(1));
+		}
+				
+		return Suit.VOID;
 	}
 
 	@Override
