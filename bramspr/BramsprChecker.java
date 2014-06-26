@@ -522,10 +522,49 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, bothConstant);
 	}
 
+	/*
+	 * De contextbeperkingen voor een enumeration declaration: 
+	 * - de naam moet uniek zijn (voor enumerations);
+	 * - er mogen geen dubbele waarden voorkomen.
+	 *  
+	 * Verder wordt er uiteraard een enumeration aangemaakt met 
+	 * de opgegeven waarden.
+	 */
 	@Override
 	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		String enumerationIdentifier = identifiers.remove(0).getText();
+		HashSet<String> enumerationValues = new HashSet<String>();
+
+		for (int i = 0; i < identifiers.size(); i++) {
+			String value = identifiers.get(i).getText();
+			
+			// Methode add(value) geeft 'false' terug als 'value' al in de set zat.
+			boolean newValue = enumerationValues.add(value);
+
+			if (!newValue) {
+				// Deze waarde komt dubbel voor. Error reporten.
+				String errorMessage = "Value '" + value + "' appears more than once in the declaration of enumeration '" + enumerationIdentifier
+						+ "'. This is not allowed.";
+				reportError(errorMessage, ctx);
+			}
+		}
+		
+		// We moeten geen HashSet, maar een array meegeven als argument, dus we zetten de set om in een array.
+		String[] arrayWithEnumerationValues = new String[enumerationValues.size()];
+		enumerationValues.toArray(arrayWithEnumerationValues);
+
+		// We maken een symbol aan voor in de symbol table.
+		EnumerationSymbol symbol = new EnumerationSymbol(enumerationIdentifier, arrayWithEnumerationValues);
+
+		try {
+			this.enumerationSymbolTable.declare(symbol);
+		} catch (SymbolTableException e) {
+			this.reportError(e.getMessage(), ctx);
+		}
+
+		return Suit.VOID;
 	}
 
 	@Override
@@ -556,12 +595,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		boolean allConstant = leftExpression.isConstant && middleExpression.isConstant && rightExpression.isConstant;
 
 		return new Suit(BOOLEAN, allConstant);
-	}
-
-	@Override
-	public Suit visitStructure(StructureContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
 	}
 
 	@Override

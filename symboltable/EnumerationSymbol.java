@@ -3,13 +3,15 @@ package symboltable;
 import java.util.HashSet;
 
 public class EnumerationSymbol extends TypeSymbol {
-	HashSet<String> constants;
+	HashSet<String> values;
 	
-	public EnumerationSymbol(String identifier, String[] constants) {
+	public EnumerationSymbol(String identifier, String[] values) {
 		super(identifier);
 
-		for (String string : constants) {
-			this.constants.add(string);
+		this.values = new HashSet<String>();
+		
+		for (String string : values) {
+			this.values.add(string);
 		}
 	}
 	
@@ -19,6 +21,6 @@ public class EnumerationSymbol extends TypeSymbol {
 	 * @return true iff the enum contains this constant
 	 */
 	public boolean hasValue(String identifier) {
-		return constants.contains(identifier);
+		return values.contains(identifier);
 	}
 }
