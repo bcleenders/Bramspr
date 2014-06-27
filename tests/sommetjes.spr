@@ -4,12 +4,12 @@ Eerst even wat nummertjes!
 
 x, y: integer;
 z: integer := 3;
-constant X: int := 5;
+constant X: integer := 5;
 
 x := 2;
 y := x;
 z := X;
 
 // Nu zijn x, y en z allemaal niet constant, maar X wel.
-constant Z: integer := z + X; // Dit mag dus niet
+// constant Z: integer := z + X; // Dit mag dus niet
 constant Z: integer := (X*X) + X^(X+X); // Dit mag wel; alleen constantes gebruikt

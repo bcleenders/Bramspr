@@ -21,7 +21,7 @@ import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignableExpressionContext;
-import bramspr.BramsprParser.FieldAccessAssignableContext;
+import bramspr.BramsprParser.FieldAccessOnAssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
@@ -33,7 +33,6 @@ import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
-import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
@@ -333,15 +332,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("=/= can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
+			if (!currentSuit.type.equals(INTEGER)) {
+				System.out.println("Types komen niet overeen.");
+				System.out.println(INTEGER);
+				System.out.println(currentSuit.type);
+
+				this.reportError("=/= can only compare int values", ctx.arithmetic(i), INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	/*
@@ -429,9 +432,30 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
+	/*
+	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Het enum type moet bestaan
+	 * 	2 Het enum type moet een veld met de gereferencete naam hebben
+	 * Het return type is // TODO overleg met Jasper; zelfde als hier beneden
+	 */
 	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		String enumName = ctx.IDENTIFIER(0).getText();
+		String fieldName = ctx.IDENTIFIER(1).getText();
+		
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);	
+		
+		if(enumSymbol == null) { // Test #1
+			this.reportError("reference to non-existing enum type '" + enumName + "'.", ctx);
+			return Suit.ERROR;
+		}
+		
+		if(! enumSymbol.hasValue(fieldName)) { // Test #2
+			this.reportError("reference to non-existing field '" + fieldName + "' in enum type '" + enumName + "'.", ctx);
+			return Suit.ERROR;
+		}
+		
+		// Geef de waarde terug!
+		return null; // TODO
 	}
 
 	@Override
@@ -445,7 +469,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) { // TODO Hier gaat het mis; merkt niet dat INT en INT overeenkomt. (ook bij notequals)
+			if (!currentSuit.equals(INTEGER)) {
 				this.reportError("= can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
@@ -453,7 +477,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	@Override
@@ -539,7 +563,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		for (int i = 0; i < identifiers.size(); i++) {
 			String value = identifiers.get(i).getText();
-			
+
 			// Methode add(value) geeft 'false' terug als 'value' al in de set zat.
 			boolean newValue = enumerationValues.add(value);
 
@@ -550,7 +574,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				reportError(errorMessage, ctx);
 			}
 		}
-		
+
 		// We moeten geen HashSet, maar een array meegeven als argument, dus we zetten de set om in een array.
 		String[] arrayWithEnumerationValues = new String[enumerationValues.size()];
 		enumerationValues.toArray(arrayWithEnumerationValues);
@@ -631,7 +655,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(type, false);
 	}
 
-	
 	/*
 	 * Een assignment-expression bestaat uit niets meer dan een assignment
 	 * tussen haakjes, en geeft dan ook de suit van de assignment terug.
@@ -639,18 +662,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
 		return visit(ctx.assignment());
-	}
-
-	@Override
-	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
-		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
-
-		if (variable == null) {
-			this.reportError("reference to non-existing variable '" + ctx.IDENTIFIER().getText() + "'.", ctx);
-			return Suit.ERROR;
-		}
-
-		return new Suit(variable.getReturnType(), variable.isConstant());
 	}
 
 	@Override
@@ -668,9 +679,96 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	@Override
-	public Suit visitFieldAccessAssignable(FieldAccessAssignableContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+	/*
+	 * Een fieldAccessAssignable moet aan de volgende contextuele eisen voldoen:
+	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
+	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
+	 * 	1.2 Het return type is gelijk aan het type van dat veld.
+	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
+	 * Als de assignable geen record oplevert maar wél een enum (impliciete referentie naar enum), dan gelden de volgende eisen:
+	 * 	2.1 Het enum type moet een veld met de gerefereerde naam hebben.
+	 * 	2.2 Het return type is gelijk aan TODO overleggen met Jasper; welk type? Moet o.a. vergelijkbaar zijn met = en =/=!
+	 * Als een assignable geen record en geen enum, dan is het geen geldige expressie.
+	 */
+	public Suit visitFieldAccessOnAssignable(FieldAccessOnAssignableContext ctx) {
+		// Return suite van de expression opvragen.
+		Suit expressionSuit = visit(ctx.assignable());
+		String fieldName = ctx.IDENTIFIER().getText();
+
+		// Kijken of dit een record is.
+		if (expressionSuit.type instanceof CompositeSymbol) {
+			CompositeSymbol compositeType = (CompositeSymbol) expressionSuit.type;
+
+			// Test eis #1.1
+			if (!compositeType.hasField(fieldName)) {
+				/*
+				 * De programmeur heeft een fout gemaakt: dit recordtype heeft dit veld niet. Het kan echter zijn dat de programmeur
+				 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
+				 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
+				 * bestaat dat wèl deze veldnaam bezit.
+				 */
+				String errorMessage = "Type " + expressionSuit.type.getIdentifier() + " does not contain field " + fieldName + ".";
+				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(expressionSuit.type.getIdentifier());
+				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
+					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + expressionSuit.type.getIdentifier() + " is currently being hidden by type"
+							+ expressionSuit.type.getIdentifier() + ". To explicitly denote the enumeration, use 'enum." + expressionSuit.type.getIdentifier() + "'.";
+				}
+
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+
+			} else {
+				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
+				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
+			}
+
+		} else if (expressionSuit.type instanceof EnumerationSymbol) {
+			EnumerationSymbol enumType = (EnumerationSymbol) expressionSuit.type;
+
+			// Eis #1.1
+			if (!enumType.hasValue(fieldName)) {
+				String errorMessage = "enum " + expressionSuit.type.getIdentifier() + " does not contain constant " + fieldName + ".";
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			} else {
+				// TODO return enum constant type (dunno how that's encoded...)
+			}
+		} else if (expressionSuit.type instanceof ArraySymbol) {
+			// This is just to help the programmer...
+			String errorMessage = "This expression yields an arrayvalue. You can't access fields of an array like that. Please use the following notation: "
+					+ ctx.assignable().getText() + "[n], where n is an integer.";
+			reportError(errorMessage, ctx);
+			return Suit.ERROR;
+
+		}
+
+		this.reportError("Unexpected field access; no suggestions available", ctx);
+		return Suit.ERROR;
+	}
+
+	@Override
+	/*
+	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
+	 * 	1. Er moet of een variabele of een enum met de naam bestaan.
+	 * 	2. Indien het een variabele is, is het return type gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
+	 * 	3. Indien het een enum is, wordt een enum type teruggegeven.
+	 */
+	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
+		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
+
+		if (variable != null) {
+			return new Suit(variable.getReturnType(), variable.isConstant());
+		}
+
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(ctx.IDENTIFIER().getText());
+		if (enumSymbol != null) {
+			return new Suit(enumSymbol, true);
+		}
+
+		this.reportError("reference to non-existing variable/enum type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
+		return Suit.ERROR;
 	}
 
 	/*
@@ -694,12 +792,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, allConstant);
 	}
 
-	@Override
-	public Suit visitStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
 	/*
 	 * Een assignment moet aan de volgende eisen voldoen:
 	 *  - de assignable(s) moet bestaan, dat wil zeggen: de variabele moet gedeclareerd zijn / het veld moet bestaan;
@@ -714,38 +806,34 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitAssignment(AssignmentContext ctx) {
 		// Alle assignables opvragen.
 		List<AssignableContext> assignables = ctx.assignable();
-		
+
 		// Type van de expressie opvragen.
 		Suit expressionSuit = visit(ctx.expression());
 		TypeSymbol expressionType = expressionSuit.type;
-				
-		for (AssignableContext assignable : assignables){
+
+		for (AssignableContext assignable : assignables) {
 			// Suit van de assignable opvragen.
 			Suit assignableSuit = visit(assignable);
-			
-			if (assignableSuit.isConstant){
+
+			if (assignableSuit.isConstant) {
 				// Oh oh, deze assignable is constant. Dat mag niet. Error reporten en error-suit teruggeven.
-				String errorMessage = "The variable '" + assignable.getText() + "' is constant. After initialisation, constant variables can not be assigned new values.";
+				String errorMessage = "The variable '" + assignable.getText()
+						+ "' is constant. After initialisation, constant variables can not be assigned new values.";
 				reportError(errorMessage, assignable);
 				return Suit.ERROR;
 			}
-			
-			if (!assignableSuit.type.equals(expressionType)){
+
+			if (!assignableSuit.type.equals(expressionType)) {
 				// Onjuist type. Error reporten en error-suit teruggeven.
-				String errorMessage = "Expression '" + ctx.expression().getText() + "' yields the wrong type of value for variable '" + assignable.getText() + "'.";
+				String errorMessage = "Expression '" + ctx.expression().getText() + "' yields the wrong type of value for variable '" + assignable.getText()
+						+ "'.";
 				reportError(errorMessage, assignable, assignableSuit.type.toString(), expressionType.toString());
 				return Suit.ERROR;
 			}
 		}
-		
-		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
-		return expressionSuit;	
-	}
 
-	@Override
-	public Suit visitAssignableExpression(AssignableExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
+		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
+		return expressionSuit;
 	}
 
 	/*
@@ -765,12 +853,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Het if-block visiten.
 		visit(ctx.blockStructure(0));
-		
+
 		// Er is misschien een else-deel. Dit block dan ook visiten.
-		if (ctx.blockStructure(1) != null){
+		if (ctx.blockStructure(1) != null) {
 			visit(ctx.blockStructure(1));
 		}
-				
+
 		return Suit.VOID;
 	}
 
@@ -787,7 +875,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
+
 		return super.visitChildren(ctx);
 	}
 
@@ -971,12 +1059,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	@Override
-	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
 	/*
 	 * Een character-literal heeft geen contextbeperkingen en levert een
 	 * constant string op.
@@ -1081,16 +1163,48 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	@Override
+	/*
+	 * Een orExpression (+,-) heeft twee bool argumenten, en levert een bool op. 
+	 * De return value is constant als en slechts als beide input values constant zijn.
+	 */
 	public Suit visitOrExpression(OrExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
+
+		if (!leftExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator OR only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		if (!rightExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator OR only works for int values", ctx, BOOLEAN.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
+		return new Suit(BOOLEAN, isConstant);
 	}
 
-	@Override
+	/*
+	 * Een andExpression (+,-) heeft twee bool argumenten, en levert een bool op. 
+	 * De return value is constant als en slechts als beide input values constant zijn.
+	 */
 	public Suit visitAndExpression(AndExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
+
+		if (!leftExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator AND only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		if (!rightExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator AND only works for int values", ctx, BOOLEAN.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
+		return new Suit(BOOLEAN, isConstant);
 	}
 
 	// Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
