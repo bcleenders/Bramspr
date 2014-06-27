@@ -2,6 +2,8 @@ x, y, z : integer;
 constant X: integer := 1;
 constant Y: integer := 2;
 
+a: boolean := false;
+constant A: boolean := false;
 b: boolean;
 constant B: boolean := true;
 
@@ -14,3 +16,4 @@ b := x =/= y =/= z;
 b := b;
 
 // TODO: and/or toevoegen
+b := A | b & a & (a | A);

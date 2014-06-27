@@ -74,7 +74,8 @@ arithmetic: atomic                                                          # at
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
             
-assignable: assignable fieldAccess                                          # fieldAccessAssignable
+assignable: assignable DOT IDENTIFIER                                       # fieldAccessOnAssignable
+          | assignable LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE          # arrayAccessOnAssignable
           | IDENTIFIER                                                      # basicAssignable
           ;
 
@@ -84,14 +85,9 @@ atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # as
        | assignable                                                         # assignableExpression
        | functionCall                                                       # functionCallExpression
        | literal                                                            # literalExpression
-       | atomic fieldAccess                                                 # fieldAccessExpression
        ;
 
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
-            ;
-
-fieldAccess : DOT IDENTIFIER
-            | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE
             ;
 
 literal : NUMBER                                                                                                          # numberLiteral
