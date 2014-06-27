@@ -694,12 +694,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, allConstant);
 	}
 
-	@Override
-	public Suit visitStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
 	/*
 	 * Een assignment moet aan de volgende eisen voldoen:
 	 *  - de assignable(s) moet bestaan, dat wil zeggen: de variabele moet gedeclareerd zijn / het veld moet bestaan;
@@ -742,12 +736,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return expressionSuit;	
 	}
 
-	@Override
-	public Suit visitAssignableExpression(AssignableExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
-	}
-
 	/*
 	 * De conditie-expressie van een if-structure moet een boolean waarde opleveren.
 	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
@@ -783,12 +771,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		ArraySymbol arrayType = new ArraySymbol(size, elementType);
 
 		return new Suit(arrayType, false);
-	}
-
-	@Override
-	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ctx);
 	}
 
 	/*
