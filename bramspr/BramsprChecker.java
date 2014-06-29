@@ -95,6 +95,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	/** The symbol table in which declared enumerations are administered. */
 	private SymbolTable<EnumerationSymbol> enumerationSymbolTable = new SymbolTable<EnumerationSymbol>(); // enumnamen (e.g. DAYS)
 
+	/** TODO: Dit moet JavaDoc krijgen. */
+	// TODO: moeten we hier nog wat mee doen? Wel hè?
+	private ParseTreeProperty<ParseTree> declarationPointers;
+
+	/** The current amount of encountered context errors in the program. */
+	private int errorCount = 0;
+
+	public BramsprChecker() {
+
+	}
+
 	/** Opens a new scope in all symbol tables. */
 	private void openScope() {
 		functionSymbolTable.openScope();
@@ -102,7 +113,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		typeSymbolTable.openScope();
 		enumerationSymbolTable.openScope();
 	}
-
+	
 	/** Closes the current scope in all symbol tables. */
 	private void closeScope() {
 		functionSymbolTable.closeScope();
@@ -111,17 +122,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		enumerationSymbolTable.closeScope();
 	}
 
-	/** TODO: Dit moet JavaDoc krijgen. */
-	// TODO: moeten we hier nog wat mee doen? Wel hè?
-	private ParseTreeProperty<ParseTree> declarationPointers;
-
-	/** The current amount of encountered context errors in the program. */
-	private int errorCount = 0;
-
 	/** @return {@link #errorCount} */
 	public int getErrorCount() {
 		return errorCount;
 	}
+
 
 	/**
 	 * Reports a context error.
@@ -163,7 +168,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.err.println(".");
 		}
 	}
-
+	
 	/**
 	 * Reports a context error.
 	 * 
@@ -175,73 +180,128 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		reportError(message, erroneousNode, null, null);
 	}
 
-	public BramsprChecker() {
+	@Override
+	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
+		return visit(ctx.accessExpression());
+	}
 
+	@Override
+	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
+		return visit(ctx.accessExpression());
 	}
 
 	/**
-	 * Handles the context checking of a Bramspr program.
+	 * Handles the context checking of an addition-expression.
 	 * 
-	 * Opens the root scope, declares all built-in types and functions, recursively context-checks the program and finally closes the root scope.
+	 * An addition-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the top node of the program's parse tree.
-	 * @return A program has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this addition-expression.
+	 * @return The suit of the addition-expression or {@link Suit#ERROR} in case of a context error.
 	 */
-	public Suit visitProgram(ProgramContext ctx) {
-		this.openScope();
-		try {
-			typeSymbolTable.declare(INTEGER);
-			typeSymbolTable.declare(VOID);
-			typeSymbolTable.declare(CHARACTER);
-			typeSymbolTable.declare(BOOLEAN);
-			typeSymbolTable.declare(STRING);
+	@Override
+	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit rightExpression = visit(ctx.arithmetic(1));
 
-			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false));
-
-		} catch (SymbolTableException se) {
-			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
-			System.err.println(se.getMessage());
-			se.printStackTrace();
-			System.exit(1); // Als het zo erg misgaat, laat dan maar zitten...
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
 		}
 
-		super.visitProgram(ctx);
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
+		}
 
-		this.closeScope();
-		return Suit.VOID;
+		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
+		return new Suit(INTEGER, isConstant);
 	}
 
 	/**
-	 * When a syntactically erroneous program is parsed, the parse tree will contain error nodes. This method handles their context checking.
+	 * Handles the context checking of an and-expression.
 	 * 
-	 * @param node
-	 *            The node that is to be visited.
-	 * @return An error node is erroneous by definition, so {@link Suit#ERROR}.
-	 */
-	@Override
-	public Suit visitErrorNode(ErrorNode node) {
-		return Suit.ERROR;
-	}
-
-	/**
-	 * Handles the context checking of a parenthesis-expression.
+	 * An and-expression is confined to the following context rules:
 	 * 
-	 * Visits the enclosed expression and passes on its suit.
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>boolean</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this parenthesis-expression.
-	 * @return The suit of the enclosed expression.
+	 *            The context object associated with the parse tree node of this and-expression.
+	 * @return The suit of the and-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitParenthesisExpression(ParenthesisExpressionContext ctx) {
-		return visit(ctx.expression());
+	public Suit visitAndExpression(AndExpressionContext ctx) {
+		Suit leftExpression = visit(ctx.expression(0));
+		Suit rightExpression = visit(ctx.expression(1));
+
+		if (!leftExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator AND only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		if (!rightExpression.type.equals(BOOLEAN)) {
+			this.reportError("logical operator AND only works for int values", ctx, BOOLEAN.toString(), rightExpression.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
+		return new Suit(BOOLEAN, isConstant);
+	}
+
+	@Override
+	/*
+	 * Er moet hier gekeken worden of
+	 *  - de array-expressie inderdaad een array is
+	 *  - de index-expressie een integer is
+	 *  - welke type de array-elementen zijn, zodat de juiste return suit gekozen kan worden
+	 *  - of de array-expressie mutable is, zodat de juiste return suit gekozen kan worden
+	 */
+	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
+		Suit expressionSuit = visit(ctx.parent.getChild(0));
+		Suit indexSuit = visit(ctx.expression());
+
+		// Levert de linkerexpressie een arraywaarde op?
+		if (expressionSuit.type instanceof ArraySymbol) {
+
+			// Ja, het levert een arraywaarde op! We kunnen deze cast nu maken.
+			ArraySymbol arrayType = (ArraySymbol) expressionSuit.type;
+
+			// Nu kijken of de meegegeven index wel een integer is.
+			if (indexSuit.type.equals(INTEGER)) {
+
+				// Alles klopt. Gaan met die banaan.
+				return new Suit(arrayType.type, expressionSuit.isConstant);
+
+			} else {
+
+				// Oh oh. De meegegeven index is geen integer...
+				String errorMessage = "The expression '" + ctx.expression().getText() + "' yields no integer value. Array indexes must be of integer type.";
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			}
+
+		} else {
+
+			// Oh oh. De linkerexpressie levert geen arraywaarde op...
+			String errorMessage = "The expression '" + ctx.getParent().getChild(0).getText() + "' does not yield an array.";
+			reportError(errorMessage, ctx);
+			return Suit.ERROR;
+		}
 	}
 
 	/**
@@ -297,741 +357,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(arrayType, allConstant);
 	}
 
-	/**
-	 * Handles the context checking of an addition-expression.
-	 * 
-	 * An addition-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>both operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>integer</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this addition-expression.
-	 * @return The suit of the addition-expression or {@link Suit#ERROR} in case of a context error.
-	 */
 	@Override
-	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.arithmetic(0));
-		Suit rightExpression = visit(ctx.arithmetic(1));
+	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
+		int size = Integer.parseInt(ctx.NUMBER().getText());
 
-		if (!leftExpression.type.equals(INTEGER)) {
-			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
-			return Suit.ERROR;
-		}
+		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
 
-		if (!rightExpression.type.equals(INTEGER)) {
-			this.reportError("addition/substraction only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
-			return Suit.ERROR;
-		}
+		ArraySymbol arrayType = new ArraySymbol(size, elementType);
 
-		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
-		return new Suit(INTEGER, isConstant);
-	}
-
-	/**
-	 * Handles the context checking of a power-expression.
-	 * 
-	 * A power-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>both operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>integer</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this power-expression.
-	 * @return The suit of the power-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitPowerExpression(PowerExpressionContext ctx) {
-		Suit baseSuit = visit(ctx.arithmetic(0));
-		Suit exponentSuit = visit(ctx.arithmetic(1));
-
-		if (!baseSuit.type.equals(INTEGER)) {
-			this.reportError("exponentiation requires an int base", ctx.arithmetic(0), INTEGER.toString(), baseSuit.type.toString());
-			return Suit.ERROR;
-		}
-
-		if (!exponentSuit.type.equals(INTEGER)) {
-			this.reportError("exponentiation requires an int power", ctx.arithmetic(1), INTEGER.toString(), exponentSuit.type.toString());
-			return Suit.ERROR;
-		}
-
-		boolean bothConstant = baseSuit.isConstant && exponentSuit.isConstant;
-
-		return new Suit(INTEGER, bothConstant);
-	}
-
-	/*
-	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
-	 *  1 Een type moet een unieke naam hebben.
-	 *  2 Alle velden in het type moeten een unieke naam hebben.
-	 *  3 Alle velden in het type moeten een geldig type hebben.
-	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
-	 */
-	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
-		String typeNaam = ctx.IDENTIFIER(0).getText();
-
-		// We weten nu hoe 't beestje heet, maar welke velden heeft 'ie?
-		String[] fieldNames = new String[ctx.typeDenoter().size()];
-		TypeSymbol[] fieldTypes = new TypeSymbol[ctx.typeDenoter().size()];
-
-		// We gaan de fielddeclarations stuk voor stuk doorlopen.
-		for (int i = 0; i < ctx.typeDenoter().size(); i++) {
-			fieldNames[i] = ctx.IDENTIFIER(i + 1).getText();
-			fieldTypes[i] = visit(ctx.typeDenoter(i)).type;
-		}
-
-		// Check of er geen dubbele namen zijn.
-		for (int i = 0; i < fieldNames.length; i++) {
-			for (int j = i + 1; j < fieldNames.length; j++) {
-				if (fieldNames[i].equals(fieldNames[j])) {
-					this.reportError("record has non-unique fieldnames", ctx, fieldNames[j], null);
-				}
-			}
-		}
-
-		CompositeSymbol symbol = new CompositeSymbol(typeNaam, fieldNames, fieldTypes);
-
-		try {
-			this.typeSymbolTable.declare(symbol);
-		} catch (SymbolTableException e) {
-			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
-		}
-
-		return Suit.VOID;
-	}
-
-	/**
-	 * Handles the context checking of a while-structure.
-	 * 
-	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method of the block-structure.
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this while-structure.
-	 * @return A while-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
-	 */
-	@Override
-	public Suit visitWhileStructure(WhileStructureContext ctx) {
-		Suit conditionSuit = visit(ctx.expression());
-
-		if (!conditionSuit.type.equals(BOOLEAN)) {
-			// Helaas, hij levert geen boolean waarde op. Error reporten.
-			String errorMessage = "The condition for while-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
-					+ "' does not.";
-			reportError(errorMessage, ctx, BOOLEAN.toString(), conditionSuit.type.toString());
-		}
-
-		visit(ctx.blockStructure());
-		return Suit.VOID;
-	}
-
-	/**
-	 * Handles the context checking of a universal-equals-to-expression.
-	 * 
-	 * A universal-equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>both operands must be of the same type;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this universal-equals-to-expression.
-	 * @return The suit of the universal-equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
-
-		Suit leftSuit = visit(ctx.expression(0));
-		Suit rightSuit = visit(ctx.expression(1));
-
-		if (!leftSuit.type.equals(rightSuit.type)) {
-			this.reportError("a=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
-			return Suit.ERROR;
-		}
-
-		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
-		return new Suit(BOOLEAN, bothConstant);
-	}
-
-	/**
-	 * Handles the context checking of a universal-not-equals-to-expression.
-	 * 
-	 * A universal-not-equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>both operands must be of the same type;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this universal-not-equals-to-expression.
-	 * @return The suit of the universal-not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
-
-		Suit leftSuit = visit(ctx.expression(0));
-		Suit rightSuit = visit(ctx.expression(1));
-
-		if (!leftSuit.type.equals(rightSuit.type)) {
-			this.reportError("a=/=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
-			return Suit.ERROR;
-		}
-
-		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
-		return new Suit(BOOLEAN, bothConstant);
-	}
-
-	/**
-	 * Handles the context checking of a not-equals-to-expression.
-	 * 
-	 * A not-equals-to-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this not-equals-to-expression.
-	 * @return The suit of the not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.type.equals(INTEGER)) {
-				System.out.println("Types komen niet overeen.");
-				System.out.println(INTEGER);
-				System.out.println(currentSuit.type);
-
-				this.reportError("multiple =/= can only compare int values", ctx.arithmetic(i), INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(BOOLEAN, allConstant);
-	}
-
-	/*
-	 * Een function call heeft de volgende contextbeperkingen:
-	 * - de functie moet gedeclareerd zijn;
-	 * - de types van de gegeven argumenten moeten overeenkomen met de typen van de parameters;
-	 * - (de argumenten moeten op dezelfde volgorde staan als de parameters stonden bij de declaratie.)
-	 * 
-	 * De return suit van de functie komt, als alles klopt, overeen met die van de gedeclareerde 
-	 * functie (merk op dat dit de void-suit kan zijn). Zijn er echter fouten, dan wordt de
-	 * error-suit teruggegeven.
-	 */
-	@Override
-	public Suit visitFunctionCall(FunctionCallContext ctx) {
-		/*
-		 * We maken van de identifier + de argumenttypes de function signature, 
-		 * en doorzoeken hiermee de symbol table. Het mooie is dat als er een match
-		 * is, we ook gelijk de argumenttypes en -volgorde gecontroleerd hebben. 
-		 * Deze bepalen immers de signature.
-		 */
-
-		String functionIdentifier = ctx.IDENTIFIER().getText();
-
-		// De types van de argumenten opvragen en in een lijst bijhouden.
-		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.expression().size()];
-
-		for (int i = 0; i < ctx.expression().size(); i++) {
-			argumentTypes[i] = visit(ctx.expression(i)).type;
-		}
-
-		// Identifier + argumenttypes combineren tot function signature.
-		String functionSignature = FunctionSymbol.generateSignature(functionIdentifier, argumentTypes);
-
-		FunctionSymbol functionSymbol = this.functionSymbolTable.resolve(functionSignature);
-
-		if (functionSymbol == null) {
-
-			// Helaas, een dergelijke functie is niet gedeclareerd. Error reporten en error-suit teruggeven.
-			StringBuilder errorMessage = new StringBuilder();
-			errorMessage.append("A function called '" + functionIdentifier + "' and having ");
-
-			if (argumentTypes.length == 0) {
-				errorMessage.append("no parameters ");
-			} else if (argumentTypes.length == 1) {
-				errorMessage.append("one " + argumentTypes[0].toString() + "-typed parameter ");
-			} else if (argumentTypes.length == 2) {
-				errorMessage.append("parameters of type " + argumentTypes[0].toString() + " ");
-				errorMessage.append("and " + argumentTypes[1].toString() + ", ");
-				errorMessage.append("in this order, ");
-			} else {
-				errorMessage.append("parameters of type ");
-
-				for (int i = 0; i < argumentTypes.length - 2; i++) {
-					errorMessage.append(argumentTypes[i].toString() + ", ");
-				}
-
-				errorMessage.append(argumentTypes[argumentTypes.length - 2] + " and " + argumentTypes[argumentTypes.length - 1].toString() + ", ");
-				errorMessage.append("in this order, ");
-
-			}
-
-			errorMessage.append("has not (yet) been declared.");
-			this.reportError(errorMessage.toString(), ctx);
-			return Suit.ERROR;
-		}
-
-		// De functie bestaat. Corresponderende return suit teruggeven.
-		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
-	}
-
-	/**
-	 * Handles the context checking of a sign-expression.
-	 * 
-	 * A sign-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>the operand must be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if the operand is constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this sign-expression.
-	 * @return The suit of the sign-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	public Suit visitSignExpression(SignExpressionContext ctx) {
-		Suit expressionSuit = visit(ctx.arithmetic());
-
-		if (!INTEGER.equals(expressionSuit.type)) {
-			this.reportError("cannot use +/- on non-int values", ctx.arithmetic(), INTEGER.getIdentifier(), expressionSuit.type.getIdentifier());
-			return Suit.ERROR;
-		}
-
-		return expressionSuit;
-	}
-
-	@Override
-	/*
-	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
-	 * 	1 Het enumeration type moet bestaan
-	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
-	 * Het return type is een enumSymbol
-	 */
-	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
-		String enumName = ctx.IDENTIFIER(0).getText();
-		String fieldName = ctx.IDENTIFIER(1).getText();
-
-		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);
-
-		if (enumSymbol == null) { // Test #1
-
-			this.reportError("reference to non-existing enumeration type '" + enumName + "'.", ctx);
-			return Suit.ERROR;
-		}
-
-		if (!enumSymbol.hasValue(fieldName)) { // Test #2
-			this.reportError("reference to non-existing field '" + fieldName + "' in enumeration type '" + enumName + "'.", ctx);
-			return Suit.ERROR;
-		}
-
-		return new Suit(enumSymbol, true);
-	}
-
-	/**
-	 * Handles the context checking of an equals-to-expression.
-	 * 
-	 * An equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this equals-to-expression.
-	 * @return The suit of the equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("multiple = can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(BOOLEAN, allConstant);
-	}
-
-	/**
-	 * Handles the context checking of a greater-than-expression.
-	 * 
-	 * A greater-than-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this greater-than-expression.
-	 * @return The suit of the greater-than-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("only int types are comparable with >", ctx, INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(INTEGER, allConstant);
-	}
-
-	/**
-	 * Handles the context checking of a smaller-than-expression.
-	 * 
-	 * A smaller-than-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this smaller-than-expression.
-	 * @return The suit of the smaller-than-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("only int types are comparable with <", ctx, INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(INTEGER, allConstant);
-	}
-
-	/**
-	 * Handles the context checking of a multiplication-expression.
-	 * 
-	 * A multiplication-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>both operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>integer</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this multiplication-expression.
-	 * @return The suit of the multiplication-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.arithmetic(0));
-		Suit rightExpression = visit(ctx.arithmetic(1));
-
-		if (!leftExpression.type.equals(INTEGER)) {
-			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
-		}
-
-		if (!rightExpression.type.equals(INTEGER)) {
-			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
-		}
-
-		boolean bothConstant = leftExpression.isConstant && rightExpression.isConstant;
-
-		return new Suit(INTEGER, bothConstant);
-	}
-
-	/*
-	 * De contextbeperkingen voor een enumeration declaration: 
-	 * - de naam moet uniek zijn (voor enumerations);
-	 * - er mogen geen dubbele waarden voorkomen.
-	 *  
-	 * Verder wordt er uiteraard een enumeration aangemaakt met 
-	 * de opgegeven waarden.
-	 */
-	@Override
-	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
-		List<TerminalNode> identifiers = ctx.IDENTIFIER();
-
-		String enumerationIdentifier = identifiers.remove(0).getText();
-		HashSet<String> enumerationValues = new HashSet<String>();
-
-		for (int i = 0; i < identifiers.size(); i++) {
-			String value = identifiers.get(i).getText();
-
-			// Methode add(value) geeft 'false' terug als 'value' al in de set zat.
-			boolean newValue = enumerationValues.add(value);
-
-			if (!newValue) {
-				// Deze waarde komt dubbel voor. Error reporten.
-				String errorMessage = "Value '" + value + "' appears more than once in the declaration of enumeration '" + enumerationIdentifier
-						+ "'. This is not allowed.";
-				reportError(errorMessage, ctx);
-			}
-		}
-
-		// We moeten geen HashSet, maar een array meegeven als argument, dus we zetten de set om in een array.
-		String[] arrayWithEnumerationValues = new String[enumerationValues.size()];
-		enumerationValues.toArray(arrayWithEnumerationValues);
-
-		// We maken een symbol aan voor in de symbol table.
-		EnumerationSymbol symbol = new EnumerationSymbol(enumerationIdentifier, arrayWithEnumerationValues);
-
-		try {
-			this.enumerationSymbolTable.declare(symbol);
-		} catch (SymbolTableException e) {
-			this.reportError(e.getMessage(), ctx);
-		}
-
-		return Suit.VOID;
-	}
-
-	/**
-	 * Handles the context checking of a plus-minus-expression.
-	 * 
-	 * A plus-minus-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all three operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all three operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this plus-minus-expression.
-	 * @return The suit of the plus-minus-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.arithmetic(0));
-		Suit middleExpression = visit(ctx.arithmetic(1));
-		Suit rightExpression = visit(ctx.arithmetic(2));
-
-		if (!leftExpression.type.equals(INTEGER)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(0), INTEGER.toString(),
-					leftExpression.type.toString());
-		}
-
-		if (!middleExpression.type.equals(INTEGER)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(1), INTEGER.toString(),
-					middleExpression.type.toString());
-		}
-
-		if (!rightExpression.type.equals(INTEGER)) {
-			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(2), INTEGER.toString(),
-					rightExpression.type.toString());
-		}
-
-		boolean allConstant = leftExpression.isConstant && middleExpression.isConstant && rightExpression.isConstant;
-
-		return new Suit(BOOLEAN, allConstant);
-	}
-
-	/**
-	 * Handles the context checking of a greater-than-equals-to-expression.
-	 * 
-	 * A greater-than-equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this greater-than-equals-to-expression.
-	 * @return The suit of the greater-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("only int types are comparable with >=", ctx, INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(INTEGER, allConstant);
-	}
-
-	@Override
-	public Suit visitBaseTypeDenoter(BaseTypeDenoterContext ctx) {
-		String typeName = ctx.IDENTIFIER().getText();
-		TypeSymbol type = this.typeSymbolTable.resolve(typeName);
-
-		if (type != null) {
-			return new Suit(type, false);
-		}
-
-		// Het is dus niet een normaal type. Misschien een enumeration dan?
-		type = this.enumerationSymbolTable.resolve(typeName);
-		if (type != null) {
-			return new Suit(type, false);
-		}
-
-		this.reportError("reference to non-existing type/enumeration '" + typeName + "'.", ctx);
-		return Suit.ERROR;
-	}
-
-	/*
-	 * Een assignment-expression bestaat uit niets meer dan een assignment
-	 * tussen haakjes, en geeft dan ook de suit van de assignment terug.
-	 */
-	@Override
-	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
-		return visit(ctx.assignment());
-	}
-
-	@Override
-	/*
-	 * Een notExpression heeft één bool argument, en geeft een bool terug.
-	 * De return value is constant als en slechts als het argument constant is.
-	 */
-	public Suit visitNotExpression(NotExpressionContext ctx) {
-		Suit argSuit = visit(ctx.expression());
-
-		if (!argSuit.type.equals(BOOLEAN)) {
-			reportError("illegal argument", ctx, BOOLEAN.toString(), null);
-		}
-		return argSuit;
-	}
-
-	/*
-	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
-	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
-	 * 	2. Indien het een variabele is, is het return type gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
-	 * 	3. Indien het een enumeration is, wordt een enumeration type teruggegeven.
-	 */
-	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
-		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
-
-		if (variable != null) {
-			return new Suit(variable.getReturnType(), variable.isConstant());
-		}
-
-		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(ctx.IDENTIFIER().getText());
-		if (enumSymbol != null) {
-			return new Suit(enumSymbol, true);
-		}
-
-		this.reportError("reference to non-existing variable/enumeration type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
-		return Suit.ERROR;
-	}
-
-	/**
-	 * Handles the context checking of a smaller-than-equals-to-expression.
-	 * 
-	 * A smaller-than-equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * <br>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this smaller-than-equals-to-expression.
-	 * @return The suit of the smaller-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
-	@Override
-	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
-		boolean allConstant = true;
-
-		for (int i = 0; i < ctx.arithmetic().size(); i++) {
-			Suit currentSuit = visit(ctx.arithmetic(i));
-
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("only int types are comparable with <=", ctx, INTEGER.toString(), currentSuit.type.toString());
-				return Suit.ERROR;
-			}
-
-			allConstant = allConstant && currentSuit.isConstant;
-		}
-
-		return new Suit(INTEGER, allConstant);
+		return new Suit(arrayType, false);
 	}
 
 	/*
@@ -1078,58 +412,136 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return expressionSuit;
 	}
 
-	/**
-	 * Handles the context checking of an if-structure.
-	 * 
-	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method(s) of the block-structure(s).
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this if-structure.
-	 * @return A if-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	/*
+	 * Een assignment-expression bestaat uit niets meer dan een assignment
+	 * tussen haakjes, en geeft dan ook de suit van de assignment terug.
 	 */
 	@Override
-	public Suit visitIfStructure(IfStructureContext ctx) {
-		Suit conditionSuit = visit(ctx.expression());
-
-		if (!conditionSuit.type.equals(BOOLEAN)) {
-			// Helaas, hij levert geen boolean waarde op. Error reporten.
-			String errorMessage = "The condition for if-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
-					+ "' does not.";
-			reportError(errorMessage, ctx.expression(), BOOLEAN.toString(), conditionSuit.type.toString());
-		}
-
-		// Het if-block visiten.
-		visit(ctx.blockStructure(0));
-
-		// Er is misschien een else-deel. Dit block dan ook visiten.
-		if (ctx.blockStructure(1) != null) {
-			visit(ctx.blockStructure(1));
-		}
-
-		return Suit.VOID;
+	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
+		return visit(ctx.assignment());
 	}
 
 	@Override
-	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
-		int size = Integer.parseInt(ctx.NUMBER().getText());
-
-		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
-
-		ArraySymbol arrayType = new ArraySymbol(size, elementType);
-
-		return new Suit(arrayType, false);
-	}
-
-	@Override
-	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
+	public Suit visitBaseTypeDenoter(BaseTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
-		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
+		TypeSymbol type = this.typeSymbolTable.resolve(typeName);
+
+		if (type != null) {
+			return new Suit(type, false);
+		}
+
+		// Het is dus niet een normaal type. Misschien een enumeration dan?
+		type = this.enumerationSymbolTable.resolve(typeName);
 		if (type != null) {
 			return new Suit(type, false);
 		}
 
 		this.reportError("reference to non-existing type/enumeration '" + typeName + "'.", ctx);
 		return Suit.ERROR;
+	}
+
+	/*
+	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
+	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
+	 * 	2. Indien het een variabele is, is het return type gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
+	 * 	3. Indien het een enumeration is, wordt een enumeration type teruggegeven.
+	 */
+	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
+		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
+
+		if (variable != null) {
+			return new Suit(variable.getReturnType(), variable.isConstant());
+		}
+
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(ctx.IDENTIFIER().getText());
+		if (enumSymbol != null) {
+			return new Suit(enumSymbol, true);
+		}
+
+		this.reportError("reference to non-existing variable/enumeration type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
+		return Suit.ERROR;
+	}
+
+	/**
+	 * Handles the context checking of a block-structure.
+	 * 
+	 * Just visits the enclosed statements.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this block-structure.
+	 * @return A block-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	@Override
+	public Suit visitBlockStructure(BlockStructureContext ctx) {
+		for (int i = 0; i < ctx.statement().size(); i++) {
+			visit(ctx.statement(i));
+		}
+
+		return Suit.VOID;
+	}
+
+	/**
+	 * Handles the context checking of a boolean-literal by returning a constant <i>boolean</i>-suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this boolean-literal.
+	 * @return A constant <i>boolean</i>-suit.
+	 */
+	@Override
+	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
+		return new Suit(BOOLEAN, true);
+	}
+
+	/**
+	 * Handles the context checking of a character-literal by returning a constant <i>character</i>-suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this character-literal.
+	 * @return A constant <i>character</i>-suit.
+	 */
+	@Override
+	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
+		return new Suit(CHARACTER, true);
+	}
+
+	/*
+	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
+	 *  1 Een type moet een unieke naam hebben.
+	 *  2 Alle velden in het type moeten een unieke naam hebben.
+	 *  3 Alle velden in het type moeten een geldig type hebben.
+	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
+	 */
+	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
+		String typeNaam = ctx.IDENTIFIER(0).getText();
+
+		// We weten nu hoe 't beestje heet, maar welke velden heeft 'ie?
+		String[] fieldNames = new String[ctx.typeDenoter().size()];
+		TypeSymbol[] fieldTypes = new TypeSymbol[ctx.typeDenoter().size()];
+
+		// We gaan de fielddeclarations stuk voor stuk doorlopen.
+		for (int i = 0; i < ctx.typeDenoter().size(); i++) {
+			fieldNames[i] = ctx.IDENTIFIER(i + 1).getText();
+			fieldTypes[i] = visit(ctx.typeDenoter(i)).type;
+		}
+
+		// Check of er geen dubbele namen zijn.
+		for (int i = 0; i < fieldNames.length; i++) {
+			for (int j = i + 1; j < fieldNames.length; j++) {
+				if (fieldNames[i].equals(fieldNames[j])) {
+					this.reportError("record has non-unique fieldnames", ctx, fieldNames[j], null);
+				}
+			}
+		}
+
+		CompositeSymbol symbol = new CompositeSymbol(typeNaam, fieldNames, fieldTypes);
+
+		try {
+			this.typeSymbolTable.declare(symbol);
+		} catch (SymbolTableException e) {
+			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
+		}
+
+		return Suit.VOID;
 	}
 
 	/*
@@ -1230,6 +642,238 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(compositeType, isConstant);
 	}
 
+	/*
+	 * De contextbeperkingen voor een enumeration declaration: 
+	 * - de naam moet uniek zijn (voor enumerations);
+	 * - er mogen geen dubbele waarden voorkomen.
+	 *  
+	 * Verder wordt er uiteraard een enumeration aangemaakt met 
+	 * de opgegeven waarden.
+	 */
+	@Override
+	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		String enumerationIdentifier = identifiers.remove(0).getText();
+		HashSet<String> enumerationValues = new HashSet<String>();
+
+		for (int i = 0; i < identifiers.size(); i++) {
+			String value = identifiers.get(i).getText();
+
+			// Methode add(value) geeft 'false' terug als 'value' al in de set zat.
+			boolean newValue = enumerationValues.add(value);
+
+			if (!newValue) {
+				// Deze waarde komt dubbel voor. Error reporten.
+				String errorMessage = "Value '" + value + "' appears more than once in the declaration of enumeration '" + enumerationIdentifier
+						+ "'. This is not allowed.";
+				reportError(errorMessage, ctx);
+			}
+		}
+
+		// We moeten geen HashSet, maar een array meegeven als argument, dus we zetten de set om in een array.
+		String[] arrayWithEnumerationValues = new String[enumerationValues.size()];
+		enumerationValues.toArray(arrayWithEnumerationValues);
+
+		// We maken een symbol aan voor in de symbol table.
+		EnumerationSymbol symbol = new EnumerationSymbol(enumerationIdentifier, arrayWithEnumerationValues);
+
+		try {
+			this.enumerationSymbolTable.declare(symbol);
+		} catch (SymbolTableException e) {
+			this.reportError(e.getMessage(), ctx);
+		}
+
+		return Suit.VOID;
+	}
+
+	@Override
+	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
+		String typeName = ctx.IDENTIFIER().getText();
+		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
+		if (type != null) {
+			return new Suit(type, false);
+		}
+
+		this.reportError("reference to non-existing type/enumeration '" + typeName + "'.", ctx);
+		return Suit.ERROR;
+	}
+
+	/**
+	 * Handles the context checking of an equals-to-expression.
+	 * 
+	 * An equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this equals-to-expression.
+	 * @return The suit of the equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("multiple = can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(BOOLEAN, allConstant);
+	}
+
+	/**
+	 * When a syntactically erroneous program is parsed, the parse tree will contain error nodes. This method handles their context checking.
+	 * 
+	 * @param node
+	 *            The node that is to be visited.
+	 * @return An error node is erroneous by definition, so {@link Suit#ERROR}.
+	 */
+	@Override
+	public Suit visitErrorNode(ErrorNode node) {
+		return Suit.ERROR;
+	}
+
+	@Override
+	/*
+	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
+	 * 	1 Het enumeration type moet bestaan
+	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
+	 * Het return type is een enumSymbol
+	 */
+	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
+		String enumName = ctx.IDENTIFIER(0).getText();
+		String fieldName = ctx.IDENTIFIER(1).getText();
+
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);
+
+		if (enumSymbol == null) { // Test #1
+
+			this.reportError("reference to non-existing enumeration type '" + enumName + "'.", ctx);
+			return Suit.ERROR;
+		}
+
+		if (!enumSymbol.hasValue(fieldName)) { // Test #2
+			this.reportError("reference to non-existing field '" + fieldName + "' in enumeration type '" + enumName + "'.", ctx);
+			return Suit.ERROR;
+		}
+
+		return new Suit(enumSymbol, true);
+	}
+
+	@Override
+	/*
+	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
+	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
+	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
+	 * 	1.2 Het return type is gelijk aan het type van dat veld.
+	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
+	 */
+	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
+		Suit expressionSuit = visit(ctx.parent.getChild(0));
+		String fieldName = ctx.IDENTIFIER().getText();
+
+		// Kijken of dit een record is.
+		if (expressionSuit.type instanceof CompositeSymbol) {
+			CompositeSymbol compositeType = (CompositeSymbol) expressionSuit.type;
+
+			// Test eis #1.1
+			if (!compositeType.hasField(fieldName)) {
+				reportError("Type " + expressionSuit.type.getIdentifier() + " does not contain field " + fieldName + ".", ctx);
+				return Suit.ERROR;
+
+			} else {
+				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
+				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
+			}
+
+		}
+
+		this.reportError("Unexpected field access on non-composite value: no suggestions available", ctx);
+		return Suit.ERROR;
+	}
+
+	/*
+	 * Een function call heeft de volgende contextbeperkingen:
+	 * - de functie moet gedeclareerd zijn;
+	 * - de types van de gegeven argumenten moeten overeenkomen met de typen van de parameters;
+	 * - (de argumenten moeten op dezelfde volgorde staan als de parameters stonden bij de declaratie.)
+	 * 
+	 * De return suit van de functie komt, als alles klopt, overeen met die van de gedeclareerde 
+	 * functie (merk op dat dit de void-suit kan zijn). Zijn er echter fouten, dan wordt de
+	 * error-suit teruggegeven.
+	 */
+	@Override
+	public Suit visitFunctionCall(FunctionCallContext ctx) {
+		/*
+		 * We maken van de identifier + de argumenttypes de function signature, 
+		 * en doorzoeken hiermee de symbol table. Het mooie is dat als er een match
+		 * is, we ook gelijk de argumenttypes en -volgorde gecontroleerd hebben. 
+		 * Deze bepalen immers de signature.
+		 */
+
+		String functionIdentifier = ctx.IDENTIFIER().getText();
+
+		// De types van de argumenten opvragen en in een lijst bijhouden.
+		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.expression().size()];
+
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			argumentTypes[i] = visit(ctx.expression(i)).type;
+		}
+
+		// Identifier + argumenttypes combineren tot function signature.
+		String functionSignature = FunctionSymbol.generateSignature(functionIdentifier, argumentTypes);
+
+		FunctionSymbol functionSymbol = this.functionSymbolTable.resolve(functionSignature);
+
+		if (functionSymbol == null) {
+
+			// Helaas, een dergelijke functie is niet gedeclareerd. Error reporten en error-suit teruggeven.
+			StringBuilder errorMessage = new StringBuilder();
+			errorMessage.append("A function called '" + functionIdentifier + "' and having ");
+
+			if (argumentTypes.length == 0) {
+				errorMessage.append("no parameters ");
+			} else if (argumentTypes.length == 1) {
+				errorMessage.append("one " + argumentTypes[0].toString() + "-typed parameter ");
+			} else if (argumentTypes.length == 2) {
+				errorMessage.append("parameters of type " + argumentTypes[0].toString() + " ");
+				errorMessage.append("and " + argumentTypes[1].toString() + ", ");
+				errorMessage.append("in this order, ");
+			} else {
+				errorMessage.append("parameters of type ");
+
+				for (int i = 0; i < argumentTypes.length - 2; i++) {
+					errorMessage.append(argumentTypes[i].toString() + ", ");
+				}
+
+				errorMessage.append(argumentTypes[argumentTypes.length - 2] + " and " + argumentTypes[argumentTypes.length - 1].toString() + ", ");
+				errorMessage.append("in this order, ");
+
+			}
+
+			errorMessage.append("has not (yet) been declared.");
+			this.reportError(errorMessage.toString(), ctx);
+			return Suit.ERROR;
+		}
+
+		// De functie bestaat. Corresponderende return suit teruggeven.
+		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
+	}
+
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
@@ -1290,113 +934,130 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return returnSuit;
 	}
 
-	@Override
-	public Suit visitSwap(SwapContext ctx) {
-		TypeSymbol rightType = visit(ctx.assignable(0)).type;
-		TypeSymbol leftType = visit(ctx.assignable(1)).type;
-
-		if (!rightType.equals(leftType)) {
-			this.reportError("swap cannot swap variables with different types", ctx.assignable(1), leftType.getIdentifier(), rightType.getIdentifier());
-			return Suit.ERROR;
-		}
-
-		return Suit.VOID;
-	}
-
 	/**
-	 * Handles the context checking of a block-structure.
+	 * Handles the context checking of a greater-than-equals-to-expression.
 	 * 
-	 * Just visits the enclosed statements.
+	 * A greater-than-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this block-structure.
-	 * @return A block-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this greater-than-equals-to-expression.
+	 * @return The suit of the greater-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitBlockStructure(BlockStructureContext ctx) {
-		for (int i = 0; i < ctx.statement().size(); i++) {
-			visit(ctx.statement(i));
-		}
+	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
+		boolean allConstant = true;
 
-		return Suit.VOID;
-	}
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
 
-	/**
-	 * Handles the context checking of a string-literal by returning a constant <i>string</i>-suit.
-	 * 
-	 * @param ctx The context object associated with the parse tree node of this string-literal.
-	 * @return A constant <i>string</i>-suit.
-	 */
-	@Override
-	public Suit visitStringLiteral(StringLiteralContext ctx) {
-		return new Suit(STRING, true);
-	}
-
-	/**
-	 * Handles the context checking of a number-literal by returning a constant <i>integer</i>-suit.
-	 * 
-	 * @param ctx The context object associated with the parse tree node of this number-literal.
-	 * @return A constant <i>integer</i>-suit.
-	 */
-	@Override
-	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
-		return new Suit(INTEGER, true);
-	}
-
-	/**
-	 * Handles the context checking of a boolean-literal by returning a constant <i>boolean</i>-suit.
-	 * 
-	 * @param ctx The context object associated with the parse tree node of this boolean-literal.
-	 * @return A constant <i>boolean</i>-suit.
-	 */
-	@Override
-	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
-		return new Suit(BOOLEAN, true);
-	}
-
-	/*
-	 * De contextuele eisen voor de declaratie van een variabele zijn:
-	 * 	1 de naam moet binnen de scope niet eerder gedefinieerd zijn
-	 * 	2 het type moet reeds gedeclareerd zijn
-	 */
-	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
-		// Alle identifiers opvragen.
-		List<TerminalNode> identifiers = ctx.IDENTIFIER();
-
-		// Kijken wat het bedoelde type is.
-		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
-
-		for (int i = 0; i < identifiers.size(); i++) {
-			String variableName = identifiers.get(i).getText();
-
-			try {
-				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, false));
-			} catch (SymbolTableException e) {
-				reportError(e.getMessage(), ctx);
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with >=", ctx, INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
 			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INTEGER, allConstant);
+	}
+
+	/**
+	 * Handles the context checking of a greater-than-expression.
+	 * 
+	 * A greater-than-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this greater-than-expression.
+	 * @return The suit of the greater-than-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with >", ctx, INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INTEGER, allConstant);
+	}
+
+	/**
+	 * Handles the context checking of an if-structure.
+	 * 
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method(s) of the block-structure(s).
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this if-structure.
+	 * @return A if-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	@Override
+	public Suit visitIfStructure(IfStructureContext ctx) {
+		Suit conditionSuit = visit(ctx.expression());
+
+		if (!conditionSuit.type.equals(BOOLEAN)) {
+			// Helaas, hij levert geen boolean waarde op. Error reporten.
+			String errorMessage = "The condition for if-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
+					+ "' does not.";
+			reportError(errorMessage, ctx.expression(), BOOLEAN.toString(), conditionSuit.type.toString());
+		}
+
+		// Het if-block visiten.
+		visit(ctx.blockStructure(0));
+
+		// Er is misschien een else-deel. Dit block dan ook visiten.
+		if (ctx.blockStructure(1) != null) {
+			visit(ctx.blockStructure(1));
 		}
 
 		return Suit.VOID;
 	}
 
 	/**
-	 * Handles the context checking of a character-literal by returning a constant <i>character</i>-suit.
+	 * Handles the context checking of an instantiating-declaration.
 	 * 
-	 * @param ctx The context object associated with the parse tree node of this character-literal.
-	 * @return A constant <i>character</i>-suit.
+	 * An instantiating-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the identifier(s) must not be already declared in this scope;
+	 * <li>the denoted type must be declared;
+	 * <li>the expression should yield the same type as the denoted type;
+	 * <li>if the variable(s) is/are declared as constant, the expression should be constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 2 is already checked by the visit-method of the type-denoter, which this method calls. This method checks thus checks the other rules and then
+	 * declares the variable(s) to {@link #variableSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this instantiating-declaration.
+	 * @return An instantiating-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
-	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
-		return new Suit(CHARACTER, true);
-	}
-
-	/*
-	 * De contextuele eisen voor de declaratie van een variabele zijn:
-	 * 	1 de naam moet binnen de scope niet eerder gedefinieerd zijn
-	 * 	2 het type moet reeds gedeclareerd zijn
-	 *  3 het gedeclareerde type en het type van de expression moeten overeenkomen
-	 *  4 als een constante gedeclareerd wordt, dan moet de expression ook constant zijn
-	 */
 	public Suit visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
 		boolean isConstant = (ctx.CONSTANT() != null);
 
@@ -1436,6 +1097,106 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
+	 * Handles the context checking of a multiplication-expression.
+	 * 
+	 * A multiplication-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this multiplication-expression.
+	 * @return The suit of the multiplication-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit rightExpression = visit(ctx.arithmetic(1));
+
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), leftExpression.type.toString());
+		}
+
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("multiplication/division/modulo only works for int values", ctx, INTEGER.toString(), rightExpression.type.toString());
+		}
+
+		boolean bothConstant = leftExpression.isConstant && rightExpression.isConstant;
+
+		return new Suit(INTEGER, bothConstant);
+	}
+
+	/**
+	 * Handles the context checking of a not-equals-to-expression.
+	 * 
+	 * A not-equals-to-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this not-equals-to-expression.
+	 * @return The suit of the not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.type.equals(INTEGER)) {
+				System.out.println("Types komen niet overeen.");
+				System.out.println(INTEGER);
+				System.out.println(currentSuit.type);
+
+				this.reportError("multiple =/= can only compare int values", ctx.arithmetic(i), INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(BOOLEAN, allConstant);
+	}
+
+	@Override
+	/*
+	 * Een notExpression heeft één bool argument, en geeft een bool terug.
+	 * De return value is constant als en slechts als het argument constant is.
+	 */
+	public Suit visitNotExpression(NotExpressionContext ctx) {
+		Suit argSuit = visit(ctx.expression());
+
+		if (!argSuit.type.equals(BOOLEAN)) {
+			reportError("illegal argument", ctx, BOOLEAN.toString(), null);
+		}
+		return argSuit;
+	}
+
+	/**
+	 * Handles the context checking of a number-literal by returning a constant <i>integer</i>-suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this number-literal.
+	 * @return A constant <i>integer</i>-suit.
+	 */
+	@Override
+	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
+		return new Suit(INTEGER, true);
+	}
+
+	/**
 	 * Handles the context checking of an or-expression.
 	 * 
 	 * An or-expression is confined to the following context rules:
@@ -1447,7 +1208,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <li>the expression yields a value of type <i>boolean</i>;
 	 * <li>the expression yields a constant value if both operands are constant.
 	 * </ol>
-	 * <br>
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this or-expression.
@@ -1473,125 +1233,60 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an and-expression.
+	 * Handles the context checking of a parenthesis-expression.
 	 * 
-	 * An and-expression is confined to the following context rules:
+	 * Visits the enclosed expression and passes on its suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this parenthesis-expression.
+	 * @return The suit of the enclosed expression.
+	 */
+	@Override
+	public Suit visitParenthesisExpression(ParenthesisExpressionContext ctx) {
+		return visit(ctx.expression());
+	}
+
+	/**
+	 * Handles the context checking of a plus-minus-expression.
+	 * 
+	 * A plus-minus-expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>both operands have to be of type <i>boolean</i>;
+	 * <li>all three operands have to be of type <i>integer</i>;
 	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if both operands are constant.
+	 * <li>the expression yields a constant value if all three operands are constant.
 	 * </ol>
-	 * <br>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this and-expression.
-	 * @return The suit of the and-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this plus-minus-expression.
+	 * @return The suit of the plus-minus-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitAndExpression(AndExpressionContext ctx) {
-		Suit leftExpression = visit(ctx.expression(0));
-		Suit rightExpression = visit(ctx.expression(1));
+	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
+		Suit leftExpression = visit(ctx.arithmetic(0));
+		Suit middleExpression = visit(ctx.arithmetic(1));
+		Suit rightExpression = visit(ctx.arithmetic(2));
 
-		if (!leftExpression.type.equals(BOOLEAN)) {
-			this.reportError("logical operator AND only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
-			return Suit.ERROR;
+		if (!leftExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(0), INTEGER.toString(),
+					leftExpression.type.toString());
 		}
 
-		if (!rightExpression.type.equals(BOOLEAN)) {
-			this.reportError("logical operator AND only works for int values", ctx, BOOLEAN.toString(), rightExpression.type.toString());
-			return Suit.ERROR;
+		if (!middleExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(1), INTEGER.toString(),
+					middleExpression.type.toString());
 		}
 
-		boolean isConstant = leftExpression.isConstant && rightExpression.isConstant;
-		return new Suit(BOOLEAN, isConstant);
-	}
-
-	@Override
-	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
-		return visit(ctx.accessExpression());
-	}
-
-	@Override
-	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
-		return visit(ctx.accessExpression());
-	}
-
-	@Override
-	/*
-	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
-	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
-	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
-	 * 	1.2 Het return type is gelijk aan het type van dat veld.
-	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
-	 */
-	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
-		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
-		Suit expressionSuit = visit(ctx.parent.getChild(0));
-		String fieldName = ctx.IDENTIFIER().getText();
-
-		// Kijken of dit een record is.
-		if (expressionSuit.type instanceof CompositeSymbol) {
-			CompositeSymbol compositeType = (CompositeSymbol) expressionSuit.type;
-
-			// Test eis #1.1
-			if (!compositeType.hasField(fieldName)) {
-				reportError("Type " + expressionSuit.type.getIdentifier() + " does not contain field " + fieldName + ".", ctx);
-				return Suit.ERROR;
-
-			} else {
-				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
-				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
-			}
-
+		if (!rightExpression.type.equals(INTEGER)) {
+			this.reportError("a plus or minus expression (9 = 10 +- 2) takes three int values", ctx.arithmetic(2), INTEGER.toString(),
+					rightExpression.type.toString());
 		}
 
-		this.reportError("Unexpected field access on non-composite value: no suggestions available", ctx);
-		return Suit.ERROR;
-	}
+		boolean allConstant = leftExpression.isConstant && middleExpression.isConstant && rightExpression.isConstant;
 
-	@Override
-	/*
-	 * Er moet hier gekeken worden of
-	 *  - de array-expressie inderdaad een array is
-	 *  - de index-expressie een integer is
-	 *  - welke type de array-elementen zijn, zodat de juiste return suit gekozen kan worden
-	 *  - of de array-expressie mutable is, zodat de juiste return suit gekozen kan worden
-	 */
-	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
-		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
-		Suit expressionSuit = visit(ctx.parent.getChild(0));
-		Suit indexSuit = visit(ctx.expression());
-
-		// Levert de linkerexpressie een arraywaarde op?
-		if (expressionSuit.type instanceof ArraySymbol) {
-
-			// Ja, het levert een arraywaarde op! We kunnen deze cast nu maken.
-			ArraySymbol arrayType = (ArraySymbol) expressionSuit.type;
-
-			// Nu kijken of de meegegeven index wel een integer is.
-			if (indexSuit.type.equals(INTEGER)) {
-
-				// Alles klopt. Gaan met die banaan.
-				return new Suit(arrayType.type, expressionSuit.isConstant);
-
-			} else {
-
-				// Oh oh. De meegegeven index is geen integer...
-				String errorMessage = "The expression '" + ctx.expression().getText() + "' yields no integer value. Array indexes must be of integer type.";
-				reportError(errorMessage, ctx);
-				return Suit.ERROR;
-			}
-
-		} else {
-
-			// Oh oh. De linkerexpressie levert geen arraywaarde op...
-			String errorMessage = "The expression '" + ctx.getParent().getChild(0).getText() + "' does not yield an array.";
-			reportError(errorMessage, ctx);
-			return Suit.ERROR;
-		}
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	@Override
@@ -1675,4 +1370,331 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		this.reportError("no variable or enumeration with this name ('" + prefixName + "') declared", ctx);
 		return Suit.ERROR;
 	} // Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
+
+	/**
+	 * Handles the context checking of a power-expression.
+	 * 
+	 * A power-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this power-expression.
+	 * @return The suit of the power-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitPowerExpression(PowerExpressionContext ctx) {
+		Suit baseSuit = visit(ctx.arithmetic(0));
+		Suit exponentSuit = visit(ctx.arithmetic(1));
+
+		if (!baseSuit.type.equals(INTEGER)) {
+			this.reportError("exponentiation requires an int base", ctx.arithmetic(0), INTEGER.toString(), baseSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		if (!exponentSuit.type.equals(INTEGER)) {
+			this.reportError("exponentiation requires an int power", ctx.arithmetic(1), INTEGER.toString(), exponentSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = baseSuit.isConstant && exponentSuit.isConstant;
+
+		return new Suit(INTEGER, bothConstant);
+	}
+
+	/**
+	 * Handles the context checking of a Bramspr program.
+	 * 
+	 * Opens the root scope, declares all built-in types and functions, recursively context-checks the program and finally closes the root scope.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the top node of the program's parse tree.
+	 * @return A program has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	public Suit visitProgram(ProgramContext ctx) {
+		this.openScope();
+		try {
+			typeSymbolTable.declare(INTEGER);
+			typeSymbolTable.declare(VOID);
+			typeSymbolTable.declare(CHARACTER);
+			typeSymbolTable.declare(BOOLEAN);
+			typeSymbolTable.declare(STRING);
+
+			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false));
+			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false));
+			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false));
+
+		} catch (SymbolTableException se) {
+			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
+			System.err.println(se.getMessage());
+			se.printStackTrace();
+			System.exit(1); // Als het zo erg misgaat, laat dan maar zitten...
+		}
+
+		super.visitProgram(ctx);
+
+		this.closeScope();
+		return Suit.VOID;
+	}
+
+	/**
+	 * Handles the context checking of a pure-declaration.
+	 * 
+	 * A pure-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the identifier(s) must not be already declared in this scope;
+	 * <li>the denoted type must be declared;
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 2 is already checked by the visit-method of the type-denoter, which this method calls. This method checks thus checks the first rule and then
+	 * declares the variable(s) to {@link #variableSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this pure-declaration.
+	 * @return A pure-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	@Override
+	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
+		// Alle identifiers opvragen.
+		List<TerminalNode> identifiers = ctx.IDENTIFIER();
+
+		// Kijken wat het bedoelde type is.
+		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
+
+		for (int i = 0; i < identifiers.size(); i++) {
+			String variableName = identifiers.get(i).getText();
+
+			try {
+				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, false));
+			} catch (SymbolTableException e) {
+				reportError(e.getMessage(), ctx);
+			}
+		}
+
+		return Suit.VOID;
+	}
+
+	/**
+	 * Handles the context checking of a sign-expression.
+	 * 
+	 * A sign-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the operand must be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if the operand is constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this sign-expression.
+	 * @return The suit of the sign-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	public Suit visitSignExpression(SignExpressionContext ctx) {
+		Suit expressionSuit = visit(ctx.arithmetic());
+
+		if (!INTEGER.equals(expressionSuit.type)) {
+			this.reportError("cannot use +/- on non-int values", ctx.arithmetic(), INTEGER.getIdentifier(), expressionSuit.type.getIdentifier());
+			return Suit.ERROR;
+		}
+
+		return expressionSuit;
+	}
+
+	/**
+	 * Handles the context checking of a smaller-than-equals-to-expression.
+	 * 
+	 * A smaller-than-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this smaller-than-equals-to-expression.
+	 * @return The suit of the smaller-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with <=", ctx, INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INTEGER, allConstant);
+	}
+
+	/**
+	 * Handles the context checking of a smaller-than-expression.
+	 * 
+	 * A smaller-than-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this smaller-than-expression.
+	 * @return The suit of the smaller-than-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
+		boolean allConstant = true;
+
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			Suit currentSuit = visit(ctx.arithmetic(i));
+
+			if (!currentSuit.equals(INTEGER)) {
+				this.reportError("only int types are comparable with <", ctx, INTEGER.toString(), currentSuit.type.toString());
+				return Suit.ERROR;
+			}
+
+			allConstant = allConstant && currentSuit.isConstant;
+		}
+
+		return new Suit(INTEGER, allConstant);
+	}
+
+	/**
+	 * Handles the context checking of a string-literal by returning a constant <i>string</i>-suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this string-literal.
+	 * @return A constant <i>string</i>-suit.
+	 */
+	@Override
+	public Suit visitStringLiteral(StringLiteralContext ctx) {
+		return new Suit(STRING, true);
+	}
+
+	@Override
+	public Suit visitSwap(SwapContext ctx) {
+		TypeSymbol rightType = visit(ctx.assignable(0)).type;
+		TypeSymbol leftType = visit(ctx.assignable(1)).type;
+
+		if (!rightType.equals(leftType)) {
+			this.reportError("swap cannot swap variables with different types", ctx.assignable(1), leftType.getIdentifier(), rightType.getIdentifier());
+			return Suit.ERROR;
+		}
+
+		return Suit.VOID;
+	}
+
+	/**
+	 * Handles the context checking of a universal-equals-to-expression.
+	 * 
+	 * A universal-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands must be of the same type;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this universal-equals-to-expression.
+	 * @return The suit of the universal-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
+
+		Suit leftSuit = visit(ctx.expression(0));
+		Suit rightSuit = visit(ctx.expression(1));
+
+		if (!leftSuit.type.equals(rightSuit.type)) {
+			this.reportError("a=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
+		return new Suit(BOOLEAN, bothConstant);
+	}
+
+	/**
+	 * Handles the context checking of a universal-not-equals-to-expression.
+	 * 
+	 * A universal-not-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands must be of the same type;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this universal-not-equals-to-expression.
+	 * @return The suit of the universal-not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
+
+		Suit leftSuit = visit(ctx.expression(0));
+		Suit rightSuit = visit(ctx.expression(1));
+
+		if (!leftSuit.type.equals(rightSuit.type)) {
+			this.reportError("a=/=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
+		return new Suit(BOOLEAN, bothConstant);
+	}
+
+	/**
+	 * Handles the context checking of a while-structure.
+	 * 
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method of the block-structure.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this while-structure.
+	 * @return A while-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	@Override
+	public Suit visitWhileStructure(WhileStructureContext ctx) {
+		Suit conditionSuit = visit(ctx.expression());
+
+		if (!conditionSuit.type.equals(BOOLEAN)) {
+			// Helaas, hij levert geen boolean waarde op. Error reporten.
+			String errorMessage = "The condition for while-structures should yield a boolean value, which the expression '" + ctx.expression().getText()
+					+ "' does not.";
+			reportError(errorMessage, ctx, BOOLEAN.toString(), conditionSuit.type.toString());
+		}
+
+		visit(ctx.blockStructure());
+		return Suit.VOID;
+	}
 }
