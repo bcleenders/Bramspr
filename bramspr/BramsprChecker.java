@@ -15,13 +15,14 @@ import symboltable.EnumerationSymbol;
 import symboltable.FunctionSymbol;
 import symboltable.TypeSymbol;
 import symboltable.VariableSymbol;
+import bramspr.BramsprParser.AccessOnAssignableExpressionContext;
+import bramspr.BramsprParser.AccessOnAtomicExpressionContext;
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
+import bramspr.BramsprParser.ArrayAccessExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
-import bramspr.BramsprParser.AssignableExpressionContext;
-import bramspr.BramsprParser.FieldAccessOnAssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
@@ -31,10 +32,11 @@ import bramspr.BramsprParser.CharacterLiteralContext;
 import bramspr.BramsprParser.CompositeDeclarationContext;
 import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
+import bramspr.BramsprParser.EnumerationTypeDenoterContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
+import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
-import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
 import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
@@ -48,13 +50,13 @@ import bramspr.BramsprParser.NumberLiteralContext;
 import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
+import bramspr.BramsprParser.PossibleEnumerationExpressionContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PureDeclarationContext;
 import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
-import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.WhileStructureContext;
@@ -434,28 +436,27 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	/*
 	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
-	 * 	1 Het enum type moet bestaan
-	 * 	2 Het enum type moet een veld met de gereferencete naam hebben
-	 * Het return type is // TODO overleg met Jasper; zelfde als hier beneden
+	 * 	1 Het enumeration type moet bestaan
+	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
+	 * Het return type is een enumSymbol
 	 */
 	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
 		String enumName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
-		
-		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);	
-		
-		if(enumSymbol == null) { // Test #1
-			this.reportError("reference to non-existing enum type '" + enumName + "'.", ctx);
+
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);
+
+		if (enumSymbol == null) { // Test #1
+			this.reportError("reference to non-existing enumeration type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
-		if(! enumSymbol.hasValue(fieldName)) { // Test #2
-			this.reportError("reference to non-existing field '" + fieldName + "' in enum type '" + enumName + "'.", ctx);
+
+		if (!enumSymbol.hasValue(fieldName)) { // Test #2
+			this.reportError("reference to non-existing field '" + fieldName + "' in enumeration type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
-		// Geef de waarde terug!
-		return null; // TODO
+
+		return new Suit(enumSymbol, true);
 	}
 
 	@Override
@@ -584,6 +585,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		try {
 			this.enumerationSymbolTable.declare(symbol);
+			System.out.println("gedeclareerd! " + enumerationIdentifier);
 		} catch (SymbolTableException e) {
 			this.reportError(e.getMessage(), ctx);
 		}
@@ -648,11 +650,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		String typeName = ctx.IDENTIFIER().getText();
 		TypeSymbol type = this.typeSymbolTable.resolve(typeName);
 
-		if (type == null) {
-			this.reportError("reference to non-existing type '" + typeName + "'.", ctx);
-			return Suit.ERROR;
+		if (type != null) {
+			return new Suit(type, false);
 		}
-		return new Suit(type, false);
+
+		// Het is dus niet een normaal type. Misschien een enumeration dan?
+		type = this.enumerationSymbolTable.resolve(typeName);
+		if (type != null) {
+			return new Suit(type, false);
+		}
+
+		this.reportError("reference to non-existing type/enumeration '" + typeName + "'.", ctx);
+		return Suit.ERROR;
 	}
 
 	/*
@@ -680,80 +689,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	@Override
 	/*
-	 * Een fieldAccessAssignable moet aan de volgende contextuele eisen voldoen:
-	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
-	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
-	 * 	1.2 Het return type is gelijk aan het type van dat veld.
-	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
-	 * Als de assignable geen record oplevert maar wél een enum (impliciete referentie naar enum), dan gelden de volgende eisen:
-	 * 	2.1 Het enum type moet een veld met de gerefereerde naam hebben.
-	 * 	2.2 Het return type is gelijk aan TODO overleggen met Jasper; welk type? Moet o.a. vergelijkbaar zijn met = en =/=!
-	 * Als een assignable geen record en geen enum, dan is het geen geldige expressie.
-	 */
-	public Suit visitFieldAccessOnAssignable(FieldAccessOnAssignableContext ctx) {
-		// Return suite van de expression opvragen.
-		Suit expressionSuit = visit(ctx.assignable());
-		String fieldName = ctx.IDENTIFIER().getText();
-
-		// Kijken of dit een record is.
-		if (expressionSuit.type instanceof CompositeSymbol) {
-			CompositeSymbol compositeType = (CompositeSymbol) expressionSuit.type;
-
-			// Test eis #1.1
-			if (!compositeType.hasField(fieldName)) {
-				/*
-				 * De programmeur heeft een fout gemaakt: dit recordtype heeft dit veld niet. Het kan echter zijn dat de programmeur
-				 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
-				 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
-				 * bestaat dat wèl deze veldnaam bezit.
-				 */
-				String errorMessage = "Type " + expressionSuit.type.getIdentifier() + " does not contain field " + fieldName + ".";
-				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(expressionSuit.type.getIdentifier());
-				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
-					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
-
-					errorMessage = errorMessage + "Warning: please be aware that enumeration " + expressionSuit.type.getIdentifier() + " is currently being hidden by type"
-							+ expressionSuit.type.getIdentifier() + ". To explicitly denote the enumeration, use 'enum." + expressionSuit.type.getIdentifier() + "'.";
-				}
-
-				reportError(errorMessage, ctx);
-				return Suit.ERROR;
-
-			} else {
-				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
-				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
-			}
-
-		} else if (expressionSuit.type instanceof EnumerationSymbol) {
-			EnumerationSymbol enumType = (EnumerationSymbol) expressionSuit.type;
-
-			// Eis #1.1
-			if (!enumType.hasValue(fieldName)) {
-				String errorMessage = "enum " + expressionSuit.type.getIdentifier() + " does not contain constant " + fieldName + ".";
-				reportError(errorMessage, ctx);
-				return Suit.ERROR;
-			} else {
-				// TODO return enum constant type (dunno how that's encoded...)
-			}
-		} else if (expressionSuit.type instanceof ArraySymbol) {
-			// This is just to help the programmer...
-			String errorMessage = "This expression yields an arrayvalue. You can't access fields of an array like that. Please use the following notation: "
-					+ ctx.assignable().getText() + "[n], where n is an integer.";
-			reportError(errorMessage, ctx);
-			return Suit.ERROR;
-
-		}
-
-		this.reportError("Unexpected field access; no suggestions available", ctx);
-		return Suit.ERROR;
-	}
-
-	@Override
-	/*
 	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
-	 * 	1. Er moet of een variabele of een enum met de naam bestaan.
+	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
 	 * 	2. Indien het een variabele is, is het return type gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
-	 * 	3. Indien het een enum is, wordt een enum type teruggegeven.
+	 * 	3. Indien het een enumeration is, wordt een enumeration type teruggegeven.
 	 */
 	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
 		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
@@ -767,7 +706,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			return new Suit(enumSymbol, true);
 		}
 
-		this.reportError("reference to non-existing variable/enum type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
+		this.reportError("reference to non-existing variable/enumeration type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
 		return Suit.ERROR;
 	}
 
@@ -832,13 +771,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 		}
 
-<<<<<<< HEAD
-=======
 		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
 		return expressionSuit;
 	}
 
->>>>>>> a8b7e5ae1ef51d70a3dfdc945aabd27be08f74cc
 	/*
 	 * De conditie-expressie van een if-structure moet een boolean waarde opleveren.
 	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
@@ -876,15 +812,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(arrayType, false);
 	}
 
-<<<<<<< HEAD
-=======
 	@Override
-	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
+	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
+		String typeName = ctx.IDENTIFIER().getText();
+		TypeSymbol type =  this.enumerationSymbolTable.resolve(typeName);
+		if (type != null) {
+			return new Suit(type, false);
+		}
 
-		return super.visitChildren(ctx);
+		this.reportError("reference to non-existing type/enumeration '" + typeName + "'.", ctx);
+		return Suit.ERROR;
 	}
 
->>>>>>> a8b7e5ae1ef51d70a3dfdc945aabd27be08f74cc
 	/*
 	 * Een composite-literal moet aan de volgende contexteisen voldoen:
 	 * 	- het composite-type moet gedeclareerd zijn;
@@ -1213,6 +1152,170 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, isConstant);
 	}
 
-	// Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
+	@Override
+	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
+		return visit(ctx.accessExpression());
+	}
 
+	@Override
+	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
+		return visit(ctx.accessExpression());
+	}
+
+	@Override
+	/*
+	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
+	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
+	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
+	 * 	1.2 Het return type is gelijk aan het type van dat veld.
+	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
+	 */
+	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
+		Suit expressionSuit = visit(ctx.parent.getChild(0));
+		String fieldName = ctx.IDENTIFIER().getText();
+
+		// Kijken of dit een record is.
+		if (expressionSuit.type instanceof CompositeSymbol) {
+			CompositeSymbol compositeType = (CompositeSymbol) expressionSuit.type;
+
+			// Test eis #1.1
+			if (!compositeType.hasField(fieldName)) {
+				reportError("Type " + expressionSuit.type.getIdentifier() + " does not contain field " + fieldName + ".", ctx);
+				return Suit.ERROR;
+
+			} else {
+				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
+				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
+			}
+
+		}
+
+		this.reportError("Unexpected field access on non-composite value: no suggestions available", ctx);
+		return Suit.ERROR;
+	}
+
+	@Override
+	/*
+	 * Er moet hier gekeken worden of
+	 *  - de array-expressie inderdaad een array is
+	 *  - de index-expressie een integer is
+	 *  - welke type de array-elementen zijn, zodat de juiste return suit gekozen kan worden
+	 *  - of de array-expressie mutable is, zodat de juiste return suit gekozen kan worden
+	 */
+	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
+		Suit expressionSuit = visit(ctx.parent.getChild(0));
+		Suit indexSuit = visit(ctx.expression());
+
+		// Levert de linkerexpressie een arraywaarde op?
+		if (expressionSuit.type instanceof ArraySymbol) {
+
+			// Ja, het levert een arraywaarde op! We kunnen deze cast nu maken.
+			ArraySymbol arrayType = (ArraySymbol) expressionSuit.type;
+
+			// Nu kijken of de meegegeven index wel een integer is.
+			if (indexSuit.type.equals(INTEGER)) {
+
+				// Alles klopt. Gaan met die banaan.
+				return new Suit(arrayType.type, expressionSuit.isConstant);
+
+			} else {
+
+				// Oh oh. De meegegeven index is geen integer...
+				String errorMessage = "The expression '" + ctx.expression().getText() + "' yields no integer value. Array indexes must be of integer type.";
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			}
+
+		} else {
+
+			// Oh oh. De linkerexpressie levert geen arraywaarde op...
+			String errorMessage = "The expression '" + ctx.getParent().getChild(0).getText() + "' does not yield an array.";
+			reportError(errorMessage, ctx);
+			return Suit.ERROR;
+		}
+	}
+
+	@Override
+	/*Een possibleEnumerationExpression moet aan de volgende contextuele eisen voldoen:
+	 * Als er een variabele bestaat met de naam, dan gelden de volgende eisen:
+	 * 	1.1 De variabele moet een record (composite) bevatten.
+	 * 	1.2 Het type van deze composite moet over een veld met de gerefereerde naam hebben.
+	 * 	1.3 Het return type is gelijk aan het type van dat veld.
+	 * 	1.4	De return waarde is constant als en slechts als het record constant is.
+	 * Als de assignable geen record oplevert maar wél een enumeration (impliciete referentie naar enumeration), dan gelden de volgende eisen:
+	 * 	2.1 Het enumeration type moet een veld met de gerefereerde naam hebben.
+	 * 	2.2 Het return type is een EnumerationSymbol
+	 *  2.3 Het return type is constant
+	 * Als een assignable geen record en geen enumeration, dan is het geen geldige expressie.
+	 */
+	public Suit visitPossibleEnumerationExpression(PossibleEnumerationExpressionContext ctx) {
+		// Return suite van de expression opvragen.
+		String prefixName = ctx.IDENTIFIER(0).getText();
+		String fieldName = ctx.IDENTIFIER(1).getText();
+
+		// Deze variabele bevat een record indien deze gedefinieerd is.
+		VariableSymbol prefix = this.variableSymbolTable.resolve(prefixName);
+		EnumerationSymbol prefixEnum = this.enumerationSymbolTable.resolve(prefixName);
+
+		// Kijken of dit een record is.
+		if (prefix != null) {
+			if (!(prefix.getReturnType() instanceof CompositeSymbol)) {
+				// De variabele bestaat wel, maar heeft geen velden.
+				String errorMessage = "Type " + prefix.getReturnType().getIdentifier() + " does not have fields.";
+
+				// Checken of er wel een enumeration is die het zou kunnen zijn:
+				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
+				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
+					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by variable "
+							+ prefixName + ". To explicitly denote the enumeration, use 'enumeration." + prefixName + "." + fieldName + "'.";
+				}
+
+				this.reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			}
+
+			CompositeSymbol compositeType = (CompositeSymbol) prefix.getReturnType();
+
+			// Test eis #1.1
+			if (!compositeType.hasField(fieldName)) {
+				/*
+				 * De programmeur heeft een fout gemaakt: dit recordtype heeft dit veld niet. Het kan echter zijn dat de programmeur
+				 * een gelijknamige enumeration bedoelde, en was vergeten dat de record dan de enumeration hidet. Om een zinvolle
+				 * errormessage te geven, gaan we daarom ook even kijken of er niet toevallig een enumeration met dezelfde naam
+				 * bestaat dat wèl deze veldnaam bezit.
+				 */
+				String errorMessage = "Type " + compositeType.getIdentifier() + " does not contain field " + fieldName + ".";
+				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
+				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
+					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
+
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by type " + prefixName
+							+ ". To explicitly denote the enumeration, use 'enumeration." + prefixName + "." + fieldName + "'.";
+				}
+
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+
+			} else {
+				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
+				return new Suit(compositeType.getFieldType(fieldName), prefix.isConstant());
+			}
+
+		} else if (prefixEnum != null) { // Er bestaat een enumeration met deze naam!
+			// Eis #1.1
+			if (!prefixEnum.hasValue(fieldName)) {
+				String errorMessage = "enumeration " + prefixName + " does not contain constant " + fieldName + ".";
+				reportError(errorMessage, ctx);
+				return Suit.ERROR;
+			} else {
+				return new Suit(prefixEnum, true);
+			}
+		}
+
+		this.reportError("no variable or enumeration with this name ('" + prefixName + "') declared", ctx);
+		return Suit.ERROR;
+	} // Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
 }

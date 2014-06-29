@@ -15,4 +15,14 @@ public class ArraySymbol extends TypeSymbol {
 		super("[" + amount + "]" + type.toString());
 		this.type = type;
 	}
+	
+	public boolean equals(Object comparable) {
+		if(! (comparable instanceof ArraySymbol)) {
+			return false;
+		}
+		
+		ArraySymbol comp = (ArraySymbol) comparable;
+		
+		return (comp.amount == this.amount) && (this.type.equals(comp.type));
+	}
 }

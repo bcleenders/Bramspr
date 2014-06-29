@@ -1,0 +1,48 @@
+/*
+    Dit bestand bevat testcode voor access expressions zoals
+    stoel.aantalPoten = a[0]
+    foo()[stoel.aantalPoten].bar := Day.MONDAY
+*/
+
+{ // Test sequence 1
+    type Stoel {
+        aantalPoten: [2]integer // aantal poten aan voor- en achterkant
+    };
+
+    function foo() {
+        return Stoel{
+            aantalPoten := [2, 3] // Bijzondere stoel; in totaal vijf poten!
+        };
+    };
+
+    // Een arrayAccess op een fieldAccess op een functionCall
+    x : integer := foo().aantalPoten[2];
+}
+
+{ // Test sequence 2
+    enumeration Day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATERDAY, SUNDAY };
+
+    type week {
+        favorieteDag: Day,
+        minstFavorieteDag: Day
+    };
+    volgendeWeek: week;
+    // Volgende week maandag is echt superleuk!
+    volgendeWeek.favorieteDag := Day.MONDAY;
+
+    type maand {
+        aantalDagen: integer,
+        dagen: [31]Day
+    };
+
+    type jaar {
+        maanden: [12]maand
+    };
+
+    komendJaar: jaar;
+
+    piDag: Day;
+    // 14 maart is PI dag (3,14)
+    piDag := komendJaar.maanden[3].dagen[14];
+
+}
