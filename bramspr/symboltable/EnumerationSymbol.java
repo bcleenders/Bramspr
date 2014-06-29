@@ -1,4 +1,4 @@
-package symboltable;
+package bramspr.symboltable;
 
 import java.util.HashSet;
 

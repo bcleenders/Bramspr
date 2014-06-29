@@ -9,12 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import symboltable.ArraySymbol;
-import symboltable.CompositeSymbol;
-import symboltable.EnumerationSymbol;
-import symboltable.FunctionSymbol;
-import symboltable.TypeSymbol;
-import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AccessOnAssignableExpressionContext;
 import bramspr.BramsprParser.AccessOnAtomicExpressionContext;
 import bramspr.BramsprParser.AdditionExpressionContext;
@@ -62,8 +56,14 @@ import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.UniversalEqualsToExpressionContext;
 import bramspr.BramsprParser.UniversalNotEqualsToExpressionContext;
 import bramspr.BramsprParser.WhileStructureContext;
+import bramspr.symboltable.ArraySymbol;
+import bramspr.symboltable.CompositeSymbol;
+import bramspr.symboltable.EnumerationSymbol;
+import bramspr.symboltable.FunctionSymbol;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
+import bramspr.symboltable.TypeSymbol;
+import bramspr.symboltable.VariableSymbol;
 
 //public class BramsprChecker implements BramsprVisitor<Suit> {
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
@@ -539,13 +539,28 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(CHARACTER, true);
 	}
 
-	/*
-	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
-	 *  1 Een type moet een unieke naam hebben.
-	 *  2 Alle velden in het type moeten een unieke naam hebben.
-	 *  3 Alle velden in het type moeten een geldig type hebben.
-	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
-	 */
+	/**
+	 * Handles the context checking of a composite-declaration.
+	 * 
+	 * A composite-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>a composite type with the same identifier must not already be declared in this scope;
+	 * <li>all fields must have a unique identifier;
+	 * <li>the types of all fields must have been declared.
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 3 is already checked by the visit-method(s) of the type-denoter(s), which this method calls. This method checks thus checks the other rules and then
+	 * declares the composite type to {@link #typeSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this composite-declaration.
+	 * @return A composite-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */	
+	@Override
 	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER(0).getText();
 
@@ -677,14 +692,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(compositeType, isConstant);
 	}
 
-	/*
-	 * De contextbeperkingen voor een enumeration declaration: 
-	 * - de naam moet uniek zijn (voor enumerations);
-	 * - er mogen geen dubbele waarden voorkomen.
-	 *  
-	 * Verder wordt er uiteraard een enumeration aangemaakt met 
-	 * de opgegeven waarden.
-	 */
+	/**
+	 * Handles the context checking of an enumeration-declaration.
+	 * 
+	 * An enumeration-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>an enumeration with the same identifier must not already be declared in this scope;
+	 * <li>the value-identifiers have to be unique.
+	 * </ol>
+	 * <br>
+	 * 
+	 * After checking these rules, this method declares the enumeration {@link #enumerationSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this enumeration-declaration.
+	 * @return An enumeration-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */		
 	@Override
 	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();

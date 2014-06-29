@@ -1,8 +1,8 @@
 package bramspr;
 
-import symboltable.ErrorType;
-import symboltable.CompositeSymbol;
-import symboltable.TypeSymbol;
+import bramspr.symboltable.CompositeSymbol;
+import bramspr.symboltable.ErrorType;
+import bramspr.symboltable.TypeSymbol;
 
 public class Suit {
 	public static final Suit VOID = new Suit(new CompositeSymbol("void", null, null), true);
