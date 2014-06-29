@@ -1,9 +1,26 @@
-enum day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+enumeration color { RED, WHITE, BLUE };
 
-enum color { RED, WHITE, BLUE };
+// Ja ja; naming conflicts!
+type color {
+    R: integer,
+    B: integer,
+    G: integer
+};
+
+x : day;
+y : enumeration.color; // expliciet declareren
 
 // Deze wordt als assignableFieldAccessExpression geparsed
 x := day.MONDAY;
 
 // En deze wordt als enumExpression geparsed
-y := enum.day.MONDAY;
+y := color.WHITE;
+
+// Al die collisions toch... Nu colliden we ook al met variabelenamen!
+day : integer := 6;
+x := day.TUESDAY; // Ja, dat gaat dus niet meer...
+x := enumeration.day.TUESDAY; // Gelukkig kunnen we het expliciet maken.
+
+// Dit veld bestaat niet binnen de enum (geeft error)
+y := day.BIRTHDAY;

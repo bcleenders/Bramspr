@@ -41,7 +41,7 @@ functionDeclaration:    FUNCTION IDENTIFIER
                         RIGHT_BRACE
                    ;
 
-compositeDeclaration:   COMPOSITE IDENTIFIER
+compositeDeclaration:   TYPE IDENTIFIER
                         LEFT_BRACE
                             IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*
                         RIGHT_BRACE
@@ -49,6 +49,7 @@ compositeDeclaration:   COMPOSITE IDENTIFIER
 
 typeDenoter: IDENTIFIER                                                     # baseTypeDenoter
            | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter
+           | ENUMERATION DOT IDENTIFIER                                     # enumerationTypeDenoter
            ;
 
 assignment: (assignable BECOMES)+ expression;
@@ -58,6 +59,8 @@ expression: NOT expression                                                  # no
           | arithmetic                                                      # arithmeticExpression
           | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
           | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
+          | expression EQUALS_TO expression                                 # universalEqualsToExpression
+          | expression NOT_EQUALS_TO expression                             # universalNotEqualsToExpression
           | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic            # plusMinusExpression                  
           | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression        
           | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression            
@@ -67,25 +70,33 @@ expression: NOT expression                                                  # no
           | expression OR expression                                        # orExpression
           ;
 
-arithmetic: atomic                                                          # atomicExpression
+arithmetic: molecule                                                        # moleculeExpression
           | (PLUS | MINUS) arithmetic                                       # signExpression
           | arithmetic POWER <assoc=right> arithmetic                       # powerExpression
           | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic   # multiplicationExpression
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
-            
-assignable: assignable DOT IDENTIFIER                                       # fieldAccessOnAssignable
-          | assignable LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE          # arrayAccessOnAssignable
-          | IDENTIFIER                                                      # basicAssignable
-          ;
+
+// Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) accessExpression gematcht wordt.
+molecule : IDENTIFIER DOT IDENTIFIER                                          # possibleEnumerationExpression // of het is een composite
+         | atomic                                                             # atomicExpression
+         ;
 
 atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # assignmentExpression
        | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      # parenthesisExpression
-       | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                          # explicitEnumerationExpression
        | assignable                                                         # assignableExpression
        | functionCall                                                       # functionCallExpression
        | literal                                                            # literalExpression
+       | atomic accessExpression                                            # accessOnAtomicExpression
        ;
+
+assignable: assignable accessExpression                                     # accessOnAssignableExpression
+          | IDENTIFIER                                                      # basicAssignable
+          ;
+
+accessExpression : DOT IDENTIFIER                                           # fieldAccessExpression
+                 | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE              # arrayAccessExpression
+                 ;
 
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
@@ -96,5 +107,6 @@ literal : NUMBER                                                                
         | BOOLEAN                                                                                                         # booleanLiteral
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
         | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
+        | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationExpression
         ;
 

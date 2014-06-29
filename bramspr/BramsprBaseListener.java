@@ -43,19 +43,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -63,6 +50,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAdditionExpression(@NotNull BramsprParser.AdditionExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -82,45 +82,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -128,32 +89,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitNotEqualsToExpression(@NotNull BramsprParser.NotEqualsToExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterAndExpression(@NotNull BramsprParser.AndExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitAndExpression(@NotNull BramsprParser.AndExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -173,39 +108,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterSignExpression(@NotNull BramsprParser.SignExpressionContext ctx) { }
+	@Override public void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterBasicAssignable(@NotNull BramsprParser.BasicAssignableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitBasicAssignable(@NotNull BramsprParser.BasicAssignableContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
+	@Override public void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -225,32 +134,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterArrayAccessOnAssignable(@NotNull BramsprParser.ArrayAccessOnAssignableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitArrayAccessOnAssignable(@NotNull BramsprParser.ArrayAccessOnAssignableContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterMultiplicationExpression(@NotNull BramsprParser.MultiplicationExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -258,45 +141,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitMultiplicationExpression(@NotNull BramsprParser.MultiplicationExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterStructure(@NotNull BramsprParser.StructureContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitStructure(@NotNull BramsprParser.StructureContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -316,26 +160,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx) { }
+	@Override public void enterStructure(@NotNull BramsprParser.StructureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFieldAccessOnAssignable(@NotNull BramsprParser.FieldAccessOnAssignableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFieldAccessOnAssignable(@NotNull BramsprParser.FieldAccessOnAssignableContext ctx) { }
+	@Override public void exitStructure(@NotNull BramsprParser.StructureContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -349,6 +180,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitDeclaration(@NotNull BramsprParser.DeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterMoleculeExpression(@NotNull BramsprParser.MoleculeExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMoleculeExpression(@NotNull BramsprParser.MoleculeExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -381,19 +225,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterNotExpression(@NotNull BramsprParser.NotExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -401,19 +232,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitNotExpression(@NotNull BramsprParser.NotExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -440,84 +258,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitStatement(@NotNull BramsprParser.StatementContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterAssignment(@NotNull BramsprParser.AssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitAssignment(@NotNull BramsprParser.AssignmentContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -563,13 +303,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx) { }
+	@Override public void enterUniversalNotEqualsToExpression(@NotNull BramsprParser.UniversalNotEqualsToExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx) { }
+	@Override public void exitUniversalNotEqualsToExpression(@NotNull BramsprParser.UniversalNotEqualsToExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -589,6 +329,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterCompositeLiteral(@NotNull BramsprParser.CompositeLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -602,13 +355,338 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx) { }
+	@Override public void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx) { }
+	@Override public void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterUniversalEqualsToExpression(@NotNull BramsprParser.UniversalEqualsToExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitUniversalEqualsToExpression(@NotNull BramsprParser.UniversalEqualsToExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitOrExpression(@NotNull BramsprParser.OrExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPowerExpression(@NotNull BramsprParser.PowerExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAndExpression(@NotNull BramsprParser.AndExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAndExpression(@NotNull BramsprParser.AndExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSignExpression(@NotNull BramsprParser.SignExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSignExpression(@NotNull BramsprParser.SignExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitEqualsToExpression(@NotNull BramsprParser.EqualsToExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBasicAssignable(@NotNull BramsprParser.BasicAssignableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBasicAssignable(@NotNull BramsprParser.BasicAssignableContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSmallerThanExpression(@NotNull BramsprParser.SmallerThanExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitEnumerationDeclaration(@NotNull BramsprParser.EnumerationDeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitArithmeticExpression(@NotNull BramsprParser.ArithmeticExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAssignment(@NotNull BramsprParser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAssignment(@NotNull BramsprParser.AssignmentContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCompositeDeclaration(@NotNull BramsprParser.CompositeDeclarationContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAssignableExpression(@NotNull BramsprParser.AssignableExpressionContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCharacterLiteral(@NotNull BramsprParser.CharacterLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitArrayTypeDenoter(@NotNull BramsprParser.ArrayTypeDenoterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAccessOnAtomicExpression(@NotNull BramsprParser.AccessOnAtomicExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAccessOnAtomicExpression(@NotNull BramsprParser.AccessOnAtomicExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -622,6 +700,19 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitSwap(@NotNull BramsprParser.SwapContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitFunctionDeclaration(@NotNull BramsprParser.FunctionDeclarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
