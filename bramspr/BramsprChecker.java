@@ -244,23 +244,33 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return visit(ctx.expression());
 	}
 
-	/*
-	 * Een arrayLiteralExpression moet aan de volgende contexteisen voldoen:
-	 * 	1 Alle elementen moeten hetzelfde type hebben
-	 * 	2 Het type van het element moet bestaan
-	 * De tweede eis wordt reeds gegarandeerd door de contextuele eis dat een waarde in zijn algemeenheid nooit een onbestaand type 
-	 * kan hebben; door een element te assignen weten we dus al dat het type bestaat.
-	 */
 	/**
 	 * Handles the context checking of an array-literal.
+	 * 
+	 * An array-literal is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all elements must have an existing type;
+	 * <li>all elements must have the same type;
+	 * <li>the array-literal is constant if all of its elements are constant;
+	 * <li>the array-literal is of type <i>[n]type</i>, where <i>n</i> is the amount of elements and <i>type</i> is the type of the elements, or void when there
+	 * are no elements.
+	 * </ol>
+	 * <br>
+	 * 
+	 * This method only implements the last three. Rule 1 is already governed by the visit-methods for the individual elements, which get called by this method.
+	 * 
 	 * @param ctx
-	 * @return
+	 *            The context object associated with the parse tree node of this array-literal.
+	 * @return The suit of the array-literal or {@link Suit#ERROR} in case of a context error.
 	 */
 	public Suit visitArrayLiteral(ArrayLiteralContext ctx) {
 		int aantalElementen = ctx.expression().size();
 
 		if (aantalElementen == 0) {
-			// Als er toch 0 elementen zijn, maak ze dan maar direct voids...
+			// CR4: return void in case of no elements.
 			return new Suit(new ArraySymbol(0, VOID), true);
 		}
 
@@ -269,16 +279,16 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		boolean allConstant = true;
 		for (int i = 1; i < aantalElementen; i++) {
-			// Type van het huidige element
+			// Type van het huidige element.
 			Suit currElementSuit = visit(ctx.expression(i));
 
-			// Check if types match
+			// CR2: see if types match.
 			if (!firstElementSuit.type.equals(currElementSuit.type)) {
 				this.reportError("attempted to enter different types in array literal: use records for that!", ctx.expression(i),
 						firstElementSuit.type.getIdentifier(), currElementSuit.type.getIdentifier());
 			}
 
-			// Check if it is still a constant array
+			// CR3: check if it is still a constant array.
 			allConstant = allConstant && currElementSuit.isConstant;
 		}
 
@@ -287,11 +297,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(arrayType, allConstant);
 	}
 
-	@Override
-	/*
-	 * Een additionExpression (+,-) heeft twee int argumenten, en levert een int op. 
-	 * De return value is constant als en slechts als beide input values constant zijn.
+	/**
+	 * Handles the context checking of an addition-expression.
+	 * 
+	 * An addition-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this addition-expression.
+	 * @return The suit of the addition-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitAdditionExpression(AdditionExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit rightExpression = visit(ctx.arithmetic(1));
@@ -310,6 +334,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, isConstant);
 	}
 
+	/**
+	 * Handles the context checking of a power-expression.
+	 * 
+	 * A power-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this power-expression.
+	 * @return The suit of the power-expression or {@link Suit#ERROR} in case of a context error.
+	 */
 	@Override
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
 		Suit baseSuit = visit(ctx.arithmetic(0));
@@ -370,9 +412,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * De conditie-expressie van een while-structure moet een boolean waarde opleveren.
-	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
+	/**
+	 * Handles the context checking of a while-structure.
+	 * 
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method of the block-structure.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this while-structure.
+	 * @return A while-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitWhileStructure(WhileStructureContext ctx) {
@@ -388,17 +435,30 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		visit(ctx.blockStructure());
 		return Suit.VOID;
 	}
-	
-	@Override
-	/*
-	 * Een universalEqualsToExpression heeft twee waardes met hetzelfde type, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+
+	/**
+	 * Handles the context checking of a universal-equals-to-expression.
+	 * 
+	 * A universal-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands must be of the same type;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this universal-equals-to-expression.
+	 * @return The suit of the universal-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
 
 		Suit leftSuit = visit(ctx.expression(0));
 		Suit rightSuit = visit(ctx.expression(1));
-		
+
 		if (!leftSuit.type.equals(rightSuit.type)) {
 			this.reportError("a=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
 			return Suit.ERROR;
@@ -407,16 +467,31 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
 		return new Suit(BOOLEAN, bothConstant);
 	}
-	
-	/*
-	 * Een universalNotEqualsToExpression heeft twee waardes met hetzelfde type, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+
+	/**
+	 * Handles the context checking of a universal-not-equals-to-expression.
+	 * 
+	 * A universal-not-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands must be of the same type;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this universal-not-equals-to-expression.
+	 * @return The suit of the universal-not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
 
 		Suit leftSuit = visit(ctx.expression(0));
 		Suit rightSuit = visit(ctx.expression(1));
-		
+
 		if (!leftSuit.type.equals(rightSuit.type)) {
 			this.reportError("a=/=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
 			return Suit.ERROR;
@@ -426,11 +501,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, bothConstant);
 	}
 
-	@Override
-	/*
-	 * Een notEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of a not-equals-to-expression.
+	 * 
+	 * A not-equals-to-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this not-equals-to-expression.
+	 * @return The suit of the not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -520,10 +609,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
 	}
 
-	@Override
-	/*
-	 * Een signexpression heeft één int argument, en geeft een type int terug.
-	 * De return value is constant als en slechts als de input value constant is.
+	/**
+	 * Handles the context checking of a sign-expression.
+	 * 
+	 * A sign-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the operand must be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if the operand is constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this sign-expression.
+	 * @return The suit of the sign-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	public Suit visitSignExpression(SignExpressionContext ctx) {
 		Suit expressionSuit = visit(ctx.arithmetic());
@@ -563,11 +665,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(enumSymbol, true);
 	}
 
-	@Override
-	/*
-	 * Een notEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of an equals-to-expression.
+	 * 
+	 * An equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this equals-to-expression.
+	 * @return The suit of the equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -585,11 +701,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	@Override
-	/*
-	 * Een greaterThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of a greater-than-expression.
+	 * 
+	 * A greater-than-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this greater-than-expression.
+	 * @return The suit of the greater-than-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -607,11 +737,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, allConstant);
 	}
 
-	@Override
-	/*
-	 * Een greaterThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of a smaller-than-expression.
+	 * 
+	 * A smaller-than-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this smaller-than-expression.
+	 * @return The suit of the smaller-than-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -629,11 +773,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(INTEGER, allConstant);
 	}
 
-	@Override
-	/*
-	 * Een multiplicationExpression (*, /, %) heeft twee int argumenten, en levert een int op. 
-	 * De return value is constant als en slechts als beide input values constant zijn.
+	/**
+	 * Handles the context checking of a multiplication-expression.
+	 * 
+	 * A multiplication-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this multiplication-expression.
+	 * @return The suit of the multiplication-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit rightExpression = visit(ctx.arithmetic(1));
@@ -696,11 +854,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	@Override
-	/*
-	 * Een plusMinuxExpression heeft drie int argumenten, en geeft een bool waarde terug.
-	 * De output value is constant als en slechts als alle drie de input argumenten constant zijn.
+	/**
+	 * Handles the context checking of a plus-minus-expression.
+	 * 
+	 * A plus-minus-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all three operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all three operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this plus-minus-expression.
+	 * @return The suit of the plus-minus-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.arithmetic(0));
 		Suit middleExpression = visit(ctx.arithmetic(1));
@@ -726,11 +898,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	@Override
-	/*
-	 * Een greaterThanEqualsToExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of a greater-than-equals-to-expression.
+	 * 
+	 * A greater-than-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this greater-than-equals-to-expression.
+	 * @return The suit of the greater-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -812,10 +998,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	/*
-	 * Een smallerThanExpression heeft twee of meer int input waardes, en geeft een bool terug.
-	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	/**
+	 * Handles the context checking of a smaller-than-equals-to-expression.
+	 * 
+	 * A smaller-than-equals-to-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this smaller-than-equals-to-expression.
+	 * @return The suit of the smaller-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
 		boolean allConstant = true;
 
@@ -877,9 +1078,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return expressionSuit;
 	}
 
-	/*
-	 * De conditie-expressie van een if-structure moet een boolean waarde opleveren.
-	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
+	/**
+	 * Handles the context checking of an if-structure.
+	 * 
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method(s) of the block-structure(s).
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this if-structure.
+	 * @return A if-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitIfStructure(IfStructureContext ctx) {
@@ -917,7 +1123,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	@Override
 	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
-		TypeSymbol type =  this.enumerationSymbolTable.resolve(typeName);
+		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
 		if (type != null) {
 			return new Suit(type, false);
 		}
@@ -1097,6 +1303,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
+	/**
+	 * Handles the context checking of a block-structure.
+	 * 
+	 * Just visits the enclosed statements.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this block-structure.
+	 * @return A block-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
 	@Override
 	public Suit visitBlockStructure(BlockStructureContext ctx) {
 		for (int i = 0; i < ctx.statement().size(); i++) {
@@ -1106,25 +1321,33 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * Een character-literal heeft geen contextbeperkingen en levert een
-	 * constant string op.
+	/**
+	 * Handles the context checking of a string-literal by returning a constant <i>string</i>-suit.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this string-literal.
+	 * @return A constant <i>string</i>-suit.
 	 */
 	@Override
 	public Suit visitStringLiteral(StringLiteralContext ctx) {
 		return new Suit(STRING, true);
 	}
 
-	/*
-	 * Een number-literal heeft geen contextbeperkingen en levert een
-	 * constant intenger op.
-	 */public Suit visitNumberLiteral(NumberLiteralContext ctx) {
+	/**
+	 * Handles the context checking of a number-literal by returning a constant <i>integer</i>-suit.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this number-literal.
+	 * @return A constant <i>integer</i>-suit.
+	 */
+	@Override
+	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
 		return new Suit(INTEGER, true);
 	}
 
-	/*
-	 * Een boolean-literal heeft geen contextbeperkingen en levert een
-	 * constant boolean op.
+	/**
+	 * Handles the context checking of a boolean-literal by returning a constant <i>boolean</i>-suit.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this boolean-literal.
+	 * @return A constant <i>boolean</i>-suit.
 	 */
 	@Override
 	public Suit visitBooleanLiteral(BooleanLiteralContext ctx) {
@@ -1156,9 +1379,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * Een character-literal heeft geen contextbeperkingen en levert een
-	 * constant character op.
+	/**
+	 * Handles the context checking of a character-literal by returning a constant <i>character</i>-suit.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this character-literal.
+	 * @return A constant <i>character</i>-suit.
 	 */
 	@Override
 	public Suit visitCharacterLiteral(CharacterLiteralContext ctx) {
@@ -1210,10 +1435,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * Een orExpression (+,-) heeft twee bool argumenten, en levert een bool op. 
-	 * De return value is constant als en slechts als beide input values constant zijn.
+	/**
+	 * Handles the context checking of an or-expression.
+	 * 
+	 * An or-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>boolean</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this or-expression.
+	 * @return The suit of the or-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitOrExpression(OrExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.expression(0));
 		Suit rightExpression = visit(ctx.expression(1));
@@ -1232,10 +1472,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, isConstant);
 	}
 
-	/*
-	 * Een andExpression (+,-) heeft twee bool argumenten, en levert een bool op. 
-	 * De return value is constant als en slechts als beide input values constant zijn.
+	/**
+	 * Handles the context checking of an and-expression.
+	 * 
+	 * An and-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>both operands have to be of type <i>boolean</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if both operands are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this and-expression.
+	 * @return The suit of the and-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitAndExpression(AndExpressionContext ctx) {
 		Suit leftExpression = visit(ctx.expression(0));
 		Suit rightExpression = visit(ctx.expression(1));
@@ -1394,8 +1649,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 
-					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by type " + prefixName
-							+ ". To explicitly denote the enumeration, use 'enumeration." + prefixName + "." + fieldName + "'.";
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by type "
+							+ prefixName + ". To explicitly denote the enumeration, use 'enumeration." + prefixName + "." + fieldName + "'.";
 				}
 
 				reportError(errorMessage, ctx);
