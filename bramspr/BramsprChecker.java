@@ -20,7 +20,6 @@ import bramspr.BramsprParser.AndExpressionContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
-import bramspr.BramsprParser.AssignableExpressionContext;
 import bramspr.BramsprParser.FieldAccessOnAssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
@@ -34,7 +33,6 @@ import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
-import bramspr.BramsprParser.FunctionCallExpressionContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
 import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
@@ -54,7 +52,6 @@ import bramspr.BramsprParser.PureDeclarationContext;
 import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
-import bramspr.BramsprParser.StatementContext;
 import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.WhileStructureContext;
@@ -64,17 +61,34 @@ import bramspr.symboltable.SymbolTableException;
 //public class BramsprChecker implements BramsprVisitor<Suit> {
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
-	public static final CompositeSymbol INTEGER = new CompositeSymbol("integer", null, null);
+	/** The void symbol. */
 	public static final CompositeSymbol VOID = new CompositeSymbol("void", null, null);
+
+	/** The symbol for the built-in type <i>integer</i>. */
+	public static final CompositeSymbol INTEGER = new CompositeSymbol("integer", null, null);
+
+	/** The symbol for the built-in type <i>character</i>. */
 	public static final CompositeSymbol CHARACTER = new CompositeSymbol("character", null, null);
+
+	/** The symbol for the built-in type <i>boolean</i>. */
 	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("boolean", null, null);
+
+	/** The symbol for the built-in type <i>string</i>. */
 	public static final CompositeSymbol STRING = new CompositeSymbol("string", null, null);
 
-	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>(); // functienamen (e.g. foo)
-	private SymbolTable<VariableSymbol> variableSymbolTable = new SymbolTable<VariableSymbol>(); // variabelenamen (e.g. x)
-	private SymbolTable<CompositeSymbol> typeSymbolTable = new SymbolTable<CompositeSymbol>(); // typenamen (e.g. Stoel)
+	/** The symbol table in which declared and built-in functions are administered. */
+	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>();
+
+	/** The symbol table in which declared variables are administered. */
+	private SymbolTable<VariableSymbol> variableSymbolTable = new SymbolTable<VariableSymbol>();
+
+	/** The symbol table in which declared and built-in types, excluding enumerations, are administered. */
+	private SymbolTable<CompositeSymbol> typeSymbolTable = new SymbolTable<CompositeSymbol>();
+
+	/** The symbol table in which declared enumerations are administered. */
 	private SymbolTable<EnumerationSymbol> enumerationSymbolTable = new SymbolTable<EnumerationSymbol>(); // enumnamen (e.g. DAYS)
 
+	/** Opens a new scope in all symbol tables. */
 	private void openScope() {
 		functionSymbolTable.openScope();
 		variableSymbolTable.openScope();
@@ -82,6 +96,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		enumerationSymbolTable.openScope();
 	}
 
+	/** Closes the current scope in all symbol tables. */
 	private void closeScope() {
 		functionSymbolTable.closeScope();
 		variableSymbolTable.closeScope();
@@ -89,22 +104,34 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		enumerationSymbolTable.closeScope();
 	}
 
+	/** TODO: Dit moet JavaDoc krijgen. */
 	// TODO: moeten we hier nog wat mee doen? Wel hè?
 	private ParseTreeProperty<ParseTree> declarationPointers;
 
+	/** The current amount of encountered context errors in the program. */
 	private int errorCount = 0;
 
+	/** @return {@link #errorCount} */
+	public int getErrorCount() {
+		return errorCount;
+	}
+
 	/**
-	 * Raporteert een error door deze op System.err te printen.
+	 * Reports a context error.
+	 * 
+	 * Increases {@link #errorCount} and prints a message to {@link System#err}. If you don't want to specify {@code expected} and {@code encountered}, use
+	 * {@link #reportError(String, ParserRuleContext)} instead.
+	 * 
+	 * @see #reportError(String, ParserRuleContext)
 	 * 
 	 * @param message
-	 *            foutmelding (e.g. illegal argument)
+	 *            The error message to be printed.
 	 * @param ctx
-	 *            regelnummer van foutproducerende code
+	 *            The context-object containing the erroneous code. Is used to include the line and column number in the error message.
 	 * @param expected
-	 *            wat verwacht werd (optioneel)
+	 *            A description of what was expected.
 	 * @param encountered
-	 *            wat ontvangen is (optioneel)
+	 *            A description of what was encountered.
 	 */
 	private void reportError(String message, ParserRuleContext erroneousNode, String expected, String encountered) {
 		errorCount++;
@@ -130,17 +157,30 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		}
 	}
 
-	/*
-	 * Handige reportError-wrapper zonder 'expected, encountered'.
+	/**
+	 * Reports a context error.
+	 * 
+	 * Works like {@link #reportError(String, ParserRuleContext, String, String)}, without an {@code expected} and {@code encountered}.
+	 * 
+	 * @see #reportError(String, ParserRuleContext, String, String)
 	 */
-	private void reportError(String message, ParserRuleContext erroroursNode) {
-		reportError(message, erroroursNode, null, null);
+	private void reportError(String message, ParserRuleContext erroneousNode) {
+		reportError(message, erroneousNode, null, null);
 	}
 
 	public BramsprChecker() {
 
 	}
 
+	/**
+	 * Handles the context checking of a Bramspr program.
+	 * 
+	 * Opens the root scope, declares all built-in types and functions, recursively context-checks the program and finally closes the root scope.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the top node of the program's parse tree.
+	 * @return A program has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
 	public Suit visitProgram(ProgramContext ctx) {
 		this.openScope();
 		try {
@@ -171,11 +211,27 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
+	/**
+	 * When a syntactically erroneous program is parsed, the parse tree will contain error nodes. This method handles their context checking.
+	 * 
+	 * @param node
+	 *            The node that is to be visited.
+	 * @return An error node is erroneous by definition, so {@link Suit#ERROR}.
+	 */
 	@Override
-	public Suit visitErrorNode(ErrorNode arg0) {
+	public Suit visitErrorNode(ErrorNode node) {
 		return Suit.ERROR;
 	}
 
+	/**
+	 * Handles the context checking of a parenthesis-expression.
+	 * 
+	 * Visits the enclosed expression and passes on its suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this parenthesis-expression.
+	 * @return The suit of the enclosed expression.
+	 */
 	@Override
 	public Suit visitParenthesisExpression(ParenthesisExpressionContext ctx) {
 		return visit(ctx.expression());
@@ -187,6 +243,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 	2 Het type van het element moet bestaan
 	 * De tweede eis wordt reeds gegarandeerd door de contextuele eis dat een waarde in zijn algemeenheid nooit een onbestaand type 
 	 * kan hebben; door een element te assignen weten we dus al dat het type bestaat.
+	 */
+	/**
+	 * Handles the context checking of an array-literal.
+	 * @param ctx
+	 * @return
 	 */
 	public Suit visitArrayLiteral(ArrayLiteralContext ctx) {
 		int aantalElementen = ctx.expression().size();
@@ -441,19 +502,19 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
 		String enumName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
-		
-		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);	
-		
-		if(enumSymbol == null) { // Test #1
+
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(enumName);
+
+		if (enumSymbol == null) { // Test #1
 			this.reportError("reference to non-existing enum type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
-		if(! enumSymbol.hasValue(fieldName)) { // Test #2
+
+		if (!enumSymbol.hasValue(fieldName)) { // Test #2
 			this.reportError("reference to non-existing field '" + fieldName + "' in enum type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
+
 		// Geef de waarde terug!
 		return null; // TODO
 	}
@@ -712,8 +773,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 
-					errorMessage = errorMessage + "Warning: please be aware that enumeration " + expressionSuit.type.getIdentifier() + " is currently being hidden by type"
-							+ expressionSuit.type.getIdentifier() + ". To explicitly denote the enumeration, use 'enum." + expressionSuit.type.getIdentifier() + "'.";
+					errorMessage = errorMessage + "Warning: please be aware that enumeration " + expressionSuit.type.getIdentifier()
+							+ " is currently being hidden by type" + expressionSuit.type.getIdentifier() + ". To explicitly denote the enumeration, use 'enum."
+							+ expressionSuit.type.getIdentifier() + "'.";
 				}
 
 				reportError(errorMessage, ctx);
