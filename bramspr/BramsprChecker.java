@@ -113,7 +113,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		typeSymbolTable.openScope();
 		enumerationSymbolTable.openScope();
 	}
-	
+
 	/** Closes the current scope in all symbol tables. */
 	private void closeScope() {
 		functionSymbolTable.closeScope();
@@ -126,7 +126,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public int getErrorCount() {
 		return errorCount;
 	}
-
 
 	/**
 	 * Reports a context error.
@@ -168,7 +167,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.err.println(".");
 		}
 	}
-	
+
 	/**
 	 * Reports a context error.
 	 * 
@@ -262,16 +261,27 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, isConstant);
 	}
 
-	@Override
-	/*
-	 * Er moet hier gekeken worden of
-	 *  - de array-expressie inderdaad een array is
-	 *  - de index-expressie een integer is
-	 *  - welke type de array-elementen zijn, zodat de juiste return suit gekozen kan worden
-	 *  - of de array-expressie mutable is, zodat de juiste return suit gekozen kan worden
+	/**
+	 * Handles the context checking of an array-access-expression.
+	 * 
+	 * An array-access-expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the array-expression must yield an array-typed value;
+	 * <li>the index-expression must yield a value of type <i>integer</i>;
+	 * <li>the yielded value is of the type of the array elements;
+	 * <li>the yielded value is constant if both the accessed array and the index are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this array-access-expression.
+	 * @return The suit of the array-access-expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
-		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
+		// Pak het meest linker kind van de parent, en kijk wat voor suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
 		Suit indexSuit = visit(ctx.expression());
 
@@ -285,7 +295,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			if (indexSuit.type.equals(INTEGER)) {
 
 				// Alles klopt. Gaan met die banaan.
-				return new Suit(arrayType.type, expressionSuit.isConstant);
+				return new Suit(arrayType.type, expressionSuit.isConstant && indexSuit.isConstant);
 
 			} else {
 
@@ -368,15 +378,26 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(arrayType, false);
 	}
 
-	/*
-	 * Een assignment moet aan de volgende eisen voldoen:
-	 *  - de assignable(s) moet bestaan, dat wil zeggen: de variabele moet gedeclareerd zijn / het veld moet bestaan;
-	 *  - de assignable(s) mogen niet constant zijn;
-	 * 	- het type van de assignable(s) en de expressie moeten overeenkomen.
+	/**
+	 * Handles the context checking of an assignment.
 	 * 
-	 * De eerste eis wordt in de visit-methode van de assignable(s) al gecontroleerd.
+	 * An assignment is confined to the following context rules:
 	 * 
-	 * Het return suit van de assignment is de suit van de expressie.
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the assignable(s) must exist (the identifier(s) must be declared as variable(s) / the reffered field(s) must exist);
+	 * <li>the assignable(s) must not be constant;
+	 * <li>the assignable(s) and the expression should be of the same type.
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 1 is checked in the visit-method(s) of the individual assignable(s), which get called by this method. This method therefore only checks the last two
+	 * rules.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this assignment.
+	 * @return The suit of the expression, or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitAssignment(AssignmentContext ctx) {
@@ -412,15 +433,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return expressionSuit;
 	}
 
-	/*
-	 * Een assignment-expression bestaat uit niets meer dan een assignment
-	 * tussen haakjes, en geeft dan ook de suit van de assignment terug.
+	/**
+	 * Handles the context checking of an assignment-expression.
+	 * 
+	 * Visits the enclosed assignment and passes on its suit.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this assignment-expression.
+	 * @return The suit of the enclosed assignment.
 	 */
 	@Override
 	public Suit visitAssignmentExpression(AssignmentExpressionContext ctx) {
 		return visit(ctx.assignment());
 	}
 
+	/**
+	 * Handles the context checking of a base-type-denoter.
+	 * 
+	 * First tries to resolve type denoter's identifier in {@link #typeSymbolTable}. If that gives no result, tries again in {@link #enumerationSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this base-type-denoter.
+	 * @return A suit with the denoted type as type, or {@link Suit#ERROR} if no declaration was found.
+	 */
 	@Override
 	public Suit visitBaseTypeDenoter(BaseTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
@@ -1598,8 +1633,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(STRING, true);
 	}
 
-	@Override
-	public Suit visitSwap(SwapContext ctx) {
+	/**
+	 * Handles the context checking of a swap.
+	 * 
+	 * A swap is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the assignables must exist (the identifier(s) must be declared as variable(s) / the reffered field(s) must exist);
+	 * <li>the assignables must not be constant;
+	 * <li>the assignables must be of the same type.
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 1 is checked in the visit-methods of the individual assignables, which get called by this method. This method therefore only checks the last two
+	 * rules.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this swap.
+	 * @return A swap has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */
+	@Override	public Suit visitSwap(SwapContext ctx) {
+		//TODO: checken of hier geen constanten geswapt worden
 		TypeSymbol rightType = visit(ctx.assignable(0)).type;
 		TypeSymbol leftType = visit(ctx.assignable(1)).type;
 
