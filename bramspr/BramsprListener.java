@@ -251,6 +251,17 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link BramsprParser#universalNotEqualsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUniversalNotEqualsToExpression(@NotNull BramsprParser.UniversalNotEqualsToExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#universalNotEqualsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUniversalNotEqualsToExpression(@NotNull BramsprParser.UniversalNotEqualsToExpressionContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link BramsprParser#functionCallExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -293,6 +304,17 @@ public interface BramsprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link BramsprParser#universalEqualsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUniversalEqualsToExpression(@NotNull BramsprParser.UniversalEqualsToExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link BramsprParser#universalEqualsToExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUniversalEqualsToExpression(@NotNull BramsprParser.UniversalEqualsToExpressionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#orExpression}.

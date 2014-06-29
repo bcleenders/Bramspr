@@ -59,6 +59,8 @@ import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
 import bramspr.BramsprParser.StringLiteralContext;
 import bramspr.BramsprParser.SwapContext;
+import bramspr.BramsprParser.UniversalEqualsToExpressionContext;
+import bramspr.BramsprParser.UniversalNotEqualsToExpressionContext;
 import bramspr.BramsprParser.WhileStructureContext;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
@@ -322,6 +324,43 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		visit(ctx.blockStructure());
 		return Suit.VOID;
 	}
+	
+	@Override
+	/*
+	 * Een universalEqualsToExpression heeft twee waardes met hetzelfde type, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
+	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
+
+		Suit leftSuit = visit(ctx.expression(0));
+		Suit rightSuit = visit(ctx.expression(1));
+		
+		if (!leftSuit.type.equals(rightSuit.type)) {
+			this.reportError("a=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
+		return new Suit(BOOLEAN, bothConstant);
+	}
+	
+	/*
+	 * Een universalNotEqualsToExpression heeft twee waardes met hetzelfde type, en geeft een bool terug.
+	 * De return waarde is constant als en slechts als alle input waardes constant zijn.
+	 */
+	public Suit visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
+
+		Suit leftSuit = visit(ctx.expression(0));
+		Suit rightSuit = visit(ctx.expression(1));
+		
+		if (!leftSuit.type.equals(rightSuit.type)) {
+			this.reportError("a=/=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
+			return Suit.ERROR;
+		}
+
+		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
+		return new Suit(BOOLEAN, bothConstant);
+	}
 
 	@Override
 	/*
@@ -339,7 +378,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				System.out.println(INTEGER);
 				System.out.println(currentSuit.type);
 
-				this.reportError("=/= can only compare int values", ctx.arithmetic(i), INTEGER.toString(), currentSuit.type.toString());
+				this.reportError("multiple =/= can only compare int values", ctx.arithmetic(i), INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
@@ -471,7 +510,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
 			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("= can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
+				this.reportError("multiple = can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
@@ -585,7 +624,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		try {
 			this.enumerationSymbolTable.declare(symbol);
-			System.out.println("gedeclareerd! " + enumerationIdentifier);
 		} catch (SymbolTableException e) {
 			this.reportError(e.getMessage(), ctx);
 		}

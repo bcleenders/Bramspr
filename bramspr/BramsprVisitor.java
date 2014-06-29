@@ -166,6 +166,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#universalNotEqualsToExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUniversalNotEqualsToExpression(@NotNull BramsprParser.UniversalNotEqualsToExpressionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#functionCallExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -192,6 +199,13 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#universalEqualsToExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUniversalEqualsToExpression(@NotNull BramsprParser.UniversalEqualsToExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#orExpression}.

@@ -59,6 +59,8 @@ expression: NOT expression                                                  # no
           | arithmetic                                                      # arithmeticExpression
           | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
           | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
+          | expression EQUALS_TO expression                                 # universalEqualsToExpression
+          | expression NOT_EQUALS_TO expression                             # universalNotEqualsToExpression
           | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic            # plusMinusExpression                  
           | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression        
           | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression            

@@ -45,4 +45,10 @@
     // 14 maart is PI dag (3,14)
     piDag := komendJaar.maanden[3].dagen[14];
 
+    // Zou PI dag op een maandag zijn?
+    if(komendJaar.maanden[3].dagen[14] = Day.MONDAY) {
+        putChar('y');
+    } else {
+        putChar('n');
+    }
 }
