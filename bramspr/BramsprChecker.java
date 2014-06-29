@@ -832,13 +832,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			}
 		}
 
-<<<<<<< HEAD
-=======
 		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
 		return expressionSuit;
 	}
 
->>>>>>> a8b7e5ae1ef51d70a3dfdc945aabd27be08f74cc
 	/*
 	 * De conditie-expressie van een if-structure moet een boolean waarde opleveren.
 	 * De structure zelf levert niets op, dus deze methode geeft de void-suit terug.
@@ -876,15 +873,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(arrayType, false);
 	}
 
-<<<<<<< HEAD
-=======
-	@Override
-	public Suit visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
-
-		return super.visitChildren(ctx);
-	}
-
->>>>>>> a8b7e5ae1ef51d70a3dfdc945aabd27be08f74cc
 	/*
 	 * Een composite-literal moet aan de volgende contexteisen voldoen:
 	 * 	- het composite-type moet gedeclareerd zijn;
