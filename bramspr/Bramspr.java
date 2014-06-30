@@ -45,7 +45,7 @@ public class Bramspr {
 		System.out.println("Finished compiling");
 		
 		System.out.println("Writing code to file");
-		FileOutputStream fos = new FileOutputStream("Example.class");
+		FileOutputStream fos = new FileOutputStream("Bramspr.class");
         fos.write(code);
         fos.close();
 	}
