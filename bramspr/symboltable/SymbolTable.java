@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
-import symboltable.Symbol;
-
 public class SymbolTable<S extends Symbol> {
 	private HashMap<String, Stack<S>> symbols;
 	private Stack<HashSet<String>> symbolsInLevel;

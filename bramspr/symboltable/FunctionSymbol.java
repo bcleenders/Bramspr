@@ -1,4 +1,5 @@
-package symboltable;
+package bramspr.symboltable;
+
 
 public class FunctionSymbol extends ValueYieldingSymbol {
 	TypeSymbol[] arguments;

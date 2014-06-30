@@ -1,4 +1,5 @@
-package symboltable;
+package bramspr.symboltable;
+
 
 public class VariableSymbol extends ValueYieldingSymbol {
 		

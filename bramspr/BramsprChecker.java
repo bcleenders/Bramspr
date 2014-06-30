@@ -9,12 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import symboltable.ArraySymbol;
-import symboltable.CompositeSymbol;
-import symboltable.EnumerationSymbol;
-import symboltable.FunctionSymbol;
-import symboltable.TypeSymbol;
-import symboltable.VariableSymbol;
 import bramspr.BramsprParser.AccessOnAssignableExpressionContext;
 import bramspr.BramsprParser.AccessOnAtomicExpressionContext;
 import bramspr.BramsprParser.AdditionExpressionContext;
@@ -62,8 +56,14 @@ import bramspr.BramsprParser.SwapContext;
 import bramspr.BramsprParser.UniversalEqualsToExpressionContext;
 import bramspr.BramsprParser.UniversalNotEqualsToExpressionContext;
 import bramspr.BramsprParser.WhileStructureContext;
+import bramspr.symboltable.ArraySymbol;
+import bramspr.symboltable.CompositeSymbol;
+import bramspr.symboltable.EnumerationSymbol;
+import bramspr.symboltable.FunctionSymbol;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
+import bramspr.symboltable.TypeSymbol;
+import bramspr.symboltable.VariableSymbol;
 
 //public class BramsprChecker implements BramsprVisitor<Suit> {
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
@@ -179,12 +179,27 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		reportError(message, erroneousNode, null, null);
 	}
 
+	/**
+	 * Handles the context checking of an access-on-assignable-expression.
+	 * 
+	 * Calls the visit-method for the access-expression component, which actually does the context checking.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this access-on-assignable-expression.
+	 * @return The suit of the access-expression component.
+	 */
 	@Override
 	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
 		return visit(ctx.accessExpression());
 	}
 
-	@Override
+	/**
+	 * Handles the context checking of an access-on-atomic-expression.
+	 * 
+	 * Calls the visit-method for the access-expression component, which actually does the context checking.
+	 * 
+	 * @param ctx The context object associated with the parse tree node of this access-on-atomic-expression.
+	 * @return The suit of the access-expression component.
+	 */	@Override
 	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
 		return visit(ctx.accessExpression());
 	}
@@ -336,6 +351,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *            The context object associated with the parse tree node of this array-literal.
 	 * @return The suit of the array-literal or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitArrayLiteral(ArrayLiteralContext ctx) {
 		int aantalElementen = ctx.expression().size();
 
@@ -366,9 +382,21 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		return new Suit(arrayType, allConstant);
 	}
-
+	
+	
+     /**
+	 * <li>the array-literal is of type <i>[n]type</i>, where <i>n</i> is the amount of elements and <i>type</i> is the type of the elements, or void when there
+	 * are no elements.*/
+	
+	/**
+	 * Handles the context checking of an array-type-denoter.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this array-type-denoter.
+	 * @return A suit with as type <i>[n]type</i>, where <i>n</i> is the number and <i>type</i> is the type denoted by the other component.
+	 */
 	@Override
-	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
+	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) { 
 		int size = Integer.parseInt(ctx.NUMBER().getText());
 
 		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
@@ -475,6 +503,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
+	//TODO javadoc
 	/*
 	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
 	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
@@ -539,13 +568,28 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(CHARACTER, true);
 	}
 
-	/*
-	 * Een typedeclaratie moet aan vier contextuele eisen voldoen:
-	 *  1 Een type moet een unieke naam hebben.
-	 *  2 Alle velden in het type moeten een unieke naam hebben.
-	 *  3 Alle velden in het type moeten een geldig type hebben.
-	 *  4 Een record mag een veld met zijn eigen type hebben; volgt uit eis 3 (want het type is nog niet gedeclareerd). Dit zou een oneindige loop opleveren.
-	 */
+	/**
+	 * Handles the context checking of a composite-declaration.
+	 * 
+	 * A composite-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>a composite type with the same identifier must not already be declared in this scope;
+	 * <li>all fields must have a unique identifier;
+	 * <li>the types of all fields must have been declared.
+	 * </ol>
+	 * <br>
+	 * 
+	 * Rule 3 is already checked by the visit-method(s) of the type-denoter(s), which this method calls. This method checks thus checks the other rules and then
+	 * declares the composite type to {@link #typeSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this composite-declaration.
+	 * @return A composite-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */	
+	@Override
 	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER(0).getText();
 
@@ -579,17 +623,26 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	/*
-	 * Een composite-literal moet aan de volgende contexteisen voldoen:
-	 * 	- het composite-type moet gedeclareerd zijn;
-	 * 	- velden die een waarde toegewezen krijgen moeten bestaan in het composite-type;
-	 * 	- alle velden van het composite-type moeten een waarde toegewezen krijgen;
-	 * 	- elke waarde moet qua type overeenkomen met het veld waaraan het toegewezen wordt;
-	 *  - een veld mag niet tweemaal een waarde toegewezen krijgen.
-	 *  
-	 *  Verder is de composite-literal impliciet constant als alle toegewezen waarden constant 
-	 *  zijn. Deze methode moet dit daarom bijhouden en de teruggegeven suit zich hieraan laten
-	 *  conformeren.
+	/**
+	 * Handles the context checking of a composite-literal.
+	 * 
+	 * A composite-literal is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the denoted composite type must be declared;
+	 * <li>assigned fields must be fields of the denoted composite type;
+	 * <li>each of the denoted composite type's fields must be assigned a value;
+	 * <li>each assigned value's type must have the same type as the field it is being assigned to;
+	 * <li>a field must not be assigned a value more than once;
+	 * <li>the composite-literal is constant if all of the assigned values are constant.
+	 * </ol>
+	 * <br>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this composite-literal.
+	 * @return The suit of the composite-literal or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitCompositeLiteral(CompositeLiteralContext ctx) {
@@ -677,14 +730,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(compositeType, isConstant);
 	}
 
-	/*
-	 * De contextbeperkingen voor een enumeration declaration: 
-	 * - de naam moet uniek zijn (voor enumerations);
-	 * - er mogen geen dubbele waarden voorkomen.
-	 *  
-	 * Verder wordt er uiteraard een enumeration aangemaakt met 
-	 * de opgegeven waarden.
-	 */
+	/**
+	 * Handles the context checking of an enumeration-declaration.
+	 * 
+	 * An enumeration-declaration is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>an enumeration with the same identifier must not already be declared in this scope;
+	 * <li>the value-identifiers have to be unique.
+	 * </ol>
+	 * <br>
+	 * 
+	 * After checking these rules, this method declares the enumeration {@link #enumerationSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this enumeration-declaration.
+	 * @return An enumeration-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 */		
 	@Override
 	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
@@ -722,6 +786,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
+	//TODO javadoc
 	@Override
 	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
@@ -781,6 +846,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
+	//TODO javadoc
 	@Override
 	/*
 	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
@@ -808,6 +874,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(enumSymbol, true);
 	}
 
+	//TODO javadoc
 	@Override
 	/*
 	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
@@ -841,6 +908,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
+	//TODO javadoc
 	/*
 	 * Een function call heeft de volgende contextbeperkingen:
 	 * - de functie moet gedeclareerd zijn;
@@ -909,6 +977,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
 	}
 
+	//TODO javadoc
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
@@ -1205,6 +1274,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
+	//TODO javadoc
 	@Override
 	/*
 	 * Een notExpression heeft één bool argument, en geeft een bool terug.
@@ -1324,6 +1394,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
+	//TODO javadoc
 	@Override
 	/*Een possibleEnumerationExpression moet aan de volgende contextuele eisen voldoen:
 	 * Als er een variabele bestaat met de naam, dan gelden de volgende eisen:

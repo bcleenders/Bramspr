@@ -1,4 +1,4 @@
-package symboltable;
+package bramspr.symboltable;
 
 public abstract class Symbol { // A generic programm symbol
 	String identifier; // All symbols at least have a name
