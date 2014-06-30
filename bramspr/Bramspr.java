@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.UnbufferedTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 public class Bramspr {
@@ -35,7 +36,17 @@ public class Bramspr {
 		
 		System.out.println("Start checking");
 		BramsprChecker checker = new BramsprChecker();
-		checker.visit(tree);
+		checker.check(tree);
 		System.out.println("Finished checking");
+		
+		System.out.println("Start compiling");
+		BramsprCompiler compiler = new BramsprCompiler();
+		byte[] code = compiler.compile(tree);
+		System.out.println("Finished compiling");
+		
+		System.out.println("Writing code to file");
+		FileOutputStream fos = new FileOutputStream("Example.class");
+        fos.write(code);
+        fos.close();
 	}
 }

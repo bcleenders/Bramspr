@@ -105,6 +105,16 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public BramsprChecker() {
 
 	}
+	
+	public void check(ParseTree tree) {
+		this.visit(tree);
+		
+		if(this.getErrorCount() > 0) {
+			System.err.println("There were " + this.getErrorCount() + " errors detected.");
+			System.err.println("Aborting compilation: cannot compile code with errors.");
+			System.exit(1); // Did not compile correctly
+		}
+	}
 
 	/** Opens a new scope in all symbol tables. */
 	private void openScope() {
