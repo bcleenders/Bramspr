@@ -49,7 +49,7 @@ compositeDeclaration:   TYPE IDENTIFIER
 
 typeDenoter: IDENTIFIER                                                     # baseTypeDenoter
            | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter
-           | ENUMERATION DOT IDENTIFIER                                     # enumerationTypeDenoter
+           | ENUMERATION DOT IDENTIFIER                                     # enumeratedTypeDenoter
            ;
 
 assignment: (assignable BECOMES)+ expression;
