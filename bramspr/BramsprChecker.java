@@ -28,7 +28,7 @@ import bramspr.BramsprParser.CompositeLiteralContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EnumerationTypeDenoterContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
-import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
+import bramspr.BramsprParser.ExplicitEnumerationLiteralContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
@@ -44,7 +44,7 @@ import bramspr.BramsprParser.NumberLiteralContext;
 import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
-import bramspr.BramsprParser.PossibleEnumerationExpressionContext;
+import bramspr.BramsprParser.PotentialEnumerationLiteralContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PureDeclarationContext;
@@ -513,7 +513,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	//TODO javadoc
+	//TODO javadoc, en, dit moet toch helemaal geen enumerations matchen?
 	/*
 	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
 	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
@@ -796,8 +796,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	//TODO javadoc
-	@Override
+	/**
+	 * Handles the context checking of an enumeration-type-denoter.
+	 * 
+	 * Tries to resolve type denoter's identifier in {@link #enumerationSymbolTable}.
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this enumeration-type-denoter.
+	 * @return A suit with the denoted enumerated type as type, or {@link Suit#ERROR} if no declaration was found.
+	 */	@Override
 	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
 		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
@@ -857,14 +864,32 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	//TODO javadoc
-	@Override
 	/*
 	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
 	 * 	1 Het enumeration type moet bestaan
 	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
 	 * Het return type is een enumSymbol
 	 */
-	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
+	
+	/**
+	 * Handles the context checking of an explicit-Enumeration-Literal.
+	 * 
+	 * A greater-than-equals-to-expression is confined to the following context rules:
+	 * TODO: afmaken
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this greater-than-equals-to-expression.
+	 * @return The suit of the greater-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 */
+	@Override
+	public Suit visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext ctx) {
 		String enumName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
 
@@ -1418,7 +1443,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *  2.3 Het return type is constant
 	 * Als een assignable geen record en geen enumeration, dan is het geen geldige expressie.
 	 */
-	public Suit visitPossibleEnumerationExpression(PossibleEnumerationExpressionContext ctx) {
+	public Suit visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		// Return suite van de expression opvragen.
 		String prefixName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();

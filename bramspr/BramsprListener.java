@@ -463,12 +463,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#possibleEnumerationExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx);
+	void enterPossibleEnumerationExpression(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#possibleEnumerationExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx);
+	void exitPossibleEnumerationExpression(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#booleanLiteral}.
@@ -496,12 +496,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumerationExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
+	void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#explicitEnumerationExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
+	void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#arithmeticExpression}.

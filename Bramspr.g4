@@ -77,8 +77,8 @@ arithmetic: molecule                                                        # mo
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
 
-// Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) accessExpression gematcht wordt.
-molecule : IDENTIFIER DOT IDENTIFIER                                          # possibleEnumerationExpression // of het is een composite
+// Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) als accessExpression gematcht wordt.
+molecule : IDENTIFIER DOT IDENTIFIER                                          # potentialEnumerationLiteral // of het is een composite
          | atomic                                                             # atomicExpression
          ;
 
@@ -107,6 +107,6 @@ literal : NUMBER                                                                
         | BOOLEAN                                                                                                         # booleanLiteral
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
         | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
-        | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationExpression
+        | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationLiteral
         ;
 

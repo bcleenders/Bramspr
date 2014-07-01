@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -285,6 +285,20 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPlusMinusExpression(@NotNull BramsprParser.PlusMinusExpressionContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link BramsprParser#potentialEnumerationLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPotentialEnumerationLiteral(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumerationLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExplicitEnumerationLiteral(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link BramsprParser#literalExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -299,13 +313,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAtomicExpression(@NotNull BramsprParser.AtomicExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link BramsprParser#possibleEnumerationExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link BramsprParser#booleanLiteral}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -318,13 +325,6 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link BramsprParser#explicitEnumerationExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#arithmeticExpression}.

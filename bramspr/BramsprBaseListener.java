@@ -550,13 +550,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+	@Override public void enterPossibleEnumerationExpression(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+	@Override public void exitPossibleEnumerationExpression(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -589,13 +589,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
+	@Override public void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
+	@Override public void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
