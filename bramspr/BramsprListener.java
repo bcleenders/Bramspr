@@ -485,12 +485,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#enumerationTypeDenoter}.
 	 * @param ctx the parse tree
 	 */
-	void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx);
+	void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#enumerationTypeDenoter}.
 	 * @param ctx the parse tree
 	 */
-	void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx);
+	void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#explicitEnumerationExpression}.

@@ -324,7 +324,7 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx);
+	T visitEnumeratedTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#arithmeticExpression}.

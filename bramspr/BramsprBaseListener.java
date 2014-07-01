@@ -576,13 +576,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
+	@Override public void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
+	@Override public void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

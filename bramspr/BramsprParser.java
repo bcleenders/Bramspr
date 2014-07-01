@@ -921,14 +921,14 @@ public class BramsprParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class EnumerationTypeDenoterContext extends TypeDenoterContext {
+	public static class EnumeratedTypeDenoterContext extends TypeDenoterContext {
 		public TerminalNode DOT() { return getToken(BramsprParser.DOT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
-		public EnumerationTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
+		public EnumeratedTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumerationTypeDenoter(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumeratedTypeDenoter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -957,7 +957,7 @@ public class BramsprParser extends Parser {
 				}
 				break;
 			case ENUMERATION:
-				_localctx = new EnumerationTypeDenoterContext(_localctx);
+				_localctx = new EnumeratedTypeDenoterContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(198); match(ENUMERATION);

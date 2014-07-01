@@ -370,7 +370,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { return visitChildren(ctx); }
+	@Override public T visitEnumeratedTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
