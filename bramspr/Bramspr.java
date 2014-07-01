@@ -44,8 +44,10 @@ public class Bramspr {
 		byte[] code = compiler.compile(tree);
 		System.out.println("Finished compiling");
 		
-		System.out.println("Writing code to file");
-		FileOutputStream fos = new FileOutputStream("Bramspr.class");
+		
+		String filename = "Bramspr.class";
+		System.out.println("Writing code to file '" + filename + "'.");
+		FileOutputStream fos = new FileOutputStream(filename);
         fos.write(code);
         fos.close();
 	}

@@ -1,8 +1,5 @@
 package bramspr;
 
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +12,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
-import bramspr.BramsprParser.AdditionExpressionContext;
-import bramspr.BramsprParser.AssignmentContext;
-import bramspr.BramsprParser.FunctionCallContext;
-import bramspr.BramsprParser.NumberLiteralContext;
+import bramspr.BramsprParser.*;
 
 //public class BramsprCompiler implements BramsprVisitor<Void> {
-public class BramsprCompiler extends BramsprBaseVisitor<Void> {
+public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes {
 
 	TraceClassVisitor tcw;
 	FieldVisitor fv;
@@ -53,24 +47,21 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> {
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 
-		this.tcw.visit(Opcodes.V1_7, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, "Bramspr", null, "java/lang/Object", null);
+		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, "Bramspr", null, "java/lang/Object", null);
 
 		{
 			mv = this.tcw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 			mv.visitCode();
-			Label l0 = new Label();
-			mv.visitLabel(l0);
-			mv.visitLineNumber(3, l0);
-			mv.visitVarInsn(Opcodes.ALOAD, 0);
-			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+			Label startLabel = new Label();
+			mv.visitLabel(startLabel);
+			mv.visitLineNumber(0, startLabel);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
 
-			Label l3 = new Label();
-			mv.visitLabel(l3);
-			mv.visitLineNumber(3, l3);
-			mv.visitInsn(Opcodes.RETURN);
-			Label l4 = new Label();
-			mv.visitLabel(l4);
-			mv.visitLocalVariable("this", "LBramspr;", null, l0, l4, 0);
+			mv.visitInsn(RETURN);
+			Label endLabel = new Label();
+			mv.visitLabel(endLabel);
+			mv.visitLocalVariable("this", "LBramspr;", null, startLabel, endLabel, 0);
 			mv.visitMaxs(2, 1);
 			mv.visitEnd();
 		}
@@ -82,7 +73,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> {
 		// Dit start het compilen van de code!
 		visit(tree);
 
-		mv.visitInsn(Opcodes.RETURN);
+		mv.visitInsn(RETURN);
 		// max stack and max locals automatically computed (COMPUTE_MAXS)
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -98,37 +89,56 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> {
 		// TODO meerdere toewijzingen tegelijkertijd (dup)
 
 		// Fake het toewijzen TODO
-		mv.visitInsn(Opcodes.POP);
-		
-//		this.dumpAssembly();
+		mv.visitInsn(POP);
+
+		// this.dumpAssembly();
 
 		return null;
 	}
-	
+
 	public Void visitFunctionCall(FunctionCallContext ctx) {
 		// TODO echte implementatie!
 
-		
 		// zet even wat leuks op de stack
-		mv.visitIntInsn(Opcodes.BIPUSH, 10);
-		
-		// laad een system.out reference
-		mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-		
-		// de te printen waarde moet boven staan; wissel de top waardes om
-		mv.visitInsn(Opcodes.SWAP);
-		
-		// print de topwaarde van de stack
-		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V");
+		mv.visitIntInsn(BIPUSH, 10);
 
-		this.dumpAssembly();
-		
+		// laad een system.out reference
+		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+
+		// de te printen waarde moet boven staan; wissel de top waardes om
+		mv.visitInsn(SWAP);
+
+		// print de topwaarde van de stack
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V");
+
+//		this.dumpAssembly();
+
 		return null;
 	}
 
 	public Void visitNumberLiteral(NumberLiteralContext ctx) {
 		int value = Integer.parseInt(ctx.getText());
-		mv.visitIntInsn(Opcodes.BIPUSH, value);
+		mv.visitIntInsn(BIPUSH, value);
+		return null;
+	}
+	
+	public Void visitCharacterLiteral(CharacterLiteralContext ctx) {
+		String character = ctx.CHARACTER().getText();
+
+		// 'c'.charAt(1) -> c
+		int charCode = Character.getNumericValue(character.charAt(1));
+		
+		mv.visitIntInsn(BIPUSH, charCode);
+		
+		return null;
+	}
+	
+	public Void visitBooleanLiteral(BooleanLiteralContext ctx) {
+		if(ctx.BOOLEAN().getSymbol().getText().equals("true")) {
+			mv.visitInsn(ICONST_1);
+		} else {
+			mv.visitInsn(ICONST_0);
+		}
 		return null;
 	}
 
@@ -138,10 +148,104 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> {
 		visit(ctx.arithmetic(0));
 		// Zet de rechterkant op de stack
 		visit(ctx.arithmetic(1));
-		// Tel ze op
-		mv.visitInsn(Opcodes.IADD);
+
+		if (ctx.PLUS() != null) {
+			mv.visitInsn(IADD);
+		} else if (ctx.MINUS() != null) {
+			mv.visitInsn(ISUB);
+		}
 
 		System.out.println("ADD");
+
+		return null;
+	}
+
+	@Override
+	public Void visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
+		// Zet de linkerkant op de stack
+		visit(ctx.arithmetic(0));
+		// Zet de rechterkant op de stack
+		visit(ctx.arithmetic(1));
+
+		if (ctx.MULTIPLICATION() != null) {
+			mv.visitInsn(IMUL);
+		} else if (ctx.MODULUS() != null) {
+			mv.visitInsn(IREM);
+		} else if (ctx.DIVISION() != null) {
+			mv.visitInsn(IDIV);
+		}
+
+		return null;
+	}
+
+	@Override
+	public Void visitSignExpression(SignExpressionContext ctx) {
+		// Zet de linkerkant op de stack
+		visit(ctx.arithmetic());
+
+		if (ctx.MINUS() != null) {
+			mv.visitInsn(INEG);
+		}
+		// De + doet niets (+2 == 2). Laten we maar geen assembly ervoor maken (OPTIMALISATIE!!! WOOHOOO)
+
+		return null;
+	}
+
+	@Override
+	public Void visitPowerExpression(PowerExpressionContext ctx) {
+		// Zet de base op de stack
+		visit(ctx.arithmetic(0));
+		// En maak er een double van:
+		mv.visitInsn(I2D);
+
+		// Zet de exponent op de stack
+		visit(ctx.arithmetic(1));
+		// En maak er een double van:
+		mv.visitInsn(I2D);
+		
+		// Ga maar machtsverheffen (regelt Java intern voor ons)
+		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "pow", "(DD)D");
+		// En maak er weer een int van
+		mv.visitInsn(D2I);
+
+		return null;
+	}
+	
+	@Override
+	public Void visitAndExpression(AndExpressionContext ctx) {
+		// Zet boolean 1 op de stack
+		visit(ctx.expression(0));
+
+		// Zet boolean 2 op de stack
+		visit(ctx.expression(1));
+
+		mv.visitInsn(IAND);
+
+		return null;
+	}
+	
+	@Override
+	public Void visitOrExpression(OrExpressionContext ctx) {
+		// Zet boolean 1 op de stack
+		visit(ctx.expression(0));
+
+		// Zet boolean 2 op de stack
+		visit(ctx.expression(1));
+
+		mv.visitInsn(IOR);
+
+		return null;
+	}
+	
+	@Override
+	public Void visitNotExpression(NotExpressionContext ctx) {
+		// Zet boolean 1 op de stack
+		visit(ctx.expression());
+
+		// Zet 1 (true) op de stack
+		mv.visitIntInsn(ILOAD, 1);
+		// XOR -> true XOR a == NOT a
+		mv.visitInsn(IXOR);
 
 		return null;
 	}

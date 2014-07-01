@@ -55,7 +55,7 @@ typeDenoter: IDENTIFIER                                                     # ba
 assignment: (assignable BECOMES)+ expression;
 swap:       assignable SWAP assignable;
 
-expression: NOT expression                                                  # notExpression
+expression: NOT expression                                                  # notExpression//
           | arithmetic                                                      # arithmeticExpression
           | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
           | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
@@ -66,15 +66,15 @@ expression: NOT expression                                                  # no
           | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression            
           | arithmetic (SMALLER_THAN arithmetic)+                           # smallerThanExpression        
           | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+                 # smallerThanEqualsToExpression
-          | expression AND expression                                       # andExpression
-          | expression OR expression                                        # orExpression
+          | expression AND expression                                       # andExpression             //
+          | expression OR expression                                        # orExpression              //
           ;
 
 arithmetic: molecule                                                        # moleculeExpression
-          | (PLUS | MINUS) arithmetic                                       # signExpression
-          | arithmetic POWER <assoc=right> arithmetic                       # powerExpression
-          | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic   # multiplicationExpression
-          | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
+          | (PLUS | MINUS) arithmetic                                       # signExpression            //
+          | arithmetic POWER <assoc=right> arithmetic                       # powerExpression           //
+          | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic   # multiplicationExpression  //
+          | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression        //
           ;
 
 // Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) accessExpression gematcht wordt.
@@ -101,10 +101,10 @@ accessExpression : DOT IDENTIFIER                                           # fi
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
 
-literal : NUMBER                                                                                                          # numberLiteral
-        | CHARACTER                                                                                                       # characterLiteral
+literal : NUMBER                                                                                                          # numberLiteral                   //
+        | CHARACTER                                                                                                       # characterLiteral                //
         | STRING                                                                                                          # stringLiteral
-        | BOOLEAN                                                                                                         # booleanLiteral
+        | BOOLEAN                                                                                                         # booleanLiteral                  //
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
         | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
         | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationExpression
