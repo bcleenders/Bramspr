@@ -8,7 +8,7 @@ public class VariableSymbol extends ValueYieldingSymbol {
 	}
 	
 	public String toString() {
-		return this.identifier;
+		return this.getIdentifier();
 	}
 
 }

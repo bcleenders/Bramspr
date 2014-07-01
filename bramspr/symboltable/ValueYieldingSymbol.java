@@ -3,7 +3,7 @@ package bramspr.symboltable;
 
 public abstract class ValueYieldingSymbol extends Symbol {
 	private boolean isConstant;
-	TypeSymbol returnType;
+	private TypeSymbol returnType;
 	
 	public ValueYieldingSymbol(String identifier, TypeSymbol returnType, boolean isConstant) {
 		super(identifier);

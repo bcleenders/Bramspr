@@ -32,6 +32,6 @@ public class FunctionSymbol extends ValueYieldingSymbol {
 	 * Voldoet aan het pattern zoals gespecificeerd door FunctionSymbol.generateSignature(...).
 	 */
 	public String toString() {
-		return FunctionSymbol.generateSignature(this.identifier, this.arguments);
+		return FunctionSymbol.generateSignature(this.getIdentifier(), this.arguments);
 	}
 }
