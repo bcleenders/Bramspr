@@ -273,7 +273,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit rightExpression = visit(ctx.expression(1));
 
 		if (!leftExpression.type.equals(BOOLEAN)) {
-			this.reportError("logical operator AND only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
+			this.reportError("logical operator AND only works for BOOLEAN values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
 			return Suit.ERROR;
 		}
 
@@ -833,7 +833,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
+			if (!currentSuit.type.equals(INTEGER)) {
 				this.reportError("multiple = can only compare int values", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
@@ -1072,7 +1072,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
+			if (!currentSuit.type.equals(INTEGER)) {
 				this.reportError("only int types are comparable with >=", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
@@ -1080,7 +1080,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	/**
@@ -1107,7 +1107,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
+			if (!currentSuit.type.equals(INTEGER)) {
 				this.reportError("only int types are comparable with >", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
@@ -1115,7 +1115,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	/**
@@ -1287,7 +1287,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	//TODO javadoc
 	@Override
 	/*
-	 * Een notExpression heeft één bool argument, en geeft een bool terug.
+	 * Een notExpression heeft één BOOLEAN argument, en geeft een BOOLEAN terug.
 	 * De return value is constant als en slechts als het argument constant is.
 	 */
 	public Suit visitNotExpression(NotExpressionContext ctx) {
@@ -1334,7 +1334,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		Suit rightExpression = visit(ctx.expression(1));
 
 		if (!leftExpression.type.equals(BOOLEAN)) {
-			this.reportError("logical operator OR only works for bool values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
+			this.reportError("logical operator OR only works for BOOLEAN values", ctx, BOOLEAN.toString(), leftExpression.type.toString());
 			return Suit.ERROR;
 		}
 
@@ -1656,15 +1656,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
-				this.reportError("only int types are comparable with <=", ctx, INTEGER.toString(), currentSuit.type.toString());
+			if (!INTEGER.equals(currentSuit.type)) {
+				this.reportError("only integer types are comparable with <=", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
 
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	/**
@@ -1691,7 +1691,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		for (int i = 0; i < ctx.arithmetic().size(); i++) {
 			Suit currentSuit = visit(ctx.arithmetic(i));
 
-			if (!currentSuit.equals(INTEGER)) {
+			if (!currentSuit.type.equals(INTEGER)) {
 				this.reportError("only int types are comparable with <", ctx, INTEGER.toString(), currentSuit.type.toString());
 				return Suit.ERROR;
 			}
@@ -1699,7 +1699,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			allConstant = allConstant && currentSuit.isConstant;
 		}
 
-		return new Suit(INTEGER, allConstant);
+		return new Suit(BOOLEAN, allConstant);
 	}
 
 	/**

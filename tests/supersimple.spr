@@ -3,13 +3,23 @@ y: integer;
 z: boolean;
 c: character;
 
-function printTen() {};
-
 x := 10 + 20;
 y := 20;
 z := true | false;
 c := 'a';
 
-printTen();
+putString("true & false = ");
+putBool(true & false);  // false
+
+putString("\ntrue | false = ");
+putBool(true | false);  // true
+
+putString("\n2^5 = ");
+putInt(2^5);            // 32
+
+putString("\n5 <= 4 <= 6 <= 2 = ");
+putBool(5 <= 4 <= 6 <= 2);        // true
 
 // x := x + y;
+
+putString("\n");

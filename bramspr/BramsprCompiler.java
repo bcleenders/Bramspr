@@ -44,9 +44,13 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 
 	public byte[] compile(ParseTree tree) {
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
-		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 
+		/*
+		 *  Ga voor Java version 6; version 7 heeft stack map frames en dat willen we niet.
+		 *  Als je Java 7 wil, moet je V1_6 door V1_7 vervangen, en bytecode runnen met een -XX:-UseSplitVerifier flag
+		 */
 		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, "Bramspr", null, "java/lang/Object", null);
 
 		{
@@ -100,18 +104,66 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 		// TODO echte implementatie!
 
 		// zet even wat leuks op de stack
-		mv.visitIntInsn(BIPUSH, 10);
+		// mv.visitIntInsn(BIPUSH, 10);
+
+		visit(ctx.expression(0));
 
 		// laad een system.out reference
 		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+		
 
 		// de te printen waarde moet boven staan; wissel de top waardes om
 		mv.visitInsn(SWAP);
 
-		// print de topwaarde van de stack
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V");
+		if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
+		} else {
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
+		}
 
-//		this.dumpAssembly();
+		// this.dumpAssembly();
+
+		return null;
+	}
+
+	/**
+	 * Genereert lazy evaluation voor smaller than equals to (<=)
+	 */
+	public Void visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
+		// Zet de eerste waarde op de stack
+		visit(ctx.arithmetic(0)); // Stack is nu a ->
+
+		Label jumpIfTrueEncountered = new Label();
+
+		// Skip de eerste
+		for (int i = 1; i < ctx.arithmetic().size(); i++) {
+			visit(ctx.arithmetic(i)); // Stack is nu a b ->
+
+			mv.visitInsn(DUP_X1); // Stack is nu b a b ->
+
+			// Als a <= b, jump dan naar de true state.
+			mv.visitJumpInsn(IF_ICMPLE, jumpIfTrueEncountered); // Stack is nu b ->
+		}
+
+		// Er staat nu nog een b op de stack; pop die.
+		mv.visitInsn(POP);
+		// De uitkomst is false; zet een 0 op de stack
+		mv.visitInsn(ICONST_0);
+
+		Label endOfExpression = new Label();
+		mv.visitJumpInsn(GOTO, endOfExpression);
+		mv.visitFrame(Opcodes.F_APPEND, 3, new Object[] { Opcodes.INTEGER, Opcodes.INTEGER, Opcodes.INTEGER }, 0, null);
+
+		// Label waar naartoe gejumpt wordt bij een true
+		mv.visitLabel(jumpIfTrueEncountered);
+		// Er staat nog wel een b op de stack; pop die.
+		mv.visitInsn(POP);
+		// De uitkomst is true; zet een 1 op de stack
+		mv.visitInsn(ICONST_1);
+
+		// Hier wordt naartoe gesprongen als er false uitkomt (jump over de true heen)
+		mv.visitLabel(endOfExpression);
+		mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Opcodes.INTEGER });
 
 		return null;
 	}
@@ -121,20 +173,32 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 		mv.visitIntInsn(BIPUSH, value);
 		return null;
 	}
-	
+
 	public Void visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
 
 		// 'c'.charAt(1) -> c
 		int charCode = Character.getNumericValue(character.charAt(1));
-		
+
 		mv.visitIntInsn(BIPUSH, charCode);
-		
+
 		return null;
 	}
-	
+
+	public Void visitStringLiteral(StringLiteralContext ctx) {
+		String s = ctx.getText();
+		s.subSequence(1, s.length() - 1);
+
+		// Vervang '\\' door '\', en \n door een linebreak
+		s = s.replace("\\\\", "\\").replace("\\n", "\n");
+
+		mv.visitLdcInsn(s);
+
+		return null;
+	}
+
 	public Void visitBooleanLiteral(BooleanLiteralContext ctx) {
-		if(ctx.BOOLEAN().getSymbol().getText().equals("true")) {
+		if (ctx.BOOLEAN().getSymbol().getText().equals("true")) {
 			mv.visitInsn(ICONST_1);
 		} else {
 			mv.visitInsn(ICONST_0);
@@ -154,8 +218,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 		} else if (ctx.MINUS() != null) {
 			mv.visitInsn(ISUB);
 		}
-
-		System.out.println("ADD");
 
 		return null;
 	}
@@ -202,7 +264,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 		visit(ctx.arithmetic(1));
 		// En maak er een double van:
 		mv.visitInsn(I2D);
-		
+
 		// Ga maar machtsverheffen (regelt Java intern voor ons)
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "pow", "(DD)D");
 		// En maak er weer een int van
@@ -210,7 +272,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 
 		return null;
 	}
-	
+
 	@Override
 	public Void visitAndExpression(AndExpressionContext ctx) {
 		// Zet boolean 1 op de stack
@@ -223,7 +285,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 
 		return null;
 	}
-	
+
 	@Override
 	public Void visitOrExpression(OrExpressionContext ctx) {
 		// Zet boolean 1 op de stack
@@ -236,7 +298,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Void> implements Opcodes
 
 		return null;
 	}
-	
+
 	@Override
 	public Void visitNotExpression(NotExpressionContext ctx) {
 		// Zet boolean 1 op de stack
