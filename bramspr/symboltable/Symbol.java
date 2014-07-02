@@ -1,12 +1,12 @@
 package bramspr.symboltable;
 
 /**
- * Entries in the symbol tables are all subclasses of this class.
+ * Entries in the symbol tables are all subclasses of this abstract class.
  * 
  * Symbol-classes contain information associated with the declaration of an entity in a Bramspr-program, so that the information can be later referenced when
  * visiting an applied occurrence of such an entity.
  * 
- * The only property that all types of symbols share, is an identifier. Therefore, it is the only field of this class.
+ * The only property that all types of symbols share, is an identifier. Therefore, it is the only field of this abstract class.
  * 
  */
 public abstract class Symbol {
