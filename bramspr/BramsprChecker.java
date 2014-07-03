@@ -548,9 +548,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitBlockStructure(BlockStructureContext ctx) {
+		this.openScope();
 		for (int i = 0; i < ctx.statement().size(); i++) {
 			visit(ctx.statement(i));
 		}
+		this.closeScope();
 
 		return Suit.VOID;
 	}
@@ -881,6 +883,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("reference to non-existing field '" + fieldName + "' in enumeration type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
+		
+		this.parseTreeproperty.put(ctx, enumSymbol);
 
 		return new Suit(enumSymbol, true);
 	}
