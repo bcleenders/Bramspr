@@ -29,21 +29,22 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	TraceClassVisitor tcw;
 	FieldVisitor fv;
 	MethodVisitor mv;
-	
+
 	/**
-	 * Contains the last label of every scope we have visited.
-	 * Grows one every time a scope is opened. These labels are used in the elements of {@link #variables} as closing scopes.
+	 * Contains the last label of every scope we have visited. Grows one every time a scope is opened. These labels are used in the elements of
+	 * {@link #variables} as closing scopes.
 	 */
 	private Stack<Label> closingScopeLabels = new Stack<Label>();
-	
+
 	/**
 	 * Opens a new scope (reserves a closing label)
+	 * 
 	 * @ensures this.closingScopeLabels.size() = old.closingScopeLabels.size() + 1
 	 */
 	private void openScope() {
 		this.closingScopeLabels.push(new Label());
 	}
-	
+
 	/**
 	 * Closes a scope by popping and writing a scope from the closingScopeLabels stack to assembly
 	 */
@@ -53,11 +54,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	/**
-	 * Maintains a list of the variables we have visited. Stores name, type, opening_label, closing_label (excl.)
-	 * This allows us to do a massive mv.visitLocalVariable(...) iteration at the end of the class, to declare the variables.
+	 * Maintains a list of the variables we have visited. Stores name, type, opening_label, closing_label (excl.) This allows us to do a massive
+	 * mv.visitLocalVariable(...) iteration at the end of the class, to declare the variables.
 	 */
 	private ArrayList<VariableSymbol> variables = new ArrayList<VariableSymbol>();
-	
+
 	public BramsprCompiler() {
 
 	}
@@ -112,23 +113,23 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Dit start het compilen van de code!
 		visit(tree);
 		this.closeScope();
-		
+
 		// Nu nog even de variabelen declareren (incl. scope!)
 		for (int i = 0; i < this.variables.size(); i++) {
 			VariableSymbol var = this.variables.get(i);
-			
-			TypeSymbol type =  var.getReturnType();
+
+			TypeSymbol type = var.getReturnType();
 			String signature = null;
-			
-			if(type instanceof CompositeSymbol) {
+
+			if (type instanceof CompositeSymbol) {
 				signature = ((CompositeSymbol) type).getShortIdentifier();
-			} else if(type instanceof EnumerationSymbol) {
+			} else if (type instanceof EnumerationSymbol) {
 				signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
 			} else {
 				System.err.println("Unknown type at variable declaration.");
 				System.exit(1);
 			}
-			
+
 			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getNumber());
 		}
 
@@ -140,35 +141,34 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		byte[] code = cw.toByteArray();
 		return code;
 	}
-	
+
 	public Symbol visitPureDeclaration(PureDeclarationContext ctx) {
 		// Alle IDENTIFIER's binnen deze declaration komen in de parsetreeproperty voor, en ze bevatten de VariableSymbol's
-		
+
 		Label openingLabel = new Label();
 		Label closingLabel = this.closingScopeLabels.peek();
-		
+
 		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
 			this.variables.add(symbol);
 		}
-		
+
 		// Vanaf hier mogen de variabelen gebruikt worden.
 		mv.visitLabel(openingLabel);
-		
+
 		return null;
 	}
 
 	/**
-	 * Geeft het Symbol terug van de assignable die hier gevisit wordt.
-	 * Zet niets op de stack.
+	 * Geeft het Symbol terug van de assignable die hier gevisit wordt. Zet niets op de stack.
 	 */
 	public Symbol visitBasicAssignable(BasicAssignableContext ctx) {
 		// Een basicAssignable is eigenlijk een variabele; geef deze maar terug (bevat mem. address en type info)
 		VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(ctx);
 
 		System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
-		
+
 		return variable;
 	}
 
@@ -203,17 +203,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				System.exit(1);
 			}
 		}
-		
+
 		// TODO dit moet weer weg om het een expression te maken!
 		mv.visitInsn(POP);
 
 		return null;
 	}
-	
+
 	public Symbol visitAssignableExpression(AssignableExpressionContext ctx) {
 		Symbol variable = visit(ctx.assignable());
 		mv.visitIntInsn(ILOAD, variable.getNumber());
-		
+
 		return null;
 	}
 
@@ -306,17 +306,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitIntInsn(BIPUSH, value);
 		return null;
 	}
-	
+
 	@Override
 	public Symbol visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext ctx) {
 		EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
-		// in the format "enum.DAY.MONDAY", monday is the second IDENTIFIER (thus index 1) 
+		// in the format "enum.DAY.MONDAY", monday is the second IDENTIFIER (thus index 1)
 		int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
-		
+
 		System.out.println("field id is " + fieldId);
-		
+
 		mv.visitIntInsn(BIPUSH, fieldId);
-		
+
 		return null;
 	}
 
@@ -333,7 +333,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	public Symbol visitStringLiteral(StringLiteralContext ctx) {
 		String s = ctx.getText();
-		
+
 		// Haal de " aan beide kanten weg
 		s = (String) s.subSequence(1, s.length() - 1);
 
@@ -459,4 +459,53 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+
+	@Override
+	public Symbol visitBlockStructure(BlockStructureContext ctx) {
+		this.openScope();
+		for (int i = 0; i < ctx.statement().size(); i++) {
+			visit(ctx.statement(i));
+		}
+		this.closeScope();
+		return null;
+	}
+
+	public Symbol visitIfStructure(IfStructureContext ctx) {
+		boolean hasElseBlock = (ctx.ELSE() != null);
+
+		// Eerst even kijken op basis waarvan we gaan beslissen.
+		visit(ctx.expression()); // Stack: b ->
+
+		// Als e false is, springen we hier naartoe.
+		Label startElse = new Label();
+		// Als e true is, springen we na het uitvoeren van het if block hier naartoe
+		Label endElse = new Label();
+
+		// IFEQ zet ICONST_0 op de stack, en vergelijkt daarmee.
+		// Eigenlijk is IFEQ dus IFNOTTRUE
+		mv.visitJumpInsn(IFEQ, startElse); // Stack: <empty>
+
+		// Hier komt het if block
+		visit(ctx.blockStructure(0));
+
+		// Als er geen else block is, hoeven we er ook niet overheen te springen. Spaart een GOTO!
+		if (hasElseBlock) {
+			mv.visitJumpInsn(GOTO, endElse); // Spring over het else blok heen
+		}
+
+		mv.visitLabel(startElse);
+		mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+
+		// Als er geen else block is, dan was het startElse label het laatste dat tot deze structuur behoort!
+		if (hasElseBlock) {
+			// Hier komt het else block
+			visit(ctx.blockStructure(1));
+			// Dit is het eind van de if/else structuur!
+			mv.visitLabel(endElse);
+			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		}
+
+		return null;
+	}
+
 }
