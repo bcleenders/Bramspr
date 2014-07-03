@@ -49,14 +49,14 @@ compositeDeclaration:   TYPE IDENTIFIER
 
 typeDenoter: IDENTIFIER                                                     # baseTypeDenoter
            | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter
-           | ENUMERATION DOT IDENTIFIER                                     # enumerationTypeDenoter
+           | ENUMERATION DOT IDENTIFIER                                     # enumeratedTypeDenoter
            ;
 
-assignment: (assignable BECOMES)+ expression;
+assignment: (assignable BECOMES)+ expression;                               //
 swap:       assignable SWAP assignable;
 
-expression: NOT expression                                                  # notExpression//
-          | arithmetic                                                      # arithmeticExpression
+expression: NOT expression                                                  # notExpression                     //
+          | arithmetic                                                      # arithmeticExpression              // (impliciet)
           | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
           | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
           | expression EQUALS_TO expression                                 # universalEqualsToExpression
@@ -77,8 +77,8 @@ arithmetic: molecule                                                        # mo
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression        //
           ;
 
-// Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) accessExpression gematcht wordt.
-molecule : IDENTIFIER DOT IDENTIFIER                                          # possibleEnumerationExpression // of het is een composite
+// Deze nieuwe laag voorkomt dat (IDENTIFIER DOT IDENTIFIER) als accessExpression gematcht wordt.
+molecule : IDENTIFIER DOT IDENTIFIER                                          # potentialEnumerationLiteral // of het is een composite
          | atomic                                                             # atomicExpression
          ;
 
@@ -103,10 +103,10 @@ functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIG
 
 literal : NUMBER                                                                                                          # numberLiteral                   //
         | CHARACTER                                                                                                       # characterLiteral                //
-        | STRING                                                                                                          # stringLiteral
+        | STRING                                                                                                          # stringLiteral                   //
         | BOOLEAN                                                                                                         # booleanLiteral                  //
         | LEFT_BLOCKBRACE (expression (COMMA expression)*)? RIGHT_BLOCKBRACE                                              # arrayLiteral
         | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
-        | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationExpression
+        | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationLiteral
         ;
 

@@ -25,10 +25,10 @@ import bramspr.BramsprParser.BooleanLiteralContext;
 import bramspr.BramsprParser.CharacterLiteralContext;
 import bramspr.BramsprParser.CompositeDeclarationContext;
 import bramspr.BramsprParser.CompositeLiteralContext;
+import bramspr.BramsprParser.EnumeratedTypeDenoterContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
-import bramspr.BramsprParser.EnumerationTypeDenoterContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
-import bramspr.BramsprParser.ExplicitEnumerationExpressionContext;
+import bramspr.BramsprParser.ExplicitEnumerationLiteralContext;
 import bramspr.BramsprParser.FieldAccessExpressionContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
@@ -44,7 +44,7 @@ import bramspr.BramsprParser.NumberLiteralContext;
 import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
-import bramspr.BramsprParser.PossibleEnumerationExpressionContext;
+import bramspr.BramsprParser.PotentialEnumerationLiteralContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
 import bramspr.BramsprParser.PureDeclarationContext;
@@ -60,6 +60,7 @@ import bramspr.symboltable.ArraySymbol;
 import bramspr.symboltable.CompositeSymbol;
 import bramspr.symboltable.EnumerationSymbol;
 import bramspr.symboltable.FunctionSymbol;
+import bramspr.symboltable.Symbol;
 import bramspr.symboltable.SymbolTable;
 import bramspr.symboltable.SymbolTableException;
 import bramspr.symboltable.TypeSymbol;
@@ -69,19 +70,19 @@ import bramspr.symboltable.VariableSymbol;
 public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	/** The void symbol. */
-	public static final CompositeSymbol VOID = new CompositeSymbol("void", null, null);
+	public static final CompositeSymbol VOID = new CompositeSymbol("V", "void", null, null);
 
 	/** The symbol for the built-in type <i>integer</i>. */
-	public static final CompositeSymbol INTEGER = new CompositeSymbol("integer", null, null);
+	public static final CompositeSymbol INTEGER = new CompositeSymbol("I", "integer", null, null);
 
 	/** The symbol for the built-in type <i>character</i>. */
-	public static final CompositeSymbol CHARACTER = new CompositeSymbol("character", null, null);
+	public static final CompositeSymbol CHARACTER = new CompositeSymbol("C", "character", null, null);
 
 	/** The symbol for the built-in type <i>boolean</i>. */
-	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("boolean", null, null);
+	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("Z", "boolean", null, null);
 
 	/** The symbol for the built-in type <i>string</i>. */
-	public static final CompositeSymbol STRING = new CompositeSymbol("string", null, null);
+	public static final CompositeSymbol STRING = new CompositeSymbol("Ljava/lang/String;", "string", null, null);
 
 	/** The symbol table in which declared and built-in functions are administered. */
 	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>();
@@ -97,7 +98,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	/** TODO: Dit moet JavaDoc krijgen. */
 	// TODO: moeten we hier nog wat mee doen? Wel hè?
-	private ParseTreeProperty<ParseTree> declarationPointers;
+	private ParseTreeProperty<Symbol> parseTreeproperty;
 
 	/** The current amount of encountered context errors in the program. */
 	private int errorCount = 0;
@@ -106,7 +107,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	}
 	
-	public void check(ParseTree tree) {
+	public ParseTreeProperty<Symbol> check(ParseTree tree) {
+		this.parseTreeproperty = new ParseTreeProperty<Symbol>();
+		
 		this.visit(tree);
 		
 		if(this.getErrorCount() > 0) {
@@ -114,6 +117,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.err.println("Aborting compilation: cannot compile code with errors.");
 			System.exit(1); // Did not compile correctly
 		}
+		
+		return this.parseTreeproperty;
 	}
 
 	/** Opens a new scope in all symbol tables. */
@@ -517,22 +522,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	/*
 	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
 	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
-	 * 	2. Indien het een variabele is, is het return type gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
-	 * 	3. Indien het een enumeration is, wordt een enumeration type teruggegeven.
+	 * 	2. Het return type is gelijk aan het return type van de variabele zoals eerder gedeclareerd in de huidige scope.
 	 */
 	public Suit visitBasicAssignable(BasicAssignableContext ctx) {
 		VariableSymbol variable = this.variableSymbolTable.resolve(ctx.IDENTIFIER().getText());
+
+		this.parseTreeproperty.put(ctx, variable);
 
 		if (variable != null) {
 			return new Suit(variable.getReturnType(), variable.isConstant());
 		}
 
-		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(ctx.IDENTIFIER().getText());
-		if (enumSymbol != null) {
-			return new Suit(enumSymbol, true);
-		}
-
-		this.reportError("reference to non-existing variable/enumeration type '" + ctx.IDENTIFIER().getText() + "'.", ctx);
+		this.reportError("reference to non-existing variable '" + ctx.IDENTIFIER().getText() + "'.", ctx);
 		return Suit.ERROR;
 	}
 
@@ -798,7 +799,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 	//TODO javadoc
 	@Override
-	public Suit visitEnumerationTypeDenoter(EnumerationTypeDenoterContext ctx) {
+	public Suit visitEnumeratedTypeDenoter(EnumeratedTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
 		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
 		if (type != null) {
@@ -864,7 +865,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
 	 * Het return type is een enumSymbol
 	 */
-	public Suit visitExplicitEnumerationExpression(ExplicitEnumerationExpressionContext ctx) {
+	public Suit visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext ctx) {
 		String enumName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
 
@@ -1418,7 +1419,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *  2.3 Het return type is constant
 	 * Als een assignable geen record en geen enumeration, dan is het geen geldige expressie.
 	 */
-	public Suit visitPossibleEnumerationExpression(PossibleEnumerationExpressionContext ctx) {
+	public Suit visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		// Return suite van de expression opvragen.
 		String prefixName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
@@ -1590,17 +1591,21 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Kijken wat het bedoelde type is.
 		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
-
+		
 		for (int i = 0; i < identifiers.size(); i++) {
 			String variableName = identifiers.get(i).getText();
+			VariableSymbol symbol = new VariableSymbol(variableName, targetType, false);
 
+			// Voeg de symbols toe aan de parse tree; misschien woeten we ze nog gebruiken in de generator!
+			this.parseTreeproperty.put(ctx.IDENTIFIER(i), symbol);
+			
 			try {
-				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, false));
+				variableSymbolTable.declare(symbol);
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
 		}
-
+		
 		return Suit.VOID;
 	}
 

@@ -2,24 +2,37 @@ x: integer;
 y: integer;
 z: boolean;
 c: character;
+s: string;
 
-x := 10 + 20;
-y := 20;
-z := true | false;
-c := 'a';
+x := 10 + 20;               // 30
+y := 20 + x + x;            // 80
+putInt(y);
+z := true | false;          // true
+c := 'a';                   // 'a'
+s := "Hello, world!";       // "Hello, world!"
+
+x <> y;                     // y=30     x=80
 
 putString("true & false = ");
-putBool(true & false);  // false
+putBool(true & false);      // false
 
 putString("\ntrue | false = ");
-putBool(true | false);  // true
+putBool(true | false);      // true
 
 putString("\n2^5 = ");
-putInt(2^5);            // 32
+putInt(2^5);                // 32
 
 putString("\n5 <= 4 <= 6 <= 2 = ");
-putBool(5 <= 4 <= 6 <= 2);        // true
+putBool(5 <= 4 <= 6 <= 2);  // true
 
-// x := x + y;
+putString("\nx = ");
+putInt(x);
+putString(" (should be 30");
+
+x := x + y;
+
+putString("\nx = ");
+// putInt(x);
+putString(" (should be 110");
 
 putString("\n");

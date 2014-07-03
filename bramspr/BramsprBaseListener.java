@@ -524,6 +524,32 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterPotentialEnumerationLiteral(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPotentialEnumerationLiteral(@NotNull BramsprParser.PotentialEnumerationLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterExplicitEnumerationLiteral(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitExplicitEnumerationLiteral(@NotNull BramsprParser.ExplicitEnumerationLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterLiteralExpression(@NotNull BramsprParser.LiteralExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -550,13 +576,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+	@Override public void enterEnumeratedTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitPossibleEnumerationExpression(@NotNull BramsprParser.PossibleEnumerationExpressionContext ctx) { }
+	@Override public void exitEnumeratedTypeDenoter(@NotNull BramsprParser.EnumeratedTypeDenoterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -570,32 +596,6 @@ public class BramsprBaseListener implements BramsprListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitBooleanLiteral(@NotNull BramsprParser.BooleanLiteralContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitEnumerationTypeDenoter(@NotNull BramsprParser.EnumerationTypeDenoterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitExplicitEnumerationExpression(@NotNull BramsprParser.ExplicitEnumerationExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

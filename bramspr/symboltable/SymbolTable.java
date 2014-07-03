@@ -8,6 +8,11 @@ public class SymbolTable<S extends Symbol> {
 	private HashMap<String, Stack<S>> symbols;
 	private Stack<HashSet<String>> symbolsInLevel;
 	private int currentLevel;
+	
+	/**
+	 * Number of elements contained in the scope.
+	 */
+	private int size = 0;
 
 	/**
 	 * @ensures this.currentLevel() == -1
@@ -42,6 +47,9 @@ public class SymbolTable<S extends Symbol> {
 		
 		for(String currentElement : currentlyPopped) {
 			this.symbols.get(currentElement).pop();
+			
+			// Een element verwijderd; size wordt kleiner
+			this.size--;
 		}
 
 		this.currentLevel--;
@@ -51,6 +59,10 @@ public class SymbolTable<S extends Symbol> {
 	public int currentLevel() {
 		return this.currentLevel;
 	}
+	
+	public int getSize() {
+		return this.size;
+	}
 
 	/**
 	 * Enters an id together with an entry into this SymbolTable using the
@@ -58,6 +70,7 @@ public class SymbolTable<S extends Symbol> {
 	 * 
 	 * @requires id != null && id.length() > 0 && entry != null;
 	 * @ensures this.retrieve(id).getLevel() == currentLevel();
+	 * @ensures this.getSize() = old.getSize() + 1;
 	 * @throws SymbolTableException
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
@@ -85,6 +98,10 @@ public class SymbolTable<S extends Symbol> {
 			this.symbols.put(signature, new Stack<S>());
 		}
 		this.symbols.get(signature).add(symbol);
+		
+		// Nummertjes bijhouden! Dit is het "id" van ieder symbol op een moment.
+		symbol.setNumber(this.getSize());
+		this.size++;
 	}
 
 	/**
