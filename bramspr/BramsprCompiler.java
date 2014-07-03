@@ -79,7 +79,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		System.out.println("*** FINISHED DUMP ***");
 	}
 
-	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) {
+	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) throws Exception {
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
@@ -116,7 +116,20 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Nu nog even de variabelen declareren (incl. scope!)
 		for (int i = 0; i < this.variables.size(); i++) {
 			VariableSymbol var = this.variables.get(i);
-			mv.visitLocalVariable(var.getIdentifier(), ((CompositeSymbol) var.getReturnType()).getShortIdentifier(), null, var.openingLabel, var.closingLabel, var.getNumber());
+			
+			TypeSymbol type =  var.getReturnType();
+			String signature = null;
+			
+			if(type instanceof CompositeSymbol) {
+				signature = ((CompositeSymbol) type).getShortIdentifier();
+			} else if(type instanceof EnumerationSymbol) {
+				signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
+			} else {
+				System.err.println("Unknown type at variable declaration.");
+				System.exit(1);
+			}
+			
+			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getNumber());
 		}
 
 		mv.visitInsn(RETURN);
@@ -182,6 +195,12 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
 			} else if (type.equals(BramsprChecker.STRING)) {
 				mv.visitIntInsn(ASTORE, memaddr); // Stack: a ->
+			} else if (type instanceof EnumerationSymbol) {
+				// Enums are stored as ints
+				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
+			} else {
+				System.err.println("Invalid assignment; unimplemented type!");
+				System.exit(1);
 			}
 		}
 		
@@ -287,6 +306,19 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitIntInsn(BIPUSH, value);
 		return null;
 	}
+	
+	@Override
+	public Symbol visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext ctx) {
+		EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
+		// in the format "enum.DAY.MONDAY", monday is the second IDENTIFIER (thus index 1) 
+		int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
+		
+		System.out.println("field id is " + fieldId);
+		
+		mv.visitIntInsn(BIPUSH, fieldId);
+		
+		return null;
+	}
 
 	public Symbol visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
@@ -301,7 +333,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	public Symbol visitStringLiteral(StringLiteralContext ctx) {
 		String s = ctx.getText();
-		s.subSequence(1, s.length() - 1);
+		
+		// Haal de " aan beide kanten weg
+		s = (String) s.subSequence(1, s.length() - 1);
 
 		// Vervang '\\' door '\', en \n door een linebreak
 		s = s.replace("\\\\", "\\").replace("\\n", "\n");
@@ -419,7 +453,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		visit(ctx.expression());
 
 		// Zet 1 (true) op de stack
-		mv.visitIntInsn(ILOAD, 1);
+		mv.visitInsn(ICONST_1);
 		// XOR -> true XOR a == NOT a
 		mv.visitInsn(IXOR);
 

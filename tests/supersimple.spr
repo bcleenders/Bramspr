@@ -13,26 +13,38 @@ s := "Hello, world!";       // "Hello, world!"
 
 x <> y;                     // y=30     x=80
 
-putString("true & false = ");
-putBool(true & false);      // false
+putBool(true & false);
+putString(" = false\n");
 
-putString("\ntrue | false = ");
-putBool(true | false);      // true
+putBool(true | false);
+putString(" = true\n");
 
-putString("\n2^5 = ");
-putInt(2^5);                // 32
+putInt(2^5);
+putString(" = 32\n");
 
-putString("\n5 <= 4 <= 6 <= 2 = ");
-putBool(5 <= 4 <= 6 <= 2);  // true
+putBool(5 <= 4 <= 6 <= 2);
+putString(" = false\n");
 
-putString("\nx = ");
+putBool(1 <= 2 <= 2 <= 3);
+putString(" = true\n");
+
+putBool(1 <= 2 <= 4 <= 3);
+putString(" = false\n");
+
+putString("x = ");
 putInt(x);
-putString(" (should be 30");
+putString("= 80\n");
 
 x := x + y;
 
-putString("\nx = ");
-// putInt(x);
-putString(" (should be 110");
+putInt(x);
+putString(" = 110");
 
 putString("\n");
+
+enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+d : day;
+d := enumeration.day.MONDAY;
+d := enumeration.day.TUESDAY;
+d := enumeration.day.WEDNESDAY;
+d := enumeration.day.THURSDAY;
