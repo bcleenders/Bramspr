@@ -259,23 +259,104 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	/**
-	 * Genereert lazy evaluation voor smaller than equals to (<=)
-	 */
+	@Override
+	public Symbol visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPGT, arithmeticContexts);
+
+		return null;
+	}
+
+	@Override
+	public Symbol visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPGE, arithmeticContexts);
+
+		return null;
+	}
+
+	@Override
+	public Symbol visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPLT, arithmeticContexts);
+
+		return null;
+	}
+
+	@Override
 	public Symbol visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPLE, arithmeticContexts);
+
+		return null;
+	}
+
+	/**
+	 * Genereert lazy evaluation voor vergelijkingen tussen meerdere integer waardes
+	 */
+	private void visitMultipleComparisonExpression(int comparisonOpCode, ArithmeticContext[] arithmeticContexts) {
+		int complementOpCode = 0;
+
+		// We switchen op basis van de negatie. We kunnen dus of normaal vergelijken, en dan de negatie pakken, of we vergelijken met de tegenovergestelde
+		// Opcode.
+		// (dit is de tweede optie; die spaart operaties!)
+		switch (comparisonOpCode) {
+		case IF_ICMPEQ:
+			complementOpCode = IF_ICMPNE;
+			break;
+		case IF_ICMPGE:
+			complementOpCode = IF_ICMPLT;
+			break;
+		case IF_ICMPGT:
+			complementOpCode = IF_ICMPLE;
+			break;
+		case IF_ICMPLE:
+			complementOpCode = IF_ICMPGT;
+			break;
+		case IF_ICMPLT:
+			complementOpCode = IF_ICMPGE;
+			break;
+		case IF_ICMPNE:
+			complementOpCode = IF_ICMPEQ;
+			break;
+		default:
+			System.err.println("Invalid op code");
+			System.exit(1);
+		}
+
 		// Zet de eerste waarde op de stack
-		visit(ctx.arithmetic(0)); // Stack is nu a ->
+		visit(arithmeticContexts[0]); // Stack is nu a ->
 
 		Label jumpIfFalseEncountered = new Label();
 
-		// Skip de eerste
-		for (int i = 1; i < ctx.arithmetic().size(); i++) {
-			visit(ctx.arithmetic(i)); // Stack is nu a b ->
+		// Skip de eerste; die staat al op de stack!
+		for (int i = 1; i < arithmeticContexts.length; i++) {
+			visit(arithmeticContexts[i]); // Stack is nu a b ->
 
 			mv.visitInsn(DUP_X1); // Stack is nu b a b ->
 
 			// Als a > b (dus ! a <= b), jump dan naar de false state.
-			mv.visitJumpInsn(IF_ICMPGT, jumpIfFalseEncountered); // Stack is nu b ->
+			mv.visitJumpInsn(complementOpCode, jumpIfFalseEncountered); // Stack is nu b ->
 		}
 
 		// Er staat nu nog een b op de stack; pop die.
@@ -298,7 +379,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitLabel(endOfExpression);
 		mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Opcodes.INTEGER });
 
-		return null;
 	}
 
 	public Symbol visitNumberLiteral(NumberLiteralContext ctx) {
@@ -494,7 +574,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		}
 
 		mv.visitLabel(startElse);
-		mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+		mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { Opcodes.INTEGER }, 0, null);
 
 		// Als er geen else block is, dan was het startElse label het laatste dat tot deze structuur behoort!
 		if (hasElseBlock) {
@@ -508,4 +588,40 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
+	@Override
+	public Symbol visitWhileStructure(WhileStructureContext ctx) {
+		// First iteration, we jump over the code to first evaluate the expression
+		Label beforeExpression = new Label();
+		mv.visitJumpInsn(GOTO, beforeExpression);
+		
+		// Jump back to this label at the end of every iteration
+		Label beforeCode = new Label();
+		mv.visitLabel(beforeCode);
+		mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+		
+		// And this is the code that's being executed in the while loop
+		visit(ctx.blockStructure());
+
+		// Hier wordt de allereerste keer naartoe gesprongen.
+		mv.visitLabel(beforeExpression);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+
+		// Execute the control expression
+		visit(ctx.expression());
+
+		// If the control expression yielded true, do another iteration.
+		mv.visitJumpInsn(IFNE, beforeCode);
+
+		return null;
+	}
 }
+
+
+
+
+
+
+
+
+
+

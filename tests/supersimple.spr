@@ -79,3 +79,18 @@
     d := enumeration.day.WEDNESDAY;
     d := enumeration.day.THURSDAY;
 }
+
+{
+    putString("*** Testing while loop ***\n");
+    x: integer;
+    x := 0;
+
+    putString("Printing steps of x, from x=0 to x=10 (excl.):\n");
+
+    while(x < 10) {
+        putString("  x=");
+        putInt(x);
+        putString("\n");
+        x := x + 1;
+    }
+}

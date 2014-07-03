@@ -8,9 +8,9 @@ structure: blockStructure
          | whileStructure
          ;
 
-blockStructure:     LEFT_BRACE statement* RIGHT_BRACE;
-ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?;
-whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
+blockStructure:     LEFT_BRACE statement* RIGHT_BRACE;                                                      // done
+ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?; // done
+whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;                     // done
 
 statement : structure
           | declaration SEMICOLON
@@ -29,7 +29,7 @@ variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter        
            |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration
            ; 
 
-enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
+enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;   // (no ASM needed) 
 
 functionDeclaration:    FUNCTION IDENTIFIER 
                         LEFT_PARENTHESIS 
@@ -47,30 +47,30 @@ compositeDeclaration:   TYPE IDENTIFIER
                         RIGHT_BRACE
                     ;
 
-typeDenoter: IDENTIFIER                                                     # baseTypeDenoter
-           | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter
-           | ENUMERATION DOT IDENTIFIER                                     # enumeratedTypeDenoter
+typeDenoter: IDENTIFIER                                                     # baseTypeDenoter               // (no ASM needed)
+           | LEFT_BLOCKBRACE NUMBER RIGHT_BLOCKBRACE typeDenoter            # arrayTypeDenoter              // (no ASM needed)
+           | ENUMERATION DOT IDENTIFIER                                     # enumeratedTypeDenoter         // (no ASM needed)
            ;
 
-assignment: (assignable BECOMES)+ expression;                               //
-swap:       assignable SWAP assignable;                                     // 
+assignment: (assignable BECOMES)+ expression;                                                               //
+swap:       assignable SWAP assignable;                                                                     // 
 
-expression: NOT expression                                                  # notExpression                     //
-          | arithmetic                                                      # arithmeticExpression              // (impliciet)
-          | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression 
+expression: NOT expression                                                  # notExpression                 //
+          | arithmetic                                                      # arithmeticExpression          // (impliciet)
+          | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression            //
           | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
           | expression EQUALS_TO expression                                 # universalEqualsToExpression
           | expression NOT_EQUALS_TO expression                             # universalNotEqualsToExpression
           | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic            # plusMinusExpression                  
-          | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression        
-          | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression            
-          | arithmetic (SMALLER_THAN arithmetic)+                           # smallerThanExpression        
-          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+                 # smallerThanEqualsToExpression
-          | expression AND expression                                       # andExpression             //
-          | expression OR expression                                        # orExpression              //
+          | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression         //
+          | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression //          
+          | arithmetic (SMALLER_THAN arithmetic)+                           # smallerThanExpression         //
+          | arithmetic (SMALLER_THAN_EQUALS_TO arithmetic)+                 # smallerThanEqualsToExpression //
+          | expression AND expression                                       # andExpression                 //
+          | expression OR expression                                        # orExpression                  //
           ;
 
-arithmetic: molecule                                                        # moleculeExpression
+arithmetic: molecule                                                        # moleculeExpression        
           | (PLUS | MINUS) arithmetic                                       # signExpression            //
           | arithmetic POWER <assoc=right> arithmetic                       # powerExpression           //
           | arithmetic ( MULTIPLICATION | DIVISION | MODULUS ) arithmetic   # multiplicationExpression  //
@@ -91,7 +91,7 @@ atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # as
        ;
 
 assignable: assignable accessExpression                                     # accessOnAssignableExpression
-          | IDENTIFIER                                                      # basicAssignable
+          | IDENTIFIER                                                      # basicAssignable               //
           ;
 
 accessExpression : DOT IDENTIFIER                                           # fieldAccessExpression
