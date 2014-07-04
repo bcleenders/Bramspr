@@ -15,7 +15,7 @@ import bramspr.BramsprParser.FunctionDeclarationContext;
  */
 public class FunctionSymbol extends ValueYielderSymbol {
 	/** (The types of) this function's parameters. */
-	TypeSymbol[] parameters;
+	public TypeSymbol[] parameters;
 	
 	/**
 	 * The context of the declaration.

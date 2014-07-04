@@ -167,7 +167,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Een basicAssignable is eigenlijk een variabele; geef deze maar terug (bevat mem. address en type info)
 		VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(ctx);
 
-//		System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
+		// System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
 
 		return variable;
 	}
@@ -369,7 +369,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// in the format "enum.DAY.MONDAY", monday is the second IDENTIFIER (thus index 1)
 		int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
 
-//		System.out.println("field id is " + fieldId);
+		// System.out.println("field id is " + fieldId);
 
 		mv.visitIntInsn(BIPUSH, fieldId);
 
@@ -655,7 +655,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 				visit(ctx.expression(0));
 
-				if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
+				if (ctx.IDENTIFIER().getText().equals("putString")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
 				} else if (ctx.IDENTIFIER().getText().equals("putInt")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
@@ -663,6 +663,28 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(C)V");
 				} else if (ctx.IDENTIFIER().getText().equals("putBool")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Z)V");
+				} else {
+					System.err.println("Attempting to invoke invalid primitive function!");
+					System.exit(1);
+				}
+			} else {
+				mv.visitTypeInsn(NEW, "java/util/Scanner");
+				mv.visitInsn(DUP);
+				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;");
+				mv.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V");
+				
+				if (ctx.IDENTIFIER().getText().equals("getString")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
+				} else if (ctx.IDENTIFIER().getText().equals("getInt")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I");
+				} else if (ctx.IDENTIFIER().getText().equals("getChar")) {
+					// Laad een string op de stack
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
+					mv.visitInsn(ICONST_0);
+					// Neem het eerste character van die string (index = 0)
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "charAt", "(I)C");
+				} else if (ctx.IDENTIFIER().getText().equals("getBool")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextBoolean", "()Z");
 				} else {
 					System.err.println("Attempting to invoke invalid primitive function!");
 					System.exit(1);
@@ -682,11 +704,25 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		
 			// Hier kan een identifier gezien worden als variabele, de eerste IDENTIFIER is de naam van de functie.
 			for (int i = 1; i < ctx.expression().size(); i++) {
+				// Copied from assignmentExpression
 				int memAddr = this.parseTreeproperty.get(declaration.IDENTIFIER(i)).getNumber();
 				visit(ctx.expression(i));
-				
-				// TODO also for non-integer types!
-				mv.visitIntInsn(ISTORE, memAddr);
+				TypeSymbol type = function.parameters[i];
+				if (type.equals(BramsprChecker.INTEGER)) {
+					mv.visitIntInsn(ISTORE, memAddr); // Stack: a ->
+				} else if (type.equals(BramsprChecker.CHARACTER)) {
+					mv.visitIntInsn(ISTORE, memAddr); // Stack: a ->
+				} else if (type.equals(BramsprChecker.BOOLEAN)) {
+					mv.visitIntInsn(ISTORE, memAddr); // Stack: a ->
+				} else if (type.equals(BramsprChecker.STRING)) {
+					mv.visitIntInsn(ASTORE, memAddr); // Stack: a ->
+				} else if (type instanceof EnumerationSymbol) {
+					// Enums are stored as ints
+					mv.visitIntInsn(ISTORE, memAddr); // Stack: a ->
+				} else {
+					System.err.println("Invalid assignment; unimplemented type!");
+					System.exit(1);
+				}
 			}
 		
 			// Adds JBC code from stuff inside the function.
@@ -705,29 +741,3 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 }
-
-/*
-
-	 * Functies: nieuwe scope openen & inlinen?
-	 * Recursive calls kunnen niet, dus inlining is eindig...
-	public Symbol visitFunctionCall(FunctionCallContext ctx) {
-		// TODO echte implementatie!
-
-		visit(ctx.expression(0));
-		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-
-		// de te printen waarde moet boven staan; wissel de top waardes om
-		mv.visitInsn(SWAP);
-
-		if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
-		} else {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
-		}
-
-		// this.dumpAssembly();
-
-		return null;
-	}
-	*/
-

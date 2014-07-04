@@ -157,4 +157,23 @@
     }
 }
 
+{
+    putString("*** Testing user input ***\n");
+    x: integer;
+    putString("Please enter a number: ");
+    x := getInt();
+    putString("\n");
+    putString("You entered: ");
+    putInt(x);
+    putString(".\n");
+
+    b: boolean;
+    putString("Please enter a boolean (true/false): ");
+    b := getBool();
+    putString("\n");
+    putString("You entered: ");
+    putBool(b);
+    putString(".\n");
+}
+
 putString("\n\n");

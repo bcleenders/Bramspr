@@ -1545,12 +1545,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			typeSymbolTable.declare(STRING);
 
 			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false, null));
-			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("getChar", CHARACTER, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("getBool", BOOLEAN, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("getString", STRING, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putInt", VOID, new TypeSymbol[] { INTEGER }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putChar", VOID, new TypeSymbol[] { CHARACTER }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putBool", VOID, new TypeSymbol[] { BOOLEAN }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putString", VOID, new TypeSymbol[] { STRING }, false, null));
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.
