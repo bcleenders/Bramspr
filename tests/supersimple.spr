@@ -94,3 +94,29 @@
         x := x + 1;
     }
 }
+
+{
+    putString("*** Testing plusminus expression ***\n");
+    if(7 = 10 +- 4) {
+        putString("Works (1)\n");
+    }
+    else {
+        putString("Fails (1)\n");
+    }
+
+    if(7 = 10 +- 2) {
+        putString("Fails (2)\n");
+    }
+    else {
+        putString("Works (2)\n");
+    }
+
+    if(13 = 10 +- 2) {
+        putString("Fails (3)\n");
+    }
+    else {
+        putString("Works (3)\n");
+    }
+}
+
+putString("\n\n");

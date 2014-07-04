@@ -593,12 +593,12 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// First iteration, we jump over the code to first evaluate the expression
 		Label beforeExpression = new Label();
 		mv.visitJumpInsn(GOTO, beforeExpression);
-		
+
 		// Jump back to this label at the end of every iteration
 		Label beforeCode = new Label();
 		mv.visitLabel(beforeCode);
-		mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
-		
+		mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { Opcodes.INTEGER }, 0, null);
+
 		// And this is the code that's being executed in the while loop
 		visit(ctx.blockStructure());
 
@@ -614,7 +614,58 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+
+	public Symbol visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
+		Label earlyJump = new Label();
+		Label midwayJump = new Label();
+		Label finalJump = new Label();
+
+		// @formatter:off
+		// ASM code								       Stack (rechts is top)
+		visit(ctx.arithmetic(1));					// e1
+		visit(ctx.arithmetic(2));					// e1 e2
+		mv.visitInsn(DUP2);							// e1 e2 e1 e2
+		mv.visitInsn(ISUB);							// e1 e2 (e1 - e2)
+		mv.visitInsn(DUP_X2);						// (e1 - e2) e1 e2 (e1 - e2)
+		mv.visitInsn(POP);							// (e1 - e2) e1 e2
+		mv.visitInsn(IADD);							// (e1 - e2) (e1 + e2)
+		
+		visit(ctx.arithmetic(0));					// (e1 - e2) (e1 + e2) e0
+		
+		mv.visitInsn(DUP_X1);					 	// (e1 - e2) e0 (e1 + e2) e0
+		mv.visitJumpInsn(IF_ICMPLT, earlyJump);  	// (e1 - e2) e0
+		mv.visitJumpInsn(IF_ICMPGT, midwayJump); 	// (e1 - e2) e0
+		
+		// It's in the right range! Set true on the stack, and jump to the end!
+		mv.visitInsn(ICONST_1);						// true
+		mv.visitJumpInsn(GOTO, finalJump); 			// true
+		
+		// Start of the code handling a statement resulting in false:
+		mv.visitLabel(earlyJump);					// (e1 - e2) e0
+		mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { Opcodes.INTEGER }, 0, null);
+		mv.visitInsn(POP2);							// <empty stack>
+		mv.visitLabel(midwayJump);					// <empty stack>
+		mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { Opcodes.INTEGER }, 0, null);
+		mv.visitInsn(ICONST_0);						// false
+		
+		// Everything ends here, leaving a true (1) or a false (0) on the stack
+		mv.visitLabel(finalJump);					// true/false
+		mv.visitFrame(Opcodes.F_SAME, 1, new Object[] { Opcodes.INTEGER }, 0, null);
+
+		// @formatter:on
+
+		return null;
+	}
 }
+
+
+
+
+
+
+
+
+
 
 
 
