@@ -1,0 +1,122 @@
+{
+    putString("*** Testing simple expressions & variables ***\n");
+    x: integer;
+    y: integer;
+    z: boolean;
+    c: character;
+    s: string;
+
+    x := 10 + 20;               // 30
+    y := 20 + x + x;            // 80
+    putInt(y);
+    z := true | false;          // true
+    c := 'a';                   // 'a'
+    s := "Hello, world!";       // "Hello, world!"
+
+    x <> y;                     // y=30     x=80
+
+    putBool(true & false);
+    putString(" = false\n");
+
+    putBool(true | false);
+    putString(" = true\n");
+
+    putInt(2^5);
+    putString(" = 32\n");
+
+    putBool(5 <= 4 <= 6 <= 2);
+    putString(" = false\n");
+
+    putBool(1 <= 2 <= 2 <= 3);
+    putString(" = true\n");
+
+    putBool(1 <= 2 <= 4 <= 3);
+    putString(" = false\n");
+
+    putString("x = ");
+    putInt(x);
+    putString("= 80\n");
+
+    x := x + y;
+
+    putInt(x);
+    putString(" = 110");
+
+    putString("\n");
+}
+
+{   putString("*** Testing if/else structure **\n");
+
+    if(1 <= 2) {
+        putString("this works (1)!\n");
+    }
+    else{
+        putString("BROKEN (1)!\n");
+    }
+
+    if(4 <= 2) {
+        putString("BROKEN (2)!\n");
+    }
+    else{
+        putString("this works (2)!\n");
+    }
+
+    if(2 <= 4) {
+        putString("this works (3)!\n");
+    }
+
+    if(4 <= 2) {
+        putString("BROKEN (3)!\n");
+    }
+}
+
+{
+    putString("*** Testing enums ***\n");
+    enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+    d : day;
+    d := enumeration.day.MONDAY;
+    d := enumeration.day.TUESDAY;
+    d := enumeration.day.WEDNESDAY;
+    d := enumeration.day.THURSDAY;
+}
+
+{
+    putString("*** Testing while loop ***\n");
+    x: integer;
+    x := 0;
+
+    putString("Printing steps of x, from x=0 to x=10 (excl.):\n");
+
+    while(x < 10) {
+        putString("  x=");
+        putInt(x);
+        putString("\n");
+        x := x + 1;
+    }
+}
+
+{
+    putString("*** Testing plusminus expression ***\n");
+    if(7 = 10 +- 4) {
+        putString("Works (1)\n");
+    }
+    else {
+        putString("Fails (1)\n");
+    }
+
+    if(7 = 10 +- 2) {
+        putString("Fails (2)\n");
+    }
+    else {
+        putString("Works (2)\n");
+    }
+
+    if(13 = 10 +- 2) {
+        putString("Fails (3)\n");
+    }
+    else {
+        putString("Works (3)\n");
+    }
+}
+
+putString("\n\n");

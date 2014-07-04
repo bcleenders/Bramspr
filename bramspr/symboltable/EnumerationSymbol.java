@@ -1,14 +1,14 @@
 package bramspr.symboltable;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class EnumerationSymbol extends TypeSymbol {
-	HashSet<String> values;
+	ArrayList<String> values;
 	
 	public EnumerationSymbol(String identifier, String[] values) {
 		super(identifier);
 
-		this.values = new HashSet<String>();
+		this.values = new ArrayList<String>();
 		
 		for (String string : values) {
 			this.values.add(string);
@@ -22,5 +22,15 @@ public class EnumerationSymbol extends TypeSymbol {
 	 */
 	public boolean hasValue(String identifier) {
 		return values.contains(identifier);
+	}
+	
+	/**
+	 * Gives back a number for a field
+	 * @param identifier String representation of the field
+	 * @ensures getFieldId(s1) = getFieldId(s2) if and only if s1 = s2 
+	 * @return an id of the field
+	 */
+	public int getFieldId(String identifier) {
+		return values.indexOf(identifier);
 	}
 }

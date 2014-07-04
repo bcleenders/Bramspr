@@ -1033,22 +1033,22 @@ public class BramsprParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class EnumerationTypeDenoterContext extends TypeDenoterContext {
+	public static class EnumeratedTypeDenoterContext extends TypeDenoterContext {
 		public TerminalNode DOT() { return getToken(BramsprParser.DOT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
-		public EnumerationTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
+		public EnumeratedTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumerationTypeDenoter(this);
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumeratedTypeDenoter(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumerationTypeDenoter(this);
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumeratedTypeDenoter(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumerationTypeDenoter(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumeratedTypeDenoter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1077,7 +1077,7 @@ public class BramsprParser extends Parser {
 				}
 				break;
 			case ENUMERATION:
-				_localctx = new EnumerationTypeDenoterContext(_localctx);
+				_localctx = new EnumeratedTypeDenoterContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(198); match(ENUMERATION);
@@ -2123,24 +2123,24 @@ public class BramsprParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class PossibleEnumerationExpressionContext extends MoleculeContext {
+	public static class PotentialEnumerationLiteralContext extends MoleculeContext {
 		public TerminalNode DOT() { return getToken(BramsprParser.DOT, 0); }
 		public TerminalNode IDENTIFIER(int i) {
 			return getToken(BramsprParser.IDENTIFIER, i);
 		}
 		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
-		public PossibleEnumerationExpressionContext(MoleculeContext ctx) { copyFrom(ctx); }
+		public PotentialEnumerationLiteralContext(MoleculeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPossibleEnumerationExpression(this);
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPotentialEnumerationLiteral(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPossibleEnumerationExpression(this);
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPotentialEnumerationLiteral(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPossibleEnumerationExpression(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPotentialEnumerationLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2152,7 +2152,7 @@ public class BramsprParser extends Parser {
 			setState(311);
 			switch ( getInterpreter().adaptivePredict(_input,31,_ctx) ) {
 			case 1:
-				_localctx = new PossibleEnumerationExpressionContext(_localctx);
+				_localctx = new PotentialEnumerationLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(307); match(IDENTIFIER);
@@ -2702,6 +2702,31 @@ public class BramsprParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
+	public static class ExplicitEnumerationLiteralContext extends LiteralContext {
+		public List<TerminalNode> DOT() { return getTokens(BramsprParser.DOT); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(BramsprParser.IDENTIFIER, i);
+		}
+		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
+		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
+		public TerminalNode DOT(int i) {
+			return getToken(BramsprParser.DOT, i);
+		}
+		public ExplicitEnumerationLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterExplicitEnumerationLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitExplicitEnumerationLiteral(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumerationLiteral(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ArrayLiteralContext extends LiteralContext {
 		public TerminalNode LEFT_BLOCKBRACE() { return getToken(BramsprParser.LEFT_BLOCKBRACE, 0); }
 		public ExpressionContext expression(int i) {
@@ -2727,31 +2752,6 @@ public class BramsprParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayLiteral(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ExplicitEnumerationExpressionContext extends LiteralContext {
-		public List<TerminalNode> DOT() { return getTokens(BramsprParser.DOT); }
-		public TerminalNode IDENTIFIER(int i) {
-			return getToken(BramsprParser.IDENTIFIER, i);
-		}
-		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
-		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
-		public TerminalNode DOT(int i) {
-			return getToken(BramsprParser.DOT, i);
-		}
-		public ExplicitEnumerationExpressionContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterExplicitEnumerationExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitExplicitEnumerationExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumerationExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2954,7 +2954,7 @@ public class BramsprParser extends Parser {
 				}
 				break;
 			case ENUMERATION:
-				_localctx = new ExplicitEnumerationExpressionContext(_localctx);
+				_localctx = new ExplicitEnumerationLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(398); match(ENUMERATION);
