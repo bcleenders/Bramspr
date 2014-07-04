@@ -2,7 +2,6 @@ package bramspr;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -168,7 +167,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Een basicAssignable is eigenlijk een variabele; geef deze maar terug (bevat mem. address en type info)
 		VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(ctx);
 
-		System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
+//		System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
 
 		return variable;
 	}
@@ -370,7 +369,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// in the format "enum.DAY.MONDAY", monday is the second IDENTIFIER (thus index 1)
 		int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
 
-		System.out.println("field id is " + fieldId);
+//		System.out.println("field id is " + fieldId);
 
 		mv.visitIntInsn(BIPUSH, fieldId);
 
