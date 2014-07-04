@@ -1,5 +1,7 @@
 package bramspr.symboltable;
 
+import bramspr.BramsprParser.FunctionDeclarationContext;
+
 /**
  * Objects of this class are symbol table entries associated with functions in a Bramspr-program.
  * 
@@ -14,6 +16,11 @@ package bramspr.symboltable;
 public class FunctionSymbol extends ValueYielderSymbol {
 	/** (The types of) this function's parameters. */
 	TypeSymbol[] parameters;
+	
+	/**
+	 * The context of the declaration.
+	 */
+	public FunctionDeclarationContext declarationContext;
 
 	/**
 	 * Generates a function's signature string, for indexing its symbol in a symbol table with.
@@ -37,9 +44,10 @@ public class FunctionSymbol extends ValueYielderSymbol {
 		return sb.toString();
 	}
 
-	public FunctionSymbol(String identifier, TypeSymbol returnType, TypeSymbol[] parameters, boolean isConstant) {
+	public FunctionSymbol(String identifier, TypeSymbol returnType, TypeSymbol[] parameters, boolean isConstant, FunctionDeclarationContext ctx) {
 		super(identifier, returnType, isConstant);
 		this.parameters = parameters;
+		this.declarationContext = ctx;
 	}
 
 	public String toString() {

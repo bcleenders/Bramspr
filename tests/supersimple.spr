@@ -119,4 +119,21 @@
     }
 }
 
+{
+    putString("*** Testing functions ***\n");
+
+    // function getTwee() {
+    //     putString("getTwee runs.\n");
+    // }
+
+    // getTwee();
+
+    // if(2 = getTwee()) {
+    //     putString("Works (1)\n");
+    // }
+    // else {
+    //     putString("Works (1)\n");
+    // }
+}
+
 putString("\n\n");

@@ -987,6 +987,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage.toString(), ctx);
 			return Suit.ERROR;
 		}
+		
+		this.parseTreeproperty.put(ctx, functionSymbol);
 
 		// De functie bestaat. Corresponderende return suit teruggeven.
 		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
@@ -1010,15 +1012,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			argumentTypes[i] = visit(ctx.typeDenoter(i)).type;
 		}
 
-		// De functie declaratie is gecontroleerd; nu nog controleren of de inhoud ook valide code is.
-		for (int i = 0; i < ctx.statement().size(); i++) {
-			visit(ctx.statement(i));
-		}
-
 		// Controleren of de (impliciete) declaratie van de variabelen wel goed gaat
 		// (ze moeten in de symboltable staan, anders kunnen we de code in de functie niet valideren)
-		for (int i = 0; i < ctx.statement().size(); i++) {
-			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i + 1).getText(), argumentTypes[i], false);
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i).getText(), argumentTypes[i], false);
 			try {
 				this.variableSymbolTable.declare(parameter);
 			} catch (SymbolTableException e) {
@@ -1042,7 +1039,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		this.closeScope();
 
-		FunctionSymbol symbol = new FunctionSymbol(functieNaam, returnSuit.type, argumentTypes, returnSuit.isConstant);
+		FunctionSymbol symbol = new FunctionSymbol(functieNaam, returnSuit.type, argumentTypes, returnSuit.isConstant, ctx);
 
 		try {
 			this.functionSymbolTable.declare(symbol);
@@ -1547,13 +1544,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			typeSymbolTable.declare(BOOLEAN);
 			typeSymbolTable.declare(STRING);
 
-			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false));
-			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false));
-			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false));
+			functionSymbolTable.declare(new FunctionSymbol("getInt", INTEGER, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("getChar", BOOLEAN, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("getBool", CHARACTER, null, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putInt", INTEGER, new TypeSymbol[] { INTEGER }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putChar", BOOLEAN, new TypeSymbol[] { CHARACTER }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putBool", CHARACTER, new TypeSymbol[] { BOOLEAN }, false, null));
+			functionSymbolTable.declare(new FunctionSymbol("putString", STRING, new TypeSymbol[] { STRING }, false, null));
 
 		} catch (SymbolTableException se) {
 			// Dit zou onmogelijk moeten zijn... Maar Java weet dat niet, dus de catch is verplicht.

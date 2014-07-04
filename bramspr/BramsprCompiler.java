@@ -18,6 +18,7 @@ import org.objectweb.asm.util.TraceClassVisitor;
 import bramspr.BramsprParser.*;
 import bramspr.symboltable.CompositeSymbol;
 import bramspr.symboltable.EnumerationSymbol;
+import bramspr.symboltable.FunctionSymbol;
 import bramspr.symboltable.Symbol;
 import bramspr.symboltable.TypeSymbol;
 import bramspr.symboltable.VariableSymbol;
@@ -231,30 +232,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitIntInsn(ILOAD, memAddrY); // Stack: x y ->
 		mv.visitIntInsn(ISTORE, memAddrX); // Stack: x ->
 		mv.visitIntInsn(ISTORE, memAddrY); // Stack: ->
-
-		return null;
-	}
-
-	/*
-	 * Functies: nieuwe scope openen & inlinen?
-	 * Recursive calls kunnen niet, dus inlining is eindig...
-	 */
-	public Symbol visitFunctionCall(FunctionCallContext ctx) {
-		// TODO echte implementatie!
-
-		visit(ctx.expression(0));
-		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-
-		// de te printen waarde moet boven staan; wissel de top waardes om
-		mv.visitInsn(SWAP);
-
-		if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
-		} else {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
-		}
-
-		// this.dumpAssembly();
 
 		return null;
 	}
@@ -656,23 +633,94 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+	
+	@Override
+	public Symbol visitFunctionDeclaration(FunctionDeclarationContext ctx) {
+		// Functions are inlined, so the declaration does not produce new ASM code.
+		return null;
+	}
+
+	/*
+	 * Bij functies staat de declarationcontext in de parsetreeproperty.
+	 * Deze kunnen we visiten, om functie naar inline JBC om te zetten.
+	 */
+	public Symbol visitFunctionCall(FunctionCallContext ctx) {
+		FunctionSymbol function = (FunctionSymbol) this.parseTreeproperty.get(ctx);
+
+		// The "primitive" functions have a null context!
+		if (function.declarationContext == null) {
+			if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
+				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
+			} else if (ctx.IDENTIFIER().getText().equals("putInt")) {
+				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
+			} else if (ctx.IDENTIFIER().getText().equals("putChar")) {
+				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(C)V");
+			} else if (ctx.IDENTIFIER().getText().equals("putBool")) {
+				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Z)V");
+			} else {
+				System.err.println("Attempting to invoke invalid primitive function!");
+				System.exit(1);
+			}
+
+			// Done: we can return now!
+			return null;
+		}
+
+		// This contains the function code!
+		FunctionDeclarationContext declaration = function.declarationContext;
+
+		// @formatter:off
+		// Open a new scope
+		this.openScope();
+		
+			// Hier kan een identifier gezien worden als variabele, de eerste IDENTIFIER is de naam van de functie.
+			for (int i = 1; i < ctx.expression().size(); i++) {
+				int memAddr = this.parseTreeproperty.get(declaration.IDENTIFIER(i)).getNumber();
+				visit(ctx.expression(i));
+				
+				// TODO also for non-integer types!
+				mv.visitIntInsn(ISTORE, memAddr);
+			}
+		
+			// Adds JBC code from stuff inside the function.
+			for (int i = 0; i < declaration.statement().size(); i++) {
+				visit(declaration.statement(i));
+			}
+			
+			if(declaration.RETURN() != null) {
+				// Dit is het return statement; laat een waarde achter op de stack
+				visit(declaration.expression());
+			}
+		
+		this.closeScope();
+		// @formatter:on
+
+		return null;
+	}
 }
 
+/*
 
+	 * Functies: nieuwe scope openen & inlinen?
+	 * Recursive calls kunnen niet, dus inlining is eindig...
+	public Symbol visitFunctionCall(FunctionCallContext ctx) {
+		// TODO echte implementatie!
 
+		visit(ctx.expression(0));
+		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 
+		// de te printen waarde moet boven staan; wissel de top waardes om
+		mv.visitInsn(SWAP);
 
+		if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
+		} else {
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
+		}
 
+		// this.dumpAssembly();
 
-
-
-
-
-
-
-
-
-
-
-
+		return null;
+	}
+	*/
 

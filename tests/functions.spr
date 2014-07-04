@@ -5,7 +5,7 @@ function getJeMoeder(naam: String, leeftijd: integer) {
         hhahaha: [6][10][1]moeder
     };
 
-    x := y := (z := 345);
+    x := y := (z := 345) + 10;
 
     return getJemoeder();
 };
