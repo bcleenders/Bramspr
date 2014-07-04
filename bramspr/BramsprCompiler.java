@@ -633,7 +633,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
-	
+
 	@Override
 	public Symbol visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// Functions are inlined, so the declaration does not produce new ASM code.
@@ -649,17 +649,25 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		// The "primitive" functions have a null context!
 		if (function.declarationContext == null) {
-			if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
-				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
-			} else if (ctx.IDENTIFIER().getText().equals("putInt")) {
-				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
-			} else if (ctx.IDENTIFIER().getText().equals("putChar")) {
-				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(C)V");
-			} else if (ctx.IDENTIFIER().getText().equals("putBool")) {
-				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Z)V");
-			} else {
-				System.err.println("Attempting to invoke invalid primitive function!");
-				System.exit(1);
+
+			// Is it one of the put, or one of the get functions?
+			if (ctx.IDENTIFIER().getText().startsWith("put")) {
+				// It's a put function!
+				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+				visit(ctx.expression(0));
+
+				if (ctx.IDENTIFIER().getText().equals("putString")) { // TODO dit is tijdelijk!
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
+				} else if (ctx.IDENTIFIER().getText().equals("putInt")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(I)V");
+				} else if (ctx.IDENTIFIER().getText().equals("putChar")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(C)V");
+				} else if (ctx.IDENTIFIER().getText().equals("putBool")) {
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Z)V");
+				} else {
+					System.err.println("Attempting to invoke invalid primitive function!");
+					System.exit(1);
+				}
 			}
 
 			// Done: we can return now!

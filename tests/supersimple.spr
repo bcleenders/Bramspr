@@ -122,18 +122,39 @@
 {
     putString("*** Testing functions ***\n");
 
-    // function getTwee() {
-    //     putString("getTwee runs.\n");
-    // }
+    function willItRun() {
+        putString("success: it runs.\n");
+    };
 
-    // getTwee();
+    willItRun();
 
-    // if(2 = getTwee()) {
-    //     putString("Works (1)\n");
-    // }
-    // else {
-    //     putString("Works (1)\n");
-    // }
+    function getTwee() {
+        x: integer;
+        x := 10;
+
+        return x-8;
+    };
+
+    if(2 = getTwee()) {
+        putString("Works (1)\n");
+    }
+    else {
+        putString("Fails (1)\n");
+    }
+
+    unChanged: boolean;
+    unChanged := true;
+    function iHaveSideEffects() {
+        unChanged := false;
+    };
+    iHaveSideEffects();
+
+    if(unChanged) {
+        putString("Fail: it did not have side-effects\n");
+    }
+    else {
+        putString("Success: it has side-effects\n");
+    }
 }
 
 putString("\n\n");
