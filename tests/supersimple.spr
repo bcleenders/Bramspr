@@ -95,11 +95,11 @@
     d := enumeration.day.MONDAY;
     d := enumeration.day.TUESDAY;
     d := enumeration.day.WEDNESDAY;
-    d := enumeration.day.THURSDAY;
+    d := day.THURSDAY;
 
-    monday: day := enumeration.day.MONDAY;
-    wednesday: day := enumeration.day.WEDNESDAY;
-    monday2: day := enumeration.day.MONDAY;
+    monday: day := day.MONDAY;
+    wednesday: day := day.WEDNESDAY;
+    monday2: day := day.MONDAY;
 
     // if(monday =/= wednesday) {
     //     putString("Success: monday is not wednesday!");

@@ -1431,7 +1431,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Deze variabele bevat een record indien deze gedefinieerd is.
 		VariableSymbol prefix = this.variableSymbolTable.resolve(prefixName);
-		EnumerationSymbol prefixEnum = this.enumerationSymbolTable.resolve(prefixName);
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 
 		// Kijken of dit een record is.
 		if (prefix != null) {
@@ -1440,7 +1440,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				String errorMessage = "Type " + prefix.getReturnType().getIdentifier() + " does not have fields.";
 
 				// Checken of er wel een enumeration is die het zou kunnen zijn:
-				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by variable "
@@ -1462,7 +1461,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				 * bestaat dat wèl deze veldnaam bezit.
 				 */
 				String errorMessage = "Type " + compositeType.getIdentifier() + " does not contain field " + fieldName + ".";
-				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 
@@ -1478,14 +1476,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return new Suit(compositeType.getFieldType(fieldName), prefix.isConstant());
 			}
 
-		} else if (prefixEnum != null) { // Er bestaat een enumeration met deze naam!
+		} else if (enumSymbol != null) { // Er bestaat een enumeration met deze naam!
 			// Eis #1.1
-			if (!prefixEnum.hasValue(fieldName)) {
+			if (!enumSymbol.hasValue(fieldName)) {
 				String errorMessage = "enumeration " + prefixName + " does not contain constant " + fieldName + ".";
 				reportError(errorMessage, ctx);
 				return Suit.ERROR;
 			} else {
-				return new Suit(prefixEnum, true);
+				this.parseTreeproperty.put(ctx, enumSymbol);
+				return new Suit(enumSymbol, true);
 			}
 		}
 

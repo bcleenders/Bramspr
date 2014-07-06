@@ -806,6 +806,20 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+	
+	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
+		Symbol symbol = this.parseTreeproperty.get(ctx);
+		
+		if(symbol instanceof EnumerationSymbol) {
+			EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
+			// in the format "day.MONDAY", monday is the second IDENTIFIER (thus index 1)
+			int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
+
+			mv.visitIntInsn(BIPUSH, fieldId);
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Tests whether a type is a JBC primitive. The JBC primitives are (as far as we're concerned) integer, boolean, character and enumerations. Note that
