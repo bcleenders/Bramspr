@@ -187,19 +187,22 @@
         zitLekker: boolean
     };
 
-    type Maand{
-        aantalDagen: integer,
-        naam: string
-    };
+    // type Maand{
+    //     aantalDagen: integer,
+    //     naam: string
+    // };
 
     s: Stoel;
-    januari: Maand;
-    februari: Maand;
+    s2: Stoel;
+    // januari: Maand;
+    // februari: Maand;
 
-    s := Stoel{
-        aantalPoten:= 4, 
-        zitLekker:= true
-    };
+    s2 := s;
+
+    // s := Stoel{
+    //     aantalPoten:= 4, 
+    //     zitLekker:= true
+    // };
 
 }
 

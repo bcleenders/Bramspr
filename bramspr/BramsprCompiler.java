@@ -83,6 +83,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) throws Exception {
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		// TODO debugging only:
+		cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 		this.parseTreeproperty = ptp;
 
@@ -157,11 +159,25 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitIntInsn(ISTORE, symbol.getNumber());
 			} else if (symbol.getReturnType().internalIdentifier.equals("C")) {
 				// Characters beginnen als a
-				System.out.println("Storing a");
-				int charCode = Character.getNumericValue('a');
+				int charCode = (int) 'a';
 				mv.visitIntInsn(BIPUSH, charCode);
 				mv.visitIntInsn(ISTORE, symbol.getNumber());
-			}
+			} else if (symbol.getReturnType() instanceof CompositeSymbol) {
+				CompositeSymbol cs = (CompositeSymbol) symbol.getReturnType();
+				
+				mv.visitTypeInsn(NEW, "Bramspr$"+cs.getInternalIdentifier());
+				mv.visitInsn(DUP);
+				mv.visitVarInsn(ALOAD, 0);
+				mv.visitMethodInsn(INVOKESPECIAL, "Bramspr$"+cs.getInternalIdentifier(), "<init>", "(Bramspr$"+cs.getInternalIdentifier()+";)V");
+				mv.visitVarInsn(ASTORE, symbol.getNumber());
+				
+				System.err.println("declared variable of type " + cs.internalIdentifier + "-" + cs.getIdentifier() + ", and attempted to assign (not sure if successfull)");
+			} 
+			/*else if (symbol.getReturnType() instanceof ArraySymbol) {
+				ArraySymbol cs = (ArraySymbol) symbol.getReturnType();
+				System.err.println("declared variable of type " + cs.internalIdentifier + ", but cannot instantiate objects yet.");
+			}*/
+			// TODO leeg object dumpen?
 		}
 
 		// Vanaf hier mogen de variabelen gebruikt worden.
@@ -210,7 +226,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
 			} else if (type instanceof CompositeSymbol){
 				CompositeSymbol cs = (CompositeSymbol) type;
-				System.out.println("Encountered composite " +)
+				// TODO
+				System.out.println("Encountered composite " + cs.getIdentifier() + " " + cs.getInternalIdentifier());
+				mv.visitInsn(POP);
 			} else {
 				System.err.println("Invalid assignment; unimplemented type!");
 				System.exit(1);
@@ -225,6 +243,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	public Symbol visitAssignableExpression(AssignableExpressionContext ctx) {
 		Symbol variable = visit(ctx.assignable());
+		
 		mv.visitIntInsn(ILOAD, variable.getNumber());
 
 		return null;
@@ -782,10 +801,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
 
 		// Maak de nieuwe instantie aan
-		mv.visitTypeInsn(NEW, "Bramspr$" + symbol.getInternalIdentifier());
-		mv.visitInsn(DUP);
-		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKESPECIAL, "testpkg/UserInput$" + symbol.getInternalIdentifier(), "<init>", "(Ltestpkg/UserInput;)V");
+		mv.visitTypeInsn(NEW, "Bramspr$" + symbol.getInternalIdentifier());	// Stack heeft memory address van object
+		mv.visitInsn(DUP); // Memory address staat er twee keer in
+		
+		mv.visitMethodInsn(INVOKESPECIAL, "Bramspr$" + symbol.getInternalIdentifier(), "<init>", "(LBramspr$" + symbol.getInternalIdentifier()+";)V"); // Nu is er een weg
 
 		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
 			String fieldName = ctx.IDENTIFIER(i).getText();
@@ -801,6 +820,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		}
 
 		System.out.println("Internal name of newly declared type (" + symbol.getIdentifier() + "): " + symbol.getInternalIdentifier());
+		
+		this.dumpAssembly();
 
 		return null;
 	}
