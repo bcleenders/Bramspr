@@ -809,6 +809,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitTypeInsn(NEW, "Bramspr$" + symbol.getInternalIdentifier());	// Stack heeft memory address van object
 		mv.visitInsn(DUP); // Memory address staat er twee keer in
 		
+
 		mv.visitMethodInsn(INVOKESPECIAL, "Bramspr$" + symbol.getInternalIdentifier(), "<init>", "(LBramspr$" + symbol.getInternalIdentifier()+";)V"); // Nu is er een weg
 
 		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
