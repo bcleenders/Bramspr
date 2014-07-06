@@ -84,7 +84,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		// TODO debugging only:
-		cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+//		cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 		this.parseTreeproperty = ptp;
 
@@ -122,7 +122,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 			TypeSymbol type = var.getReturnType();
 			String internalTypeDenoter = type.getInternalIdentifier();
-
+			System.out.println("Declaring variable " + var.getIdentifier() + " as type " + internalTypeDenoter);
 			mv.visitLocalVariable(var.getIdentifier(), internalTypeDenoter, null, var.openingLabel, var.closingLabel, var.getNumber());
 		}
 
@@ -162,16 +162,20 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				int charCode = (int) 'a';
 				mv.visitIntInsn(BIPUSH, charCode);
 				mv.visitIntInsn(ISTORE, symbol.getNumber());
-			} else if (symbol.getReturnType() instanceof CompositeSymbol) {
-				CompositeSymbol cs = (CompositeSymbol) symbol.getReturnType();
-				
-				mv.visitTypeInsn(NEW, "Bramspr$"+cs.getInternalIdentifier());
-				mv.visitInsn(DUP);
-				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKESPECIAL, "Bramspr$"+cs.getInternalIdentifier(), "<init>", "(Bramspr$"+cs.getInternalIdentifier()+";)V");
+			} else if (symbol.getReturnType().internalIdentifier.equals("Ljava/lang/String;")) {
+				System.out.println("Pure declaration of string");
+				mv.visitLdcInsn("");
 				mv.visitVarInsn(ASTORE, symbol.getNumber());
-				
-				System.err.println("declared variable of type " + cs.internalIdentifier + "-" + cs.getIdentifier() + ", and attempted to assign (not sure if successfull)");
+//			} else if (symbol.getReturnType() instanceof CompositeSymbol) {
+//				CompositeSymbol cs = (CompositeSymbol) symbol.getReturnType();
+//				
+//				mv.visitTypeInsn(NEW, "Bramspr$"+cs.getInternalIdentifier());
+//				mv.visitInsn(DUP);
+//				mv.visitVarInsn(ALOAD, 0);
+//				mv.visitMethodInsn(INVOKESPECIAL, "Bramspr$"+cs.getInternalIdentifier(), "<init>", "(Bramspr$"+cs.getInternalIdentifier()+";)V");
+//				mv.visitVarInsn(ASTORE, symbol.getNumber());
+//				
+//				System.err.println("declared variable of type " + cs.internalIdentifier + "-" + cs.getIdentifier() + ", and attempted to assign (not sure if successfull)");
 			} 
 			/*else if (symbol.getReturnType() instanceof ArraySymbol) {
 				ArraySymbol cs = (ArraySymbol) symbol.getReturnType();
@@ -220,6 +224,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			} else if (type.equals(BramsprChecker.BOOLEAN)) {
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
 			} else if (type.equals(BramsprChecker.STRING)) {
+				System.out.println("Storing a String reference");
 				mv.visitIntInsn(ASTORE, memaddr); // Stack: a ->
 			} else if (type instanceof EnumerationSymbol) {
 				// Enums are stored as ints
@@ -227,7 +232,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			} else if (type instanceof CompositeSymbol){
 				CompositeSymbol cs = (CompositeSymbol) type;
 				// TODO
-				System.out.println("Encountered composite " + cs.getIdentifier() + " " + cs.getInternalIdentifier());
+				System.out.println("(in visitAssignment) Encountered composite " + cs.getIdentifier() + " " + cs.getInternalIdentifier());
 				mv.visitInsn(POP);
 			} else {
 				System.err.println("Invalid assignment; unimplemented type!");

@@ -182,22 +182,26 @@
 
 {
     putString("*** Testing composites ***\n");
-    type Stoel{
-        aantalPoten: integer,
-        zitLekker: boolean
-    };
+    // type Stoel{
+    //     aantalPoten: integer,
+    //     zitLekker: boolean
+    // };
+
+    s0:string;
+    s0 := "hello world";
+    putString(s0);
 
     // type Maand{
     //     aantalDagen: integer,
     //     naam: string
     // };
 
-    s: Stoel;
-    s2: Stoel;
-    // januari: Maand;
-    // februari: Maand;
+    // s: Stoel;
+    // s2: Stoel;
+    // // januari: Maand;
+    // // februari: Maand;
 
-    s2 := s;
+    // s2 := s;
 
     // s := Stoel{
     //     aantalPoten:= 4, 
