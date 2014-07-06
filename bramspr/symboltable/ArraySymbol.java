@@ -17,6 +17,12 @@ public class ArraySymbol extends TypeSymbol {
 		this.type = type;
 	}
 	
+	/**
+	 * Returns true if the objects are equal. Two array types are equal if the following conditions are all true:
+	 * 1. both objects are arrays
+	 * 2. both arrays have equal length
+	 * 3. the types of the elements are equal
+	 */
 	public boolean equals(Object comparable) {
 		if(! (comparable instanceof ArraySymbol)) {
 			return false;
