@@ -185,7 +185,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	public Symbol visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
 		Label openingLabel = new Label();
 		Label closingLabel = this.closingScopeLabels.peek();
-		
+
 		// Laten we iig alvast even kijken wat er op de stack moet komen te staan:
 		visit(ctx.expression()); // Stack: a ->
 
@@ -193,21 +193,21 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
 			this.variables.add(symbol);
-			
+
 			TypeSymbol type = symbol.getReturnType();
 			int memAddr = symbol.getNumber();
-			
+
 			// Even kopiëren, anders zijn we het zo kwijt!
 			mv.visitInsn(DUP);
-			
-			if(this.isJBCPrimitive(type)) {
+
+			if (this.isJBCPrimitive(type)) {
 				// Mooi; dit kunnen we assigned met ISTORE
 				mv.visitIntInsn(ISTORE, memAddr);
 			} else {
 				mv.visitIntInsn(ASTORE, memAddr);
 			}
 		}
-		
+
 		// Er stond er nog één op de stack... haal maar weg!
 		mv.visitInsn(POP);
 
@@ -216,14 +216,14 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
-	
+
 	@Override
 	/**
 	 * Produces the JBC for a statement. A statement leaves no additional values on the stack.
 	 * @param ctx the context of the statement.
 	 */
 	public Symbol visitStatement(StatementContext ctx) {
-		if(ctx.assignment() != null) {
+		if (ctx.assignment() != null) {
 			visitAssignment(ctx.assignment());
 			// Assignments leave something on the stack; statements should not do that so we have to POP it.
 			mv.visitInsn(POP);
@@ -460,9 +460,14 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	public Symbol visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
-
+		
+		// Ont-escape het maar:
+		character = character.replace("\\n", "\n"); // \n naar een echte linebreak
+		character = character.replace("\\\\", "\\"); // \\ -> \
+		character = character.replace("'\\''", "'''"); // \' -> '
+		
 		// 'c'.charAt(1) -> c
-		int charCode = Character.getNumericValue(character.charAt(1));
+		int charCode = (int) character.charAt(1);
 
 		mv.visitIntInsn(BIPUSH, charCode);
 
@@ -826,26 +831,27 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
-	
+
 	/**
-	 * Visits a possible enumeration; this is either an fieldaccess or an enumeration.
-	 * If it is an enumeration, this function puts one int value on the stack.
+	 * Visits a possible enumeration; this is either an fieldaccess or an enumeration. If it is an enumeration, this function puts one int value on the stack.
 	 * If it is a field access <NOT IMPLEMENTED YET>
-	 * @param ctx either a field access or an enumeration.
+	 * 
+	 * @param ctx
+	 *            either a field access or an enumeration.
 	 * @return
 	 */
 	@Override
 	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		Symbol symbol = this.parseTreeproperty.get(ctx);
-		
-		if(symbol instanceof EnumerationSymbol) {
+
+		if (symbol instanceof EnumerationSymbol) {
 			EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
 			// in the format "day.MONDAY", monday is the second IDENTIFIER (thus index 1)
 			int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
 
 			mv.visitIntInsn(BIPUSH, fieldId);
 		}
-		
+
 		return null;
 	}
 
