@@ -5,42 +5,43 @@
     z: boolean;
     c: character;
     s: string;
+    s1: string;
+    s2: string;
 
     x := 10 + 20;               // 30
     y := 20 + x + x;            // 80
-    putInt(y);
     z := true | false;          // true
     c := 'a';                   // 'a'
-    s := "Hello, world!";       // "Hello, world!"
+    s := "Hello, world!\n";     // "Hello, world!"
+    s1 := "bar";
+    s2 := "foo";
 
+    putString("x = "); putInt(x); putString(" = 30\n");
     x <> y;                     // y=30     x=80
+    putString("x = "); putInt(x); putString(" = 80\n");
 
-    putBool(true & false);
-    putString(" = false\n");
+    putBool(true & false); putString(" = false\n");
 
-    putBool(true | false);
-    putString(" = true\n");
+    putBool(true | false); putString(" = true\n");
 
-    putInt(2^5);
-    putString(" = 32\n");
+    putInt(2^5); putString(" = 32\n");
 
-    putBool(5 <= 4 <= 6 <= 2);
-    putString(" = false\n");
+    putBool(5 <= 4 <= 6 <= 2); putString(" = false\n");
 
-    putBool(1 <= 2 <= 2 <= 3);
-    putString(" = true\n");
+    putBool(1 <= 2 <= 2 <= 3); putString(" = true\n");
 
-    putBool(1 <= 2 <= 4 <= 3);
-    putString(" = false\n");
-
-    putString("x = ");
-    putInt(x);
-    putString("= 80\n");
+    putBool(1 <= 2 <= 4 <= 3); putString(" = false\n");
 
     x := x + y;
 
     putInt(x);
-    putString(" = 110");
+    putString(" = 110\n");
+
+    putString(s);
+
+    putString(s1); putChar(' '); putString(s2); putString("\n");
+    s1 <> s2;
+    putString(s1); putChar(' '); putString(s2); putString("\n");
 
     putString("\n");
 }
@@ -78,6 +79,26 @@
     d := enumeration.day.TUESDAY;
     d := enumeration.day.WEDNESDAY;
     d := enumeration.day.THURSDAY;
+
+    monday: day;
+    wednesday: day;
+    monday2: day;
+
+    // monday := day.MONDAY;
+    // wednesday := day.WEDNESDAY;
+    // monday2 := day.MONDAY;
+
+    // if(monday =/= wednesday) {
+    //     putString("Success: monday is not wednesday!");
+    // } else {
+    //     putString("FAIL: monday = wednesday");
+    // }
+
+    // if(monday = monday2) {
+    //     putString("Success: monday is monday!");
+    // } else {
+    //     putString("FAIL: monday =/= monday");
+    // }
 }
 
 {
@@ -161,7 +182,8 @@
     putString("*** Testing user input ***\n");
     x: integer;
     putString("Please enter a number: ");
-    x := getInt();
+    // x := getInt();
+    x := 10;
     putString("\n");
     putString("You entered: ");
     putInt(x);
@@ -169,7 +191,8 @@
 
     b: boolean;
     putString("Please enter a boolean (true/false): ");
-    b := getBool();
+    // b := getBool();
+    b := true;
     putString("\n");
     putString("You entered: ");
     putBool(b);
