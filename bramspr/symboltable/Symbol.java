@@ -13,10 +13,8 @@ public abstract class Symbol {
 	/** This symbol's identifier. */
 	private String identifier;
 	
-	private int scopeId;
-	
 	/** This symbol's id (size of the symboltable at the time of declaration) */
-	private int number;
+	protected int number;
 	
 	public Symbol(String identifier) {
 		this.identifier = identifier;
@@ -26,8 +24,6 @@ public abstract class Symbol {
 	public void setNumber(int symNumber) {
 		this.number = symNumber;
 	}
-	
-	/** Set the scope id of this symbol (should be done by SymbolTable only) */
 	
 	/** @return {@link #number} */
 	public int getNumber() {

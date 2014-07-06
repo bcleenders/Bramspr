@@ -1,3 +1,4 @@
+/*
 {
     putString("*** Testing simple expressions & variables ***\n");
     x: integer;
@@ -156,8 +157,10 @@
         putString("Success: it has side-effects\n");
     }
 }
-
-{
+*/
+{ 
+    /*
+    // Dit vraag user input, dus is vergelend testen.
     putString("*** Testing user input ***\n");
     x: integer;
     putString("Please enter a number: ");
@@ -174,6 +177,30 @@
     putString("You entered: ");
     putBool(b);
     putString(".\n");
+    */
+}
+
+{
+    putString("*** Testing composites ***\n");
+    type Stoel{
+        aantalPoten: integer,
+        zitLekker: boolean
+    };
+
+    type Maand{
+        aantalDagen: integer,
+        naam: string
+    };
+
+    s: Stoel;
+    januari: Maand;
+    februari: Maand;
+
+    s := Stoel{
+        aantalPoten:= 4, 
+        zitLekker:= true
+    };
+
 }
 
 putString("\n\n");

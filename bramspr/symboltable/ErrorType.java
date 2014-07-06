@@ -12,7 +12,7 @@ package bramspr.symboltable;
 public class ErrorType extends TypeSymbol {
 	
 	public ErrorType() {
-		super("<error type>");
+		super("<error type>", null);
 	}
 	
 	/**

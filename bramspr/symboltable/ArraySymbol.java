@@ -13,7 +13,7 @@ public class ArraySymbol extends TypeSymbol {
 	 * @param type het type van de elementen in deze array
 	 */
 	public ArraySymbol(int amount, TypeSymbol type) {
-		super("[" + amount + "]" + type.toString());
+		super("[" + amount + "]" + type.toString(), "["+type.getInternalIdentifier());
 		this.type = type;
 	}
 	

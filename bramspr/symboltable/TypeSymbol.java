@@ -9,8 +9,19 @@ package bramspr.symboltable;
  * 
  */
 public abstract class TypeSymbol extends Symbol {
+	
+	/**
+	 * The name it is given in JBC. For an integer, that should be "I", for example.
+	 * @see <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/types.html#wp276">the JVM docs</a>
+	 */
+	public String internalIdentifier;
 
-	public TypeSymbol(String identifier) {
+	public TypeSymbol(String identifier, String internalIdentifier) {
 		super(identifier);
+		this.internalIdentifier = internalIdentifier;
+	}
+	
+	public String getInternalIdentifier() {
+		return this.internalIdentifier;
 	}
 }

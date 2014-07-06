@@ -97,7 +97,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	private SymbolTable<EnumerationSymbol> enumerationSymbolTable = new SymbolTable<EnumerationSymbol>(); // enumnamen (e.g. DAYS)
 
 	/** TODO: Dit moet JavaDoc krijgen. */
-	// TODO: moeten we hier nog wat mee doen? Wel hè?
 	private ParseTreeProperty<Symbol> parseTreeproperty;
 
 	/** The current amount of encountered context errors in the program. */
@@ -632,6 +631,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		} catch (SymbolTableException e) {
 			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
 		}
+		
+		this.parseTreeproperty.put(ctx, symbol);
 
 		return Suit.VOID;
 	}
@@ -738,6 +739,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage, ctx);
 			return Suit.ERROR;
 		}
+		
+		this.parseTreeproperty.put(ctx, compositeType);
 
 		// Alles klopt. Nu de juiste suit teruggeven.
 		return new Suit(compositeType, isConstant);

@@ -119,18 +119,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			VariableSymbol var = this.variables.get(i);
 
 			TypeSymbol type = var.getReturnType();
-			String signature = null;
+			String internalTypeDenoter = type.getInternalIdentifier();
 
-			if (type instanceof CompositeSymbol) {
-				signature = ((CompositeSymbol) type).getShortIdentifier();
-			} else if (type instanceof EnumerationSymbol) {
-				signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
-			} else {
-				System.err.println("Unknown type at variable declaration.");
-				System.exit(1);
-			}
-
-			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getNumber());
+			mv.visitLocalVariable(var.getIdentifier(), internalTypeDenoter, null, var.openingLabel, var.closingLabel, var.getNumber());
 		}
 
 		mv.visitInsn(RETURN);
@@ -152,6 +143,25 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
 			this.variables.add(symbol);
+
+			System.out.println("Type: " + symbol.getReturnType().internalIdentifier);
+
+			// Geef primitieve types hun standaard waarden.
+			if (symbol.getReturnType().internalIdentifier.equals("I")) {
+				// Integers beginnen bij 0
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (symbol.getReturnType().internalIdentifier.equals("Z")) {
+				// Booleans beginnen als false
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (symbol.getReturnType().internalIdentifier.equals("C")) {
+				// Characters beginnen als a
+				System.out.println("Storing a");
+				int charCode = Character.getNumericValue('a');
+				mv.visitIntInsn(BIPUSH, charCode);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			}
 		}
 
 		// Vanaf hier mogen de variabelen gebruikt worden.
@@ -198,6 +208,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			} else if (type instanceof EnumerationSymbol) {
 				// Enums are stored as ints
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
+			} else if (type instanceof CompositeSymbol){
+				CompositeSymbol cs = (CompositeSymbol) type;
+				System.out.println("Encountered composite " +)
 			} else {
 				System.err.println("Invalid assignment; unimplemented type!");
 				System.exit(1);
@@ -379,8 +392,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	public Symbol visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
 
-		// 'c'.charAt(1) -> c
-		int charCode = Character.getNumericValue(character.charAt(1));
+		int charCode = (int) character.charAt(1);
 
 		mv.visitIntInsn(BIPUSH, charCode);
 
@@ -672,7 +684,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitInsn(DUP);
 				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;");
 				mv.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V");
-				
+
 				if (ctx.IDENTIFIER().getText().equals("getString")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
 				} else if (ctx.IDENTIFIER().getText().equals("getInt")) {
@@ -740,4 +752,85 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+
+	@Override
+	public Symbol visitCompositeDeclaration(CompositeDeclarationContext ctx) {
+		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
+		String typeName = symbol.getInternalIdentifier();
+
+		tcw.visitInnerClass("Bramspr$" + typeName, "Bramspr", "Small", 0);
+
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			String fieldName = ctx.IDENTIFIER(i).getText();
+			String internalFieldName = symbol.getInternalFieldName(fieldName);
+
+			TypeSymbol fieldType = symbol.getFieldType(fieldName);
+			String internalFieldType = fieldType.getInternalIdentifier();
+
+			System.out.println("visiting field name " + fieldName + "(" + internalFieldName + ") of type " + internalFieldType);
+
+			fv = tcw.visitField(ACC_PUBLIC, internalFieldName, internalFieldType, null, null);
+			fv.visitEnd();
+		}
+		
+		System.out.println("Internal name of newly declared type (" + symbol.getNumber() + "): " + symbol.getInternalIdentifier());
+
+		return null;
+	}
+
+	public Symbol visitCompositeLiteral(CompositeLiteralContext ctx) {
+		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
+
+		// Maak de nieuwe instantie aan
+		mv.visitTypeInsn(NEW, "Bramspr$" + symbol.getInternalIdentifier());
+		mv.visitInsn(DUP);
+		mv.visitVarInsn(ALOAD, 0);
+		mv.visitMethodInsn(INVOKESPECIAL, "testpkg/UserInput$" + symbol.getInternalIdentifier(), "<init>", "(Ltestpkg/UserInput;)V");
+
+		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
+			String fieldName = ctx.IDENTIFIER(i).getText();
+			String internalFieldName = symbol.getInternalFieldName(fieldName);
+
+			String fieldTypeInternalIdentifier = symbol.getFieldType(fieldName).getInternalIdentifier();
+
+			// Expressions lopen één achter.
+			visit(ctx.expression(i - 1));
+
+			// Nou, we weten nu precies wat het helemaal is en waar 't moet komen te staan. Schrijf maar in het veld!
+			mv.visitFieldInsn(PUTFIELD, "Bramspr$" + symbol.getInternalIdentifier(), internalFieldName, fieldTypeInternalIdentifier);
+		}
+
+		System.out.println("Internal name of newly declared type (" + symbol.getIdentifier() + "): " + symbol.getInternalIdentifier());
+
+		return null;
+	}
 }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Ik vind het fijn om nog wat whitespace onderaan te hebben; kan je lekker scrollen
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//

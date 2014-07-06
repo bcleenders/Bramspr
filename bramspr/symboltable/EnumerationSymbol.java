@@ -6,7 +6,7 @@ public class EnumerationSymbol extends TypeSymbol {
 	ArrayList<String> values;
 	
 	public EnumerationSymbol(String identifier, String[] values) {
-		super(identifier);
+		super(identifier, "I");
 
 		this.values = new ArrayList<String>();
 		
