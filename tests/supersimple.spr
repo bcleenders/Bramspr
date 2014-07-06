@@ -63,6 +63,17 @@
     putString(" = 10, 10\n");
 }
 
+{
+    putString("*** Testing fancy assignments ***\n");
+    w, x, y, z: integer;
+
+    w := (x := y := (z := 10 * 2) + 1)*2;
+    putInt(w); putString(" = w = 42\n");
+    putInt(x); putString(" = x = 21\n");
+    putInt(y); putString(" = y = 21\n");
+    putInt(z); putString(" = z = 20\n");
+}
+
 {   putString("*** Testing if/else structure **\n");
 
     if(1 <= 2) {

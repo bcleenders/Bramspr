@@ -216,6 +216,22 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+	
+	@Override
+	/**
+	 * Produces the JBC for a statement. A statement leaves no additional values on the stack.
+	 * @param ctx the context of the statement.
+	 */
+	public Symbol visitStatement(StatementContext ctx) {
+		if(ctx.assignment() != null) {
+			visitAssignment(ctx.assignment());
+			// Assignments leave something on the stack; statements should not do that so we have to POP it.
+			mv.visitInsn(POP);
+			return null;
+		} else {
+			return super.visitStatement(ctx);
+		}
+	}
 
 	/**
 	 * Geeft het Symbol terug van de assignable die hier gevisit wordt. Zet niets op de stack.
@@ -254,9 +270,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			}
 		}
 
-		// TODO dit moet weer weg om het een expression te maken!
-		mv.visitInsn(POP);
-
 		return null;
 	}
 
@@ -274,6 +287,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
+	/**
+	 * Produces the JBC to swap two assignables.
+	 * If the assignables are not primitive, references are swapped rather than the values.
+	 */
 	public Symbol visitSwap(SwapContext ctx) {
 		VariableSymbol x = (VariableSymbol) visit(ctx.assignable(0));
 		VariableSymbol y = (VariableSymbol) visit(ctx.assignable(1));
@@ -700,14 +717,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
+	/**
+	 * Produces the JBC for a function declaration. Because all functions are inlined for maximum performance, the declaration does not produce any JBC.
+	 * @return null for any input
+	 */
 	public Symbol visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// Functions are inlined, so the declaration does not produce new ASM code.
 		return null;
 	}
 
-	/*
-	 * Bij functies staat de declarationcontext in de parsetreeproperty.
-	 * Deze kunnen we visiten, om functie naar inline JBC om te zetten.
+	/**
+	 * Produces the JBC for a functioncall. Because functions are inlined, it uses the declaration for code generation.
 	 */
 	public Symbol visitFunctionCall(FunctionCallContext ctx) {
 		FunctionSymbol function = (FunctionSymbol) this.parseTreeproperty.get(ctx);
@@ -807,6 +827,14 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 	
+	/**
+	 * Visits a possible enumeration; this is either an fieldaccess or an enumeration.
+	 * If it is an enumeration, this function puts one int value on the stack.
+	 * If it is a field access <NOT IMPLEMENTED YET>
+	 * @param ctx either a field access or an enumeration.
+	 * @return
+	 */
+	@Override
 	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		Symbol symbol = this.parseTreeproperty.get(ctx);
 		
