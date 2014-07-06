@@ -1201,9 +1201,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Variabelen declareren in symboltable (eis #1)
 		for (int i = 0; i < identifiers.size(); i++) {
 			String variableName = identifiers.get(i).getText();
+			VariableSymbol symbol = new VariableSymbol(variableName, targetType, isConstant);
+			
+			// Add symbols to the parsetree: we'll need them later!
+			this.parseTreeproperty.put(ctx.IDENTIFIER(i), symbol);
 
 			try {
-				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, isConstant));
+				variableSymbolTable.declare(symbol);
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
@@ -1588,17 +1592,17 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
-		// Alle identifiers opvragen.
+		// Get a list of all the names of the variables
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 
-		// Kijken wat het bedoelde type is.
+		// And checkt what their type is
 		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
 		
 		for (int i = 0; i < identifiers.size(); i++) {
 			String variableName = identifiers.get(i).getText();
 			VariableSymbol symbol = new VariableSymbol(variableName, targetType, false);
 
-			// Voeg de symbols toe aan de parse tree; misschien woeten we ze nog gebruiken in de generator!
+			// Add symbols to the parsetree: we'll need them later!
 			this.parseTreeproperty.put(ctx.IDENTIFIER(i), symbol);
 			
 			try {

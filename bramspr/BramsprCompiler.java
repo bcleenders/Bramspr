@@ -152,7 +152,64 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
 			this.variables.add(symbol);
+
+			TypeSymbol type = symbol.getReturnType();
+
+			// Geef primitieve types hun standaard waarden.
+			if (type.equals(BramsprChecker.INTEGER)) {
+				// Integers beginnen bij 0
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.BOOLEAN)) {
+				// Booleans beginnen als false
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.CHARACTER)) {
+				// Characters beginnen als a
+				int charCode = (int) 'a';
+				mv.visitIntInsn(BIPUSH, charCode);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.STRING)) {
+				mv.visitLdcInsn("");
+				mv.visitVarInsn(ASTORE, symbol.getNumber());
+			}
 		}
+
+		// Vanaf hier mogen de variabelen gebruikt worden.
+		mv.visitLabel(openingLabel);
+
+		return null;
+	}
+
+	@Override
+	public Symbol visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+		Label openingLabel = new Label();
+		Label closingLabel = this.closingScopeLabels.peek();
+		
+		// Laten we iig alvast even kijken wat er op de stack moet komen te staan:
+		visit(ctx.expression()); // Stack: a ->
+
+		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
+			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
+			symbol.setOpenCloseLabels(openingLabel, closingLabel);
+			this.variables.add(symbol);
+			
+			TypeSymbol type = symbol.getReturnType();
+			int memAddr = symbol.getNumber();
+			
+			// Even kopiëren, anders zijn we het zo kwijt!
+			mv.visitInsn(DUP);
+			
+			if(this.isJBCPrimitive(type)) {
+				// Mooi; dit kunnen we assigned met ISTORE
+				mv.visitIntInsn(ISTORE, memAddr);
+			} else {
+				mv.visitIntInsn(ASTORE, memAddr);
+			}
+		}
+		
+		// Er stond er nog één op de stack... haal maar weg!
+		mv.visitInsn(POP);
 
 		// Vanaf hier mogen de variabelen gebruikt worden.
 		mv.visitLabel(openingLabel);

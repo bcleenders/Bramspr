@@ -8,7 +8,11 @@
     s1: string;
     s2: string;
 
-    x := 10 + 20;               // 30
+    putString("This should be empty: '");
+    putString(s);
+    putString("' (between the '')\n");
+
+    x := 10 + 20 + x;           // 30
     y := 20 + x + x;            // 80
     z := true | false;          // true
     c := 'a';                   // 'a'
@@ -46,6 +50,19 @@
     putString("\n");
 }
 
+{
+    putString("*** Testing instantiating declarations ***");
+    x: integer := 10;
+
+    putInt(x); putString(" = 10\n");
+
+    i,j: integer := x;
+    putInt(i);
+    putString(", ");
+    putInt(j);
+    putString(" = 10, 10\n");
+}
+
 {   putString("*** Testing if/else structure **\n");
 
     if(1 <= 2) {
@@ -80,13 +97,9 @@
     d := enumeration.day.WEDNESDAY;
     d := enumeration.day.THURSDAY;
 
-    monday: day;
-    wednesday: day;
-    monday2: day;
-
-    // monday := day.MONDAY;
-    // wednesday := day.WEDNESDAY;
-    // monday2 := day.MONDAY;
+    monday: day := enumeration.day.MONDAY;
+    wednesday: day := enumeration.day.WEDNESDAY;
+    monday2: day := enumeration.day.MONDAY;
 
     // if(monday =/= wednesday) {
     //     putString("Success: monday is not wednesday!");
