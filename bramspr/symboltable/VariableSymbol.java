@@ -19,6 +19,21 @@ public class VariableSymbol extends ValueYielderSymbol {
 		return this.getIdentifier();
 	}
 	
+	/** This symbol's id (size of the symboltable at the time of declaration) */
+	private int number;
+	
+	/** Set the number of this symbol (should be done by SymbolTable only) */
+	public void setNumber(int symNumber) {
+		this.number = symNumber;
+	}
+	
+	/** Set the scope id of this symbol (should be done by SymbolTable only) */
+	
+	/** @return {@link #number} */
+	public int getNumber() {
+		return this.number;
+	}
+	
 	/**
 	 * A label marking the start of this variable's scope.
 	 * This label is unique; if a variable is declared halfway a scope, the variable's scope is only half the surrounding scope.

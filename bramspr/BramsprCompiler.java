@@ -896,7 +896,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			// Hier kan een identifier gezien worden als variabele, de eerste IDENTIFIER is de naam van de functie.
 			for (int i = 1; i < ctx.expression().size(); i++) {
 				// Copied from assignmentExpression
-				int memAddr = this.parseTreeproperty.get(declaration.IDENTIFIER(i)).getNumber();
+				VariableSymbol varsymbol = (VariableSymbol) this.parseTreeproperty.get(declaration.IDENTIFIER(i));
+				int memAddr = varsymbol.getNumber();
 				visit(ctx.expression(i));
 				TypeSymbol type = function.parameters[i];
 				if (type.equals(BramsprChecker.INTEGER)) {

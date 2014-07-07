@@ -90,8 +90,6 @@ public class SymbolTable<S extends Symbol> {
 		}
 		this.symbols.get(signature).add(symbol);
 		
-		// Nummertjes bijhouden! Dit is het "id" van ieder symbol op een moment.
-		symbol.setNumber(this.size);
 		this.size++;
 	}
 

@@ -1,0 +1,14 @@
+b0:boolean := 2^10 = 1024; // true
+b1:boolean := 2^0 <= 2^1 <= 2^2 <= 2^3 <= 2^4;
+
+if(true) {
+    putString("Success (0)");
+} else {
+    putString("Fail (0)");
+}
+
+if(b0 & b1) {
+    putString("Success (1)");
+} else {
+    putString("Fail (2)");
+}

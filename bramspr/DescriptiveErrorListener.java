@@ -16,8 +16,9 @@ public class DescriptiveErrorListener extends BaseErrorListener {
 		if (sourceName != null && !sourceName.isEmpty()) {
 			sourceName = String.format("%s:%d:%d: ", sourceName, line, charPositionInLine);
 		}
-
-		System.err.println(sourceName + "line " + line + ":" + charPositionInLine + " " + msg);
+		else {
+			System.err.println("line " + line + ":" + charPositionInLine + " " + msg);
+		}
 		
 		errorCount++;
 	}
