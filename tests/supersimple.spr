@@ -5,44 +5,73 @@
     z: boolean;
     c: character;
     s: string;
+    s1: string;
+    s2: string;
 
-    x := 10 + 20;               // 30
+    putString("This should be empty: '");
+    putString(s);
+    putString("' (between the '')\n");
+
+    x := 10 + 20 + x;           // 30
     y := 20 + x + x;            // 80
-    putInt(y);
     z := true | false;          // true
     c := 'a';                   // 'a'
-    s := "Hello, world!";       // "Hello, world!"
+    s := "Hello, world!\n";     // "Hello, world!"
+    s1 := "bar";
+    s2 := "foo";
 
+    putString("x = "); putInt(x); putString(" = 30\n");
     x <> y;                     // y=30     x=80
+    putString("x = "); putInt(x); putString(" = 80\n");
 
-    putBool(true & false);
-    putString(" = false\n");
+    putBool(true & false); putString(" = false\n");
 
-    putBool(true | false);
-    putString(" = true\n");
+    putBool(true | false); putString(" = true\n");
 
-    putInt(2^5);
-    putString(" = 32\n");
+    putInt(2^5); putString(" = 32\n");
 
-    putBool(5 <= 4 <= 6 <= 2);
-    putString(" = false\n");
+    putBool(5 <= 4 <= 6 <= 2); putString(" = false\n");
 
-    putBool(1 <= 2 <= 2 <= 3);
-    putString(" = true\n");
+    putBool(1 <= 2 <= 2 <= 3); putString(" = true\n");
 
-    putBool(1 <= 2 <= 4 <= 3);
-    putString(" = false\n");
-
-    putString("x = ");
-    putInt(x);
-    putString("= 80\n");
+    putBool(1 <= 2 <= 4 <= 3); putString(" = false\n");
 
     x := x + y;
 
     putInt(x);
-    putString(" = 110");
+    putString(" = 110\n");
+
+    putString(s);
+
+    putString(s1); putChar(' '); putString(s2); putString("\n");
+    s1 <> s2;
+    putString(s1); putChar(' '); putString(s2); putString("\n");
 
     putString("\n");
+}
+
+{
+    putString("*** Testing instantiating declarations ***");
+    x: integer := 10;
+
+    putInt(x); putString(" = 10\n");
+
+    i,j: integer := x;
+    putInt(i);
+    putString(", ");
+    putInt(j);
+    putString(" = 10, 10\n");
+}
+
+{
+    putString("*** Testing fancy assignments ***\n");
+    w, x, y, z: integer;
+
+    w := (x := y := (z := 10 * 2) + 1)*2;
+    putInt(w); putString(" = w = 42\n");
+    putInt(x); putString(" = x = 21\n");
+    putInt(y); putString(" = y = 21\n");
+    putInt(z); putString(" = z = 20\n");
 }
 
 {   putString("*** Testing if/else structure **\n");
@@ -77,7 +106,23 @@
     d := enumeration.day.MONDAY;
     d := enumeration.day.TUESDAY;
     d := enumeration.day.WEDNESDAY;
-    d := enumeration.day.THURSDAY;
+    d := day.THURSDAY;
+
+    monday: day := day.MONDAY;
+    wednesday: day := day.WEDNESDAY;
+    monday2: day := day.MONDAY;
+
+    // if(monday =/= wednesday) {
+    //     putString("Success: monday is not wednesday!");
+    // } else {
+    //     putString("FAIL: monday = wednesday");
+    // }
+
+    // if(monday = monday2) {
+    //     putString("Success: monday is monday!");
+    // } else {
+    //     putString("FAIL: monday =/= monday");
+    // }
 }
 
 {
@@ -161,7 +206,8 @@
     putString("*** Testing user input ***\n");
     x: integer;
     putString("Please enter a number: ");
-    x := getInt();
+    // x := getInt();
+    x := 10;
     putString("\n");
     putString("You entered: ");
     putInt(x);
@@ -169,11 +215,35 @@
 
     b: boolean;
     putString("Please enter a boolean (true/false): ");
-    b := getBool();
+    // b := getBool();
+    b := true;
     putString("\n");
     putString("You entered: ");
     putBool(b);
     putString(".\n");
+}
+
+{
+    putString("*** Testing universal equals ***\n");
+    b1, b2: boolean := true;
+    b3: boolean := false;
+
+    if(b1 = b2) { putString("works 1\n"); } else { putString("FAILS 1\n"); }
+    if(b1 =/= b3) { putString("works 2\n"); } else { putString("FAILS 2\n"); }
+
+    if(b1 =/= b2) { putString("FAILS 3\n"); } else { putString("works 3\n"); }
+    if(b1 = b3) { putString("FAILS 4\n"); } else { putString("works 4\n"); }
+
+    s1, s2: string := "foo";
+    s3: string := "foo";
+    s4: string := "bar";
+
+    if(s1 = s2) { putString("works 1\n"); } else { putString("FAILS 1\n"); }
+    if(s1 = s3) { putString("works 2\n"); } else { putString("FAILS 2\n"); }
+    if(s1 =/= s4) { putString("works 3\n"); } else { putString("FAILS 3\n"); }
+
+    if(s1 =/= s2) { putString("FAILS 4\n"); } else { putString("works 4\n"); }
+    if(s1 = s4) { putString("FAILS 5\n"); } else { putString("works 5\n"); }
 }
 
 putString("\n\n");

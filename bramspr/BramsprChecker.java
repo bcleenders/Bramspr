@@ -106,18 +106,18 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public BramsprChecker() {
 
 	}
-	
+
 	public ParseTreeProperty<Symbol> check(ParseTree tree) {
 		this.parseTreeproperty = new ParseTreeProperty<Symbol>();
-		
+
 		this.visit(tree);
-		
-		if(this.getErrorCount() > 0) {
+
+		if (this.getErrorCount() > 0) {
 			System.err.println("There were " + this.getErrorCount() + " errors detected.");
 			System.err.println("Aborting compilation: cannot compile code with errors.");
 			System.exit(1); // Did not compile correctly
 		}
-		
+
 		return this.parseTreeproperty;
 	}
 
@@ -199,7 +199,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 
 	 * Calls the visit-method for the access-expression component, which actually does the context checking.
 	 * 
-	 * @param ctx The context object associated with the parse tree node of this access-on-assignable-expression.
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this access-on-assignable-expression.
 	 * @return The suit of the access-expression component.
 	 */
 	@Override
@@ -212,9 +213,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 
 	 * Calls the visit-method for the access-expression component, which actually does the context checking.
 	 * 
-	 * @param ctx The context object associated with the parse tree node of this access-on-atomic-expression.
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this access-on-atomic-expression.
 	 * @return The suit of the access-expression component.
-	 */	@Override
+	 */
+	@Override
 	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
 		return visit(ctx.accessExpression());
 	}
@@ -397,12 +400,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		return new Suit(arrayType, allConstant);
 	}
-	
-	
-     /**
+
+	/**
 	 * <li>the array-literal is of type <i>[n]type</i>, where <i>n</i> is the amount of elements and <i>type</i> is the type of the elements, or void when there
-	 * are no elements.*/
-	
+	 * are no elements.
+	 */
+
 	/**
 	 * Handles the context checking of an array-type-denoter.
 	 * 
@@ -411,7 +414,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @return A suit with as type <i>[n]type</i>, where <i>n</i> is the number and <i>type</i> is the type denoted by the other component.
 	 */
 	@Override
-	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) { 
+	public Suit visitArrayTypeDenoter(ArrayTypeDenoterContext ctx) {
 		int size = Integer.parseInt(ctx.NUMBER().getText());
 
 		TypeSymbol elementType = visit(ctx.typeDenoter()).type;
@@ -518,7 +521,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	/*
 	 * Een basicAssignable moet voldoen aan de volgende contextuele eisen:
 	 * 	1. Er moet of een variabele of een enumeration met de naam bestaan.
@@ -601,7 +604,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this composite-declaration.
 	 * @return A composite-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
-	 */	
+	 */
 	@Override
 	public Suit visitCompositeDeclaration(CompositeDeclarationContext ctx) {
 		String typeNaam = ctx.IDENTIFIER(0).getText();
@@ -761,7 +764,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this enumeration-declaration.
 	 * @return An enumeration-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
-	 */		
+	 */
 	@Override
 	public Suit visitEnumerationDeclaration(EnumerationDeclarationContext ctx) {
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
@@ -799,7 +802,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.VOID;
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	public Suit visitEnumeratedTypeDenoter(EnumeratedTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
@@ -859,7 +862,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	/*
 	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
@@ -883,13 +886,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("reference to non-existing field '" + fieldName + "' in enumeration type '" + enumName + "'.", ctx);
 			return Suit.ERROR;
 		}
-		
+
 		this.parseTreeproperty.put(ctx, enumSymbol);
 
 		return new Suit(enumSymbol, true);
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	/*
 	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
@@ -923,7 +926,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	/*
 	 * Een function call heeft de volgende contextbeperkingen:
 	 * - de functie moet gedeclareerd zijn;
@@ -987,14 +990,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage.toString(), ctx);
 			return Suit.ERROR;
 		}
-		
+
 		this.parseTreeproperty.put(ctx, functionSymbol);
 
 		// De functie bestaat. Corresponderende return suit teruggeven.
 		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
@@ -1201,9 +1204,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Variabelen declareren in symboltable (eis #1)
 		for (int i = 0; i < identifiers.size(); i++) {
 			String variableName = identifiers.get(i).getText();
+			VariableSymbol symbol = new VariableSymbol(variableName, targetType, isConstant);
+
+			// Add symbols to the parsetree: we'll need them later!
+			this.parseTreeproperty.put(ctx.IDENTIFIER(i), symbol);
 
 			try {
-				variableSymbolTable.declare(new VariableSymbol(variableName, targetType, isConstant));
+				variableSymbolTable.declare(symbol);
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
@@ -1286,7 +1293,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	/*
 	 * Een notExpression heeft één BOOLEAN argument, en geeft een BOOLEAN terug.
@@ -1406,7 +1413,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	//TODO javadoc
+	// TODO javadoc
 	@Override
 	/*Een possibleEnumerationExpression moet aan de volgende contextuele eisen voldoen:
 	 * Als er een variabele bestaat met de naam, dan gelden de volgende eisen:
@@ -1427,7 +1434,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		// Deze variabele bevat een record indien deze gedefinieerd is.
 		VariableSymbol prefix = this.variableSymbolTable.resolve(prefixName);
-		EnumerationSymbol prefixEnum = this.enumerationSymbolTable.resolve(prefixName);
+		EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 
 		// Kijken of dit een record is.
 		if (prefix != null) {
@@ -1436,7 +1443,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				String errorMessage = "Type " + prefix.getReturnType().getIdentifier() + " does not have fields.";
 
 				// Checken of er wel een enumeration is die het zou kunnen zijn:
-				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 					errorMessage = errorMessage + "Warning: please be aware that enumeration " + prefixName + " is currently being hidden by variable "
@@ -1458,7 +1464,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				 * bestaat dat wèl deze veldnaam bezit.
 				 */
 				String errorMessage = "Type " + compositeType.getIdentifier() + " does not contain field " + fieldName + ".";
-				EnumerationSymbol enumSymbol = this.enumerationSymbolTable.resolve(prefixName);
 				if (enumSymbol != null && enumSymbol.hasValue(fieldName)) {
 					// Er is inderdaad een gelijknamige enumeration met dit veld. Error message uitbreiden met hint.
 
@@ -1474,14 +1479,15 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return new Suit(compositeType.getFieldType(fieldName), prefix.isConstant());
 			}
 
-		} else if (prefixEnum != null) { // Er bestaat een enumeration met deze naam!
+		} else if (enumSymbol != null) { // Er bestaat een enumeration met deze naam!
 			// Eis #1.1
-			if (!prefixEnum.hasValue(fieldName)) {
+			if (!enumSymbol.hasValue(fieldName)) {
 				String errorMessage = "enumeration " + prefixName + " does not contain constant " + fieldName + ".";
 				reportError(errorMessage, ctx);
 				return Suit.ERROR;
 			} else {
-				return new Suit(prefixEnum, true);
+				this.parseTreeproperty.put(ctx, enumSymbol);
+				return new Suit(enumSymbol, true);
 			}
 		}
 
@@ -1588,26 +1594,26 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
-		// Alle identifiers opvragen.
+		// Get a list of all the names of the variables
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 
-		// Kijken wat het bedoelde type is.
+		// And checkt what their type is
 		TypeSymbol targetType = visit(ctx.typeDenoter()).type;
-		
+
 		for (int i = 0; i < identifiers.size(); i++) {
 			String variableName = identifiers.get(i).getText();
 			VariableSymbol symbol = new VariableSymbol(variableName, targetType, false);
 
-			// Voeg de symbols toe aan de parse tree; misschien woeten we ze nog gebruiken in de generator!
+			// Add symbols to the parsetree: we'll need them later!
 			this.parseTreeproperty.put(ctx.IDENTIFIER(i), symbol);
-			
+
 			try {
 				variableSymbolTable.declare(symbol);
 			} catch (SymbolTableException e) {
 				reportError(e.getMessage(), ctx);
 			}
 		}
-		
+
 		return Suit.VOID;
 	}
 
@@ -1742,8 +1748,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *            The context object associated with the parse tree node of this swap.
 	 * @return A swap has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
-	@Override	public Suit visitSwap(SwapContext ctx) {
-		//TODO: checken of hier geen constanten geswapt worden
+	@Override
+	public Suit visitSwap(SwapContext ctx) {
+		// TODO: checken of hier geen constanten geswapt worden
 		TypeSymbol rightType = visit(ctx.assignable(0)).type;
 		TypeSymbol leftType = visit(ctx.assignable(1)).type;
 
@@ -1773,7 +1780,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @return The suit of the universal-equals-to-expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
-
 		Suit leftSuit = visit(ctx.expression(0));
 		Suit rightSuit = visit(ctx.expression(1));
 
@@ -1781,6 +1787,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("a=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
 			return Suit.ERROR;
 		}
+
+		// When creating the JBC code, we want to know what types we're comparing!
+		this.parseTreeproperty.put(ctx, leftSuit.type);
 
 		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
 		return new Suit(BOOLEAN, bothConstant);
@@ -1813,6 +1822,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("a=/=b only works if a and b are the same type", ctx.expression(0), rightSuit.type.toString(), leftSuit.type.toString());
 			return Suit.ERROR;
 		}
+
+		// When creating the JBC code, we want to know what types we're comparing!
+		this.parseTreeproperty.put(ctx, leftSuit.type);
 
 		boolean bothConstant = leftSuit.isConstant && rightSuit.isConstant;
 		return new Suit(BOOLEAN, bothConstant);

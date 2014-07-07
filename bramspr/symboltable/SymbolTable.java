@@ -55,15 +55,6 @@ public class SymbolTable<S extends Symbol> {
 		this.currentLevel--;
 	}
 
-	/** Returns the current scope level. */
-	public int currentLevel() {
-		return this.currentLevel;
-	}
-	
-	public int getSize() {
-		return this.size;
-	}
-
 	/**
 	 * Enters an id together with an entry into this SymbolTable using the
 	 * current scope level. The entry's level is set to currentLevel().
@@ -80,7 +71,7 @@ public class SymbolTable<S extends Symbol> {
 			throw new SymbolTableException("Null symbols not allowed");
 		}
 
-		if (this.currentLevel() < 0) {
+		if (this.currentLevel < 0) {
 			throw new SymbolTableException("Bad scope: no scope opened");
 		}
 		
@@ -100,7 +91,7 @@ public class SymbolTable<S extends Symbol> {
 		this.symbols.get(signature).add(symbol);
 		
 		// Nummertjes bijhouden! Dit is het "id" van ieder symbol op een moment.
-		symbol.setNumber(this.getSize());
+		symbol.setNumber(this.size);
 		this.size++;
 	}
 

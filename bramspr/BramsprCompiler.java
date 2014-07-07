@@ -152,12 +152,85 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
 			this.variables.add(symbol);
+
+			TypeSymbol type = symbol.getReturnType();
+
+			// Geef primitieve types hun standaard waarden.
+			if (type.equals(BramsprChecker.INTEGER)) {
+				// Integers beginnen bij 0
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.BOOLEAN)) {
+				// Booleans beginnen als false
+				mv.visitInsn(ICONST_0);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.CHARACTER)) {
+				// Characters beginnen als a
+				int charCode = (int) 'a';
+				mv.visitIntInsn(BIPUSH, charCode);
+				mv.visitIntInsn(ISTORE, symbol.getNumber());
+			} else if (type.equals(BramsprChecker.STRING)) {
+				mv.visitLdcInsn("");
+				mv.visitVarInsn(ASTORE, symbol.getNumber());
+			}
 		}
 
 		// Vanaf hier mogen de variabelen gebruikt worden.
 		mv.visitLabel(openingLabel);
 
 		return null;
+	}
+
+	@Override
+	public Symbol visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+		Label openingLabel = new Label();
+		Label closingLabel = this.closingScopeLabels.peek();
+
+		// Laten we iig alvast even kijken wat er op de stack moet komen te staan:
+		visit(ctx.expression()); // Stack: a ->
+
+		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
+			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
+			symbol.setOpenCloseLabels(openingLabel, closingLabel);
+			this.variables.add(symbol);
+
+			TypeSymbol type = symbol.getReturnType();
+			int memAddr = symbol.getNumber();
+
+			// Even kopiëren, anders zijn we het zo kwijt!
+			mv.visitInsn(DUP);
+
+			if (this.isJBCPrimitive(type)) {
+				// Mooi; dit kunnen we assigned met ISTORE
+				mv.visitIntInsn(ISTORE, memAddr);
+			} else {
+				mv.visitIntInsn(ASTORE, memAddr);
+			}
+		}
+
+		// Er stond er nog één op de stack... haal maar weg!
+		mv.visitInsn(POP);
+
+		// Vanaf hier mogen de variabelen gebruikt worden.
+		mv.visitLabel(openingLabel);
+
+		return null;
+	}
+
+	@Override
+	/**
+	 * Produces the JBC for a statement. A statement leaves no additional values on the stack.
+	 * @param ctx the context of the statement.
+	 */
+	public Symbol visitStatement(StatementContext ctx) {
+		if (ctx.assignment() != null) {
+			visitAssignment(ctx.assignment());
+			// Assignments leave something on the stack; statements should not do that so we have to POP it.
+			mv.visitInsn(POP);
+			return null;
+		} else {
+			return super.visitStatement(ctx);
+		}
 	}
 
 	/**
@@ -187,50 +260,83 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 			TypeSymbol type = assignable.getReturnType();
 
-			if (type.equals(BramsprChecker.INTEGER)) {
-				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
-			} else if (type.equals(BramsprChecker.CHARACTER)) {
-				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
-			} else if (type.equals(BramsprChecker.BOOLEAN)) {
+			if (this.isJBCPrimitive(type)) {
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
 			} else if (type.equals(BramsprChecker.STRING)) {
 				mv.visitIntInsn(ASTORE, memaddr); // Stack: a ->
-			} else if (type instanceof EnumerationSymbol) {
-				// Enums are stored as ints
-				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
 			} else {
 				System.err.println("Invalid assignment; unimplemented type!");
 				System.exit(1);
 			}
 		}
 
-		// TODO dit moet weer weg om het een expression te maken!
-		mv.visitInsn(POP);
-
 		return null;
 	}
 
 	public Symbol visitAssignableExpression(AssignableExpressionContext ctx) {
-		Symbol variable = visit(ctx.assignable());
-		mv.visitIntInsn(ILOAD, variable.getNumber());
+		VariableSymbol variable = (VariableSymbol) visit(ctx.assignable());
+		TypeSymbol type = variable.getReturnType();
+
+		if (this.isJBCPrimitive(type)) {
+			mv.visitIntInsn(ILOAD, variable.getNumber());
+		} else if (variable.getReturnType().equals(BramsprChecker.STRING)) {
+			mv.visitIntInsn(ALOAD, variable.getNumber());
+		}
 
 		return null;
 	}
 
 	@Override
+	/**
+	 * Produces the JBC to swap two assignables.
+	 * If the assignables are not primitive, references are swapped rather than the values.
+	 */
 	public Symbol visitSwap(SwapContext ctx) {
-		Symbol x = visit(ctx.assignable(0));
-		Symbol y = visit(ctx.assignable(1));
+		VariableSymbol x = (VariableSymbol) visit(ctx.assignable(0));
+		VariableSymbol y = (VariableSymbol) visit(ctx.assignable(1));
+		TypeSymbol type = x.getReturnType();
 
 		int memAddrX = x.getNumber();
 		int memAddrY = y.getNumber();
 
-		// TODO testen wat gebeurt als er een string/record staat
-		// zowel voor "referenties" als voor fieldaccess; x.day <> y.day, maar ook firstName <> lastName
-		mv.visitIntInsn(ILOAD, memAddrX); // Stack: x ->
-		mv.visitIntInsn(ILOAD, memAddrY); // Stack: x y ->
-		mv.visitIntInsn(ISTORE, memAddrX); // Stack: x ->
-		mv.visitIntInsn(ISTORE, memAddrY); // Stack: ->
+		if (this.isJBCPrimitive(type)) { // Het is een int/bool/char/enum!
+			mv.visitIntInsn(ILOAD, memAddrX); // Stack: x ->
+			mv.visitIntInsn(ILOAD, memAddrY); // Stack: x y ->
+			mv.visitIntInsn(ISTORE, memAddrX); // Stack: x ->
+			mv.visitIntInsn(ISTORE, memAddrY); // Stack: ->
+		} else { // Het is een object (-achtig iets)
+			// Helaas, we kunnen niet gewoon de waarde pakken. Gelukkig kunnen we wel de referentie wisselen!
+			mv.visitIntInsn(ALOAD, memAddrX); // Stack: x ->
+			mv.visitIntInsn(ALOAD, memAddrY); // Stack: x y ->
+			mv.visitIntInsn(ASTORE, memAddrX); // Stack: x ->
+			mv.visitIntInsn(ASTORE, memAddrY); // Stack: ->
+		}
+
+		return null;
+	}
+	
+	@Override
+	public Symbol visitEqualsToExpression(EqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPEQ, arithmeticContexts);
+
+		return null;
+	}
+	
+	@Override
+	public Symbol visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPNE, arithmeticContexts);
 
 		return null;
 	}
@@ -293,9 +399,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	private void visitMultipleComparisonExpression(int comparisonOpCode, ArithmeticContext[] arithmeticContexts) {
 		int complementOpCode = 0;
 
-		// We switchen op basis van de negatie. We kunnen dus of normaal vergelijken, en dan de negatie pakken, of we vergelijken met de tegenovergestelde
-		// Opcode.
-		// (dit is de tweede optie; die spaart operaties!)
+		/* We switchen op basis van de negatie (springen bij een false). We kunnen dus of normaal vergelijken, en dan de negatie pakken, of we vergelijken met
+		 * de tegenovergestelde Opcode.
+		 * Dit is de tweede optie; die spaart een negatie, omdat deze impliciet is door de comparator om te draaien.
+		 * Dus i.p.v. if(! (a >b)) doen wij if(a <= b), omdat !(a>b) == a<=b
+		 */
 		switch (comparisonOpCode) {
 		case IF_ICMPEQ:
 			complementOpCode = IF_ICMPNE;
@@ -356,6 +464,80 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Opcodes.INTEGER });
 
 	}
+	
+	/**
+	 * Produces the JBC for comparing two non-int types (i.e. char, bool, enum or composite).
+	 * Leaves one boolean value on the stack.
+	 * @param ctx
+	 * @return
+	 */
+	public Symbol visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
+		TypeSymbol type = (TypeSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Put both expressions on the stack.
+		visit(ctx.expression(0));
+		visit(ctx.expression(1));
+		
+		if(this.isJBCPrimitive(type)) {
+			Label foundTrue = new Label();
+			mv.visitJumpInsn(IF_ICMPEQ, foundTrue);
+			// We didn't jump, so the values are not equal. Put false on the stack.
+			mv.visitInsn(ICONST_0);
+			Label end = new Label();
+			// Avoid putting both false and true on the stack: jump to the end.
+			mv.visitJumpInsn(GOTO, end);
+			mv.visitLabel(foundTrue);
+			// This is where we jump to if the values were equal!
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+			mv.visitInsn(ICONST_1);
+			mv.visitLabel(end);
+			mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
+		} else {
+			// Compare using the default Java libraries...
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Produces the JBC for comparing two non-int types (i.e. char, bool, enum or composite).
+	 * Leaves one boolean value on the stack.
+	 * @param ctx
+	 * @return
+	 */
+	public Symbol visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
+		TypeSymbol type = (TypeSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Put both expressions on the stack.
+		visit(ctx.expression(0));
+		visit(ctx.expression(1));
+		
+		if(this.isJBCPrimitive(type)) {
+			Label foundTrue = new Label();
+			mv.visitJumpInsn(IF_ICMPNE, foundTrue);
+			// We didn't jump, so the values are equal. Put false on the stack.
+			mv.visitInsn(ICONST_0);
+			Label end = new Label();
+			// Avoid putting both false and true on the stack: jump to the end.
+			mv.visitJumpInsn(GOTO, end);
+			mv.visitLabel(foundTrue);
+			// This is where we jump to if the values were unequal!
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+			mv.visitInsn(ICONST_1);
+			mv.visitLabel(end);
+			mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
+		} else {
+			// Compare using the default Java libraries...
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+			// Zet 1 (true) op de stack
+			mv.visitInsn(ICONST_1);
+			// XOR -> (true XOR a) == NOT a
+			mv.visitInsn(IXOR);
+		}
+		
+		return null;
+	}
 
 	public Symbol visitNumberLiteral(NumberLiteralContext ctx) {
 		int value = Integer.parseInt(ctx.getText());
@@ -378,9 +560,14 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	public Symbol visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
-
+		
+		// Ont-escape het maar:
+		character = character.replace("\\n", "\n"); // \n naar een echte linebreak
+		character = character.replace("\\\\", "\\"); // \\ -> \
+		character = character.replace("'\\''", "'''"); // \' -> '
+		
 		// 'c'.charAt(1) -> c
-		int charCode = Character.getNumericValue(character.charAt(1));
+		int charCode = (int) character.charAt(1);
 
 		mv.visitIntInsn(BIPUSH, charCode);
 
@@ -396,6 +583,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Vervang '\\' door '\', en \n door een linebreak
 		s = s.replace("\\\\", "\\").replace("\\n", "\n");
 
+		// Zet een pointer naar deze stringliteral op de stack
 		mv.visitLdcInsn(s);
 
 		return null;
@@ -634,14 +822,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
+	/**
+	 * Produces the JBC for a function declaration. Because all functions are inlined for maximum performance, the declaration does not produce any JBC.
+	 * @return null for any input
+	 */
 	public Symbol visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// Functions are inlined, so the declaration does not produce new ASM code.
 		return null;
 	}
 
-	/*
-	 * Bij functies staat de declarationcontext in de parsetreeproperty.
-	 * Deze kunnen we visiten, om functie naar inline JBC om te zetten.
+	/**
+	 * Produces the JBC for a functioncall. Because functions are inlined, it uses the declaration for code generation.
 	 */
 	public Symbol visitFunctionCall(FunctionCallContext ctx) {
 		FunctionSymbol function = (FunctionSymbol) this.parseTreeproperty.get(ctx);
@@ -672,7 +863,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitInsn(DUP);
 				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;");
 				mv.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V");
-				
+
 				if (ctx.IDENTIFIER().getText().equals("getString")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
 				} else if (ctx.IDENTIFIER().getText().equals("getInt")) {
@@ -739,5 +930,54 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// @formatter:on
 
 		return null;
+	}
+
+	/**
+	 * Visits a possible enumeration; this is either an fieldaccess or an enumeration. If it is an enumeration, this function puts one int value on the stack.
+	 * If it is a field access <NOT IMPLEMENTED YET>
+	 * 
+	 * @param ctx
+	 *            either a field access or an enumeration.
+	 * @return
+	 */
+	@Override
+	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
+		Symbol symbol = this.parseTreeproperty.get(ctx);
+
+		if (symbol instanceof EnumerationSymbol) {
+			EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
+			// in the format "day.MONDAY", monday is the second IDENTIFIER (thus index 1)
+			int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
+
+			mv.visitIntInsn(BIPUSH, fieldId);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tests whether a type is a JBC primitive. The JBC primitives are (as far as we're concerned) integer, boolean, character and enumerations. Note that
+	 * doubles etc. are not part of our language. These "primitives" are all stored as int values, and can be handled with the I functions, e.g. ISTORE, IADD,
+	 * etc.
+	 * 
+	 * @param type
+	 *            the type to be checked
+	 * @return true iff type is an enum, integer, character or boolean
+	 */
+	private boolean isJBCPrimitive(TypeSymbol type) {
+		if (type.equals(BramsprChecker.INTEGER)) {
+			return true;
+		}
+		if (type.equals(BramsprChecker.CHARACTER)) {
+			return true;
+		}
+		if (type.equals(BramsprChecker.BOOLEAN)) {
+			return true;
+		}
+		if (type instanceof EnumerationSymbol) {
+			return true;
+		}
+
+		return false;
 	}
 }
