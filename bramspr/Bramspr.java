@@ -12,7 +12,9 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import bramspr.symboltable.Symbol;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,7 +30,7 @@ public class Bramspr {
 	 * @param args
 	 *            The filename of the Bramspr-file that is to be compiled.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		System.out.println("**** Bramspr Compiler v0.1.0 ****");
 
 		String inputFile = null;
@@ -37,7 +39,13 @@ public class Bramspr {
 		}
 		InputStream is = System.in;
 		if (inputFile != null) {
-			is = new FileInputStream(inputFile);
+			try {
+				is = new FileInputStream(inputFile);
+			} catch (FileNotFoundException e) {
+				System.out.println("The Bramspr compiler could not find this file ('" + inputFile + "').");
+				System.out.println("Please ensure that this is a valid path, and that the compiler has read access.");
+				System.exit(1);
+			}
 		}
 		CharStream input = new UnbufferedCharStream(is);
 
@@ -61,9 +69,17 @@ public class Bramspr {
 		System.out.println("Finished compiling.");
 
 		String filename = "Bramspr.class";
-		System.out.println("Writing code to file '" + filename + "'.");
-		FileOutputStream fos = new FileOutputStream(filename);
-		fos.write(code);
-		fos.close();
+
+		try {
+			FileOutputStream fos = new FileOutputStream(filename);
+			fos.write(code);
+			fos.close();
+		} catch (IOException e) {
+			System.out.println("Could not write output to file '" + filename + "'.");
+			System.out.println("Exiting.");
+			System.exit(1);
+		}
+		
+		System.out.println("Finished compiling, execute 'java " + filename + "' to run the compiled file.");
 	}
 }

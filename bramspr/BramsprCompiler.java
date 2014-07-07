@@ -80,7 +80,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		System.out.println("*** FINISHED DUMP ***");
 	}
 
-	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) throws Exception {
+	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) {
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
