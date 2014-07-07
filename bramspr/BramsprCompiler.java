@@ -29,6 +29,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	TraceClassVisitor tcw;
 	FieldVisitor fv;
 	MethodVisitor mv;
+	
+	// Memory management!
+	/** The number of variables declared at any given time */
+	private int variablesDeclaredNow = 0;
+	private Stack<Integer> variablesDeclaredInLevel = new Stack<Integer>();
 
 	/**
 	 * Contains the last label of every scope we have visited. Grows one every time a scope is opened. These labels are used in the elements of
@@ -43,6 +48,34 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 */
 	private void openScope() {
 		this.closingScopeLabels.push(new Label());
+		
+		// We just opened a new scope; there are no variables declared in this one yet...
+		this.variablesDeclaredInLevel.add(0);
+	}
+	
+	/**
+	 * To be called when visiting a variableDeclaration (also the implicit ones: the parameters in a functioncall).
+	 * Sets the memory address of the parameter, and increases the counter.
+	 * @param variable
+	 * @return 
+	 * @ensure this.variablesDeclaredNow = old.variablesDeclaredNow + 1
+	 */
+	private int claimMemAddr(VariableSymbol variable) {
+		variable.setMemAddr(this.variablesDeclaredNow);
+		this.variablesDeclaredNow++;
+		int declaredInCurrentLevel = this.variablesDeclaredInLevel.pop();
+		this.variablesDeclaredInLevel.push(declaredInCurrentLevel + 1);
+		this.variables.add(variable);
+		
+		// This denotes the start of this variable's visibility.
+		Label openingLabel = new Label();
+		mv.visitLabel(openingLabel);
+		
+		// And this will denote the end of this variable's visibility.
+		Label closingLabel = this.closingScopeLabels.peek();
+		variable.setOpenCloseLabels(openingLabel, closingLabel);
+		
+		return variable.getMemAddr();
 	}
 
 	/**
@@ -51,6 +84,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	private void closeScope() {
 		Label closingLabel = this.closingScopeLabels.pop();
 		mv.visitLabel(closingLabel);
+		
+		// The variables are no longer needed: release their memoryaddresses
+		this.variablesDeclaredNow = this.variablesDeclaredNow - variablesDeclaredInLevel.pop();
 	}
 
 	/**
@@ -142,16 +178,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return code;
 	}
 
+	/**
+	 * Produces the JBC to declare a variable and assign it a default value (0, false, a or ""). Does not leave anything on the stack.
+	 */
 	public Symbol visitPureDeclaration(PureDeclarationContext ctx) {
 		// Alle IDENTIFIER's binnen deze declaration komen in de parsetreeproperty voor, en ze bevatten de VariableSymbol's
 
-		Label openingLabel = new Label();
-		Label closingLabel = this.closingScopeLabels.peek();
+		
+		
 
 		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
-			symbol.setOpenCloseLabels(openingLabel, closingLabel);
-			this.variables.add(symbol);
+			int memAddr = this.claimMemAddr(symbol);
 
 			TypeSymbol type = symbol.getReturnType();
 
@@ -159,29 +197,29 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			if (type.equals(BramsprChecker.INTEGER)) {
 				// Integers beginnen bij 0
 				mv.visitInsn(ICONST_0);
-				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
+				mv.visitIntInsn(ISTORE, memAddr);
 			} else if (type.equals(BramsprChecker.BOOLEAN)) {
 				// Booleans beginnen als false
 				mv.visitInsn(ICONST_0);
-				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
+				mv.visitIntInsn(ISTORE, memAddr);
 			} else if (type.equals(BramsprChecker.CHARACTER)) {
 				// Characters beginnen als a
 				int charCode = (int) 'a';
 				mv.visitIntInsn(BIPUSH, charCode);
-				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
+				mv.visitIntInsn(ISTORE, memAddr);
 			} else if (type.equals(BramsprChecker.STRING)) {
 				mv.visitLdcInsn("");
-				mv.visitVarInsn(ASTORE, symbol.getMemAddr());
+				mv.visitVarInsn(ASTORE, memAddr);
 			}
 		}
-
-		// Vanaf hier mogen de variabelen gebruikt worden.
-		mv.visitLabel(openingLabel);
 
 		return null;
 	}
 
 	@Override
+	/**
+	 * Produces the JBC to declare and assign a variable. Does not leave anything on the stack.
+	 */
 	public Symbol visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
 		Label openingLabel = new Label();
 		Label closingLabel = this.closingScopeLabels.peek();
@@ -191,13 +229,12 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
+			int memAddr = this.claimMemAddr(symbol);
 			symbol.setOpenCloseLabels(openingLabel, closingLabel);
-			this.variables.add(symbol);
 
 			TypeSymbol type = symbol.getReturnType();
-			int memAddr = symbol.getMemAddr();
 
-			// Even kopiëren, anders zijn we het zo kwijt!
+			// Copy it, otherwise it'll be gone!
 			mv.visitInsn(DUP);
 
 			if (this.isJBCPrimitive(type)) {
@@ -234,19 +271,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	/**
-	 * Geeft het Symbol terug van de assignable die hier gevisit wordt. Zet niets op de stack.
+	 * Returns the VariableSymbol of the assignable visited, but does not produce JBC.
 	 */
 	public Symbol visitBasicAssignable(BasicAssignableContext ctx) {
 		// Een basicAssignable is eigenlijk een variabele; geef deze maar terug (bevat mem. address en type info)
 		VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(ctx);
 
-		// System.out.println("var " + variable.getIdentifier() + " is at memory position " + variable.getNumber() + ".");
-
 		return variable;
 	}
 
 	/**
-	 * Let op; een assignment is een expression, en laat dus een waarde op de stack staan!
+	 * Assigns a value to one or more assignables. Also leaves that value on the stack, so it can be used in an expression.
 	 */
 	public Symbol visitAssignment(AssignmentContext ctx) {
 		// Zet de waarde van de expression op de stack (kunnen we zo gaan toewijzen)
@@ -897,7 +932,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			for (int i = 1; i < ctx.expression().size(); i++) {
 				// Copied from assignmentExpression
 				VariableSymbol varsymbol = (VariableSymbol) this.parseTreeproperty.get(declaration.IDENTIFIER(i));
-				int memAddr = varsymbol.getMemAddr();
+				int memAddr = this.claimMemAddr(varsymbol);
 				visit(ctx.expression(i));
 				TypeSymbol type = function.parameters[i];
 				if (type.equals(BramsprChecker.INTEGER)) {
