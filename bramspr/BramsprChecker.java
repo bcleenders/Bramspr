@@ -852,23 +852,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	/**
-	 * Handles the context checking of an equals-to-expression.
-	 * 
-	 * An equals-to-expression is confined to the following context rules:
-	 * 
-	 * <br>
-	 * <br>
-	 * <ol>
-	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
-	 * </ol>
-	 * 
-	 * @param ctx
-	 *            The context object associated with the parse tree node of this equals-to-expression.
-	 * @return The suit of the equals-to-expression or {@link Suit#ERROR} in case of a context error.
-	 */
+		/**
+		 * Handles the context checking of an Equals-to-Expression.
+		 * 
+		 * An Equals-to-Expression is confined to the following context rules:
+		 * 
+		 * <br>
+		 * <br>
+		 * <ol>
+		 * <li>all operands have to be of type <i>integer</i>;
+		 * <li>the expression yields a value of type <i>boolean</i>;
+		 * <li>the expression yields a constant value if all operands are constant.
+		 * </ol>
+		 * 
+		 * @param ctx
+		 *            The context object associated with the parse tree node of this Equals-to-Expression.
+		 * @return The suit of the Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
+		 */
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		boolean allConstant = true;
@@ -899,14 +899,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	// TODO javadoc
-	@Override
-	/*
-	 * Een explicitEnumerationExpression moet aan de volgende contexteisen voldoen:
-	 * 	1 Het enumeration type moet bestaan
-	 * 	2 Het enumeration type moet een veld met de gereferencete naam hebben
-	 * Het return type is een enumSymbol
+	/**
+	 * Handles the context checking of an explicit-Enumeration-Literal.
+	 * 
+	 * An explicit-Enumeration-Literal is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the denoted enumerated type must have been declared;
+	 * <li>the enumerated type must contain the referenced value;
+	 * <li>the explicit-Enumeration-Literal's suit is the constant denoted enumerated type.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this explicit-Enumeration-Literal.
+	 * @return The suit of the explicit-Enumeration-Literal or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext ctx) {
 		String enumName = ctx.IDENTIFIER(0).getText();
 		String fieldName = ctx.IDENTIFIER(1).getText();
@@ -929,15 +939,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(enumSymbol, true);
 	}
 
-	// TODO javadoc
-	@Override
-	/*
-	 * Een fieldAccessExpression moet aan de volgende contextuele eisen voldoen:
-	 * Als de assignable een record oplevert (type is een CompositeSymbol), dan gelden de volgende eisen:
-	 * 	1.1 Het type moet over een veld met de gerefereerde naam hebben.
-	 * 	1.2 Het return type is gelijk aan het type van dat veld.
-	 * 	1.3	De return waarde is constant als en slechts als het record constant is.
+	/**
+	 * Handles the context checking of a Field-access-Expression.
+	 * 
+	 * A Field-access-Expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the entity that is accessed must be of composite type;
+	 * <li>the composite type must contain the referenced field;
+	 * <li>the yielded value is of the field's type;
+	 * <li>the yielded value is constant if the accessed entity is constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this Field-access-Expression.
+	 * @return The suit of the Field-access-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
 		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
@@ -963,16 +983,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-	// TODO javadoc
-	/*
-	 * Een function call heeft de volgende contextbeperkingen:
-	 * - de functie moet gedeclareerd zijn;
-	 * - de types van de gegeven argumenten moeten overeenkomen met de typen van de parameters;
-	 * - (de argumenten moeten op dezelfde volgorde staan als de parameters stonden bij de declaratie.)
+	/**
+	 * Handles the context checking of a Function-Call.
 	 * 
-	 * De return suit van de functie komt, als alles klopt, overeen met die van de gedeclareerde 
-	 * functie (merk op dat dit de void-suit kan zijn). Zijn er echter fouten, dan wordt de
-	 * error-suit teruggegeven.
+	 * A Function-Call is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the denoted function must have been declared;
+	 * <li>the argument types must correspond to the types of the function parameters;
+	 * <li>the yielded value is of the function's type;
+	 * <li>the yielded value is constant if the function is constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this Function-Call.
+	 * @return The suit of the Function-Call or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitFunctionCall(FunctionCallContext ctx) {
@@ -1034,7 +1061,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(functionSymbol.getReturnType(), functionSymbol.isConstant());
 	}
 
-	// TODO javadoc
+	/**
+	 * Handles the context checking of a Function-Declaration.
+	 * 
+	 * A Function-call is confined to the following context rules: TODO: deze javadoc zit nog niet helemaal goed. Eerst formele beschrijving van de
+	 * contextbeperkingen verzinnen. <br>
+	 * <br>
+	 * <ol>
+	 * <li>a function with this signature must not have already been declared in this scope;
+	 * <li>the parameter types must have been declared;
+	 * <li>the function's return type becomes the type of the return expression, or {@link Suit#VOID} if there is no return expression;
+	 * <li>
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this Function-call.
+	 * @return The suit of the Function-call or {@link Suit#ERROR} in case of a context error.
+	 */
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// declaredReturnType is wat de functie zegt dat 'ie zal returnen; dit gaan we nog checken!
@@ -1091,21 +1134,21 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a greater-than-equals-to-expression.
+	 * Handles the context checking of a Greater-than-Equals-to-Expression.
 	 * 
-	 * A greater-than-equals-to-expression is confined to the following context rules:
+	 * A Greater-than-Equals-to-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
 	 * <ol>
 	 * <li>all operands have to be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
-	 * <li>the expression yields a constant value if all operands are constant.
+	 * <li>the yielded value is of type <i>boolean</i>;
+	 * <li>the yielded value is constant if all operands are constant.
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this greater-than-equals-to-expression.
-	 * @return The suit of the greater-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Greater-than-Equals-to-Expression.
+	 * @return The suit of the Greater-than-Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitGreaterThanEqualsToExpression(GreaterThanEqualsToExpressionContext ctx) {
@@ -1126,9 +1169,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a greater-than-expression.
+	 * Handles the context checking of a Greater-than-Expression.
 	 * 
-	 * A greater-than-expression is confined to the following context rules:
+	 * A Greater-than-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1139,8 +1182,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this greater-than-expression.
-	 * @return The suit of the greater-than-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Greater-than-Expression.
+	 * @return The suit of the Greater-than-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
@@ -1161,13 +1204,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an if-structure.
+	 * Handles the context checking of an If-Structure.
 	 * 
-	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method(s) of the block-structure(s).
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method(s) of the succeeding block-structure(s).
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this if-structure.
-	 * @return A if-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this If-Structure.
+	 * @return An If-Structure has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitIfStructure(IfStructureContext ctx) {
@@ -1192,9 +1235,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an instantiating-declaration.
+	 * Handles the context checking of an Instantiating-Declaration.
 	 * 
-	 * An instantiating-declaration is confined to the following context rules:
+	 * An Instantiating-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1210,8 +1253,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this instantiating-declaration.
-	 * @return An instantiating-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this Instantiating-Declaration.
+	 * @return An Instantiating-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
@@ -1257,9 +1300,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a multiplication-expression.
+	 * Handles the context checking of a Multiplication-Expression.
 	 * 
-	 * A multiplication-expression is confined to the following context rules:
+	 * A Multiplication-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1270,8 +1313,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this multiplication-expression.
-	 * @return The suit of the multiplication-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Multiplication-Expression.
+	 * @return The suit of the Multiplication-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitMultiplicationExpression(MultiplicationExpressionContext ctx) {
@@ -1292,9 +1335,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a not-equals-to-expression.
+	 * Handles the context checking of a Not-equals-to-Expression.
 	 * 
-	 * A not-equals-to-to-expression is confined to the following context rules:
+	 * A Not-equals-to-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1305,8 +1348,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this not-equals-to-expression.
-	 * @return The suit of the not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Not-equals-to-Expression.
+	 * @return The suit of the Not-equals-to-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
@@ -1330,12 +1373,24 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	// TODO javadoc
-	@Override
-	/*
-	 * Een notExpression heeft één BOOLEAN argument, en geeft een BOOLEAN terug.
-	 * De return value is constant als en slechts als het argument constant is.
+	/**
+	 * Handles the context checking of a Not-Expression.
+	 * 
+	 * A Not-Expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>the operand must be of type <i>boolean</i>;
+	 * <li>the yielded value is of value of type <i>boolean</i>;
+	 * <li>the yielded value is constant if the operand is constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this Not-Expression.
+	 * @return The suit of the Not-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitNotExpression(NotExpressionContext ctx) {
 		Suit argSuit = visit(ctx.expression());
 
@@ -1346,10 +1401,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a number-literal by returning a constant <i>integer</i>-suit.
+	 * Handles the context checking of a Number-Literal by returning a constant <i>integer</i>-suit.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this number-literal.
+	 *            The context object associated with the parse tree node of this Number-Literal.
 	 * @return A constant <i>integer</i>-suit.
 	 */
 	@Override
@@ -1358,9 +1413,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an or-expression.
+	 * Handles the context checking of an Or-Expression.
 	 * 
-	 * An or-expression is confined to the following context rules:
+	 * An Or-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1371,8 +1426,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this or-expression.
-	 * @return The suit of the or-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Or-Expression.
+	 * @return The suit of the Or-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitOrExpression(OrExpressionContext ctx) {
@@ -1394,12 +1449,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a parenthesis-expression.
+	 * Handles the context checking of a Parenthesis-Expression.
 	 * 
 	 * Visits the enclosed expression and passes on its suit.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this parenthesis-expression.
+	 *            The context object associated with the parse tree node of this Parenthesis-Expression.
 	 * @return The suit of the enclosed expression.
 	 */
 	@Override
@@ -1408,9 +1463,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a plus-minus-expression.
+	 * Handles the context checking of a Plus-minus-Expression.
 	 * 
-	 * A plus-minus-expression is confined to the following context rules:
+	 * A Plus-minus-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1421,8 +1476,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this plus-minus-expression.
-	 * @return The suit of the plus-minus-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Plus-minus-Expression.
+	 * @return The suit of the Plus-minus-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
@@ -1450,20 +1505,25 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return new Suit(BOOLEAN, allConstant);
 	}
 
-	// TODO javadoc
-	@Override
-	/*Een possibleEnumerationExpression moet aan de volgende contextuele eisen voldoen:
-	 * Als er een variabele bestaat met de naam, dan gelden de volgende eisen:
-	 * 	1.1 De variabele moet een record (composite) bevatten.
-	 * 	1.2 Het type van deze composite moet over een veld met de gerefereerde naam hebben.
-	 * 	1.3 Het return type is gelijk aan het type van dat veld.
-	 * 	1.4	De return waarde is constant als en slechts als het record constant is.
-	 * Als de assignable geen record oplevert maar wél een enumeration (impliciete referentie naar enumeration), dan gelden de volgende eisen:
-	 * 	2.1 Het enumeration type moet een veld met de gerefereerde naam hebben.
-	 * 	2.2 Het return type is een EnumerationSymbol
-	 *  2.3 Het return type is constant
-	 * Als een assignable geen record en geen enumeration, dan is het geen geldige expressie.
+	/**
+	 * Handles the context checking of a potential-Enumeration-Literal.
+	 * 
+	 * A potential-Enumeration-Literal can, depending on the context, indeed be an enumeration literal, or actually a field access on a variable of composite
+	 * type. This method first tries to resolve the left-hand identifier in {@link #variableSymbolTable}. If that gives no result, it resolves it in
+	 * {@link #enumerationSymbolTable}.
+	 * 
+	 * If the identifier turns out to be declared as a variable, this method checks the context rules for a Field-access-Expression (see
+	 * {@link #visitFieldAccessExpression visitFieldAccessExpression}).
+	 * 
+	 * If the identifier matches an enumerated type instead, the method checks the context rules as for an explicit-Enumeration-Literal (see
+	 * {@link #visitExplicitEnumerationLiteral visitExplicitEnumerationLiteral}).
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this potential-Enumeration-Literal.
+	 * @return The suit of the potential-Enumeration-Literal or {@link Suit#ERROR} in case of a context error.
+	 * @see #visitExplicitEnumerationLiteral(ExplicitEnumerationLiteralContext)
 	 */
+	@Override
 	public Suit visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		// Return suite van de expression opvragen.
 		String prefixName = ctx.IDENTIFIER(0).getText();
@@ -1533,9 +1593,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	} // Vanaf hier alleen de nutteloze functies die door de super al worden afgehandeld (verwijderen voor testen)
 
 	/**
-	 * Handles the context checking of a power-expression.
+	 * Handles the context checking of a Power-Expression.
 	 * 
-	 * A power-expression is confined to the following context rules:
+	 * A Power-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1546,8 +1606,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this power-expression.
-	 * @return The suit of the power-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Power-Expression.
+	 * @return The suit of the Power-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitPowerExpression(PowerExpressionContext ctx) {
@@ -1578,6 +1638,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 *            The context object associated with the top node of the program's parse tree.
 	 * @return A program has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
+	@Override
 	public Suit visitProgram(ProgramContext ctx) {
 		this.openScope();
 		try {
@@ -1610,9 +1671,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a pure-declaration.
+	 * Handles the context checking of a Pure-Declaration.
 	 * 
-	 * A pure-declaration is confined to the following context rules:
+	 * A Pure-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1626,8 +1687,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this pure-declaration.
-	 * @return A pure-declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this Pure-Declaration.
+	 * @return A Pure-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
@@ -1655,22 +1716,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a sign-expression.
+	 * Handles the context checking of a Sign-Expression.
 	 * 
-	 * A sign-expression is confined to the following context rules:
+	 * A Sign-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
 	 * <ol>
 	 * <li>the operand must be of type <i>integer</i>;
-	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a value of type <i>integer</i>;
 	 * <li>the expression yields a constant value if the operand is constant.
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this sign-expression.
-	 * @return The suit of the sign-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Sign-Expression.
+	 * @return The suit of the Sign-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitSignExpression(SignExpressionContext ctx) {
 		Suit expressionSuit = visit(ctx.arithmetic());
 
@@ -1683,9 +1745,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a smaller-than-equals-to-expression.
+	 * Handles the context checking of a Smaller-than-Equals-to-Expression.
 	 * 
-	 * A smaller-than-equals-to-expression is confined to the following context rules:
+	 * A Smaller-than-Equals-to-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1696,8 +1758,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this smaller-than-equals-to-expression.
-	 * @return The suit of the smaller-than-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Smaller-than-Equals-to-Expression.
+	 * @return The suit of the Smaller-than-Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitSmallerThanEqualsToExpression(SmallerThanEqualsToExpressionContext ctx) {
@@ -1718,9 +1780,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a smaller-than-expression.
+	 * Handles the context checking of a Smaller-than-Expression.
 	 * 
-	 * A smaller-than-expression is confined to the following context rules:
+	 * A Smaller-than-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1731,8 +1793,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this smaller-than-expression.
-	 * @return The suit of the smaller-than-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Smaller-than-Expression.
+	 * @return The suit of the Smaller-than-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitSmallerThanExpression(SmallerThanExpressionContext ctx) {
@@ -1753,10 +1815,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a string-literal by returning a constant <i>string</i>-suit.
+	 * Handles the context checking of a String-Literal by returning a constant <i>string</i>-suit.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this string-literal.
+	 *            The context object associated with the parse tree node of this String-Literal.
 	 * @return A constant <i>string</i>-suit.
 	 */
 	@Override
@@ -1765,9 +1827,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a swap.
+	 * Handles the context checking of a Swap.
 	 * 
-	 * A swap is confined to the following context rules:
+	 * A Swap is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1782,17 +1844,29 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * rules.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this swap.
-	 * @return A swap has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this Swap.
+	 * @return A Swap has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitSwap(SwapContext ctx) {
-		// TODO: checken of hier geen constanten geswapt worden
-		TypeSymbol rightType = visit(ctx.assignable(0)).type;
-		TypeSymbol leftType = visit(ctx.assignable(1)).type;
+		Suit leftHandSuit = visit(ctx.assignable(0));
+		Suit rightHandSuit = visit(ctx.assignable(1));
 
-		if (!rightType.equals(leftType)) {
-			this.reportError("swap cannot swap variables with different types", ctx.assignable(1), leftType.getIdentifier(), rightType.getIdentifier());
+		if (!rightHandSuit.type.equals(leftHandSuit.type)) {
+			this.reportError("Can't swap variables with different types.", ctx.assignable(1), leftHandSuit.type.getIdentifier(),
+					rightHandSuit.type.getIdentifier());
+			return Suit.ERROR;
+		}
+
+		if (leftHandSuit.isConstant) {
+			String errorMessage = ctx.assignable(0).getText() + " is a constant variable. Only non-constant variables can be swapped.";
+			reportError(errorMessage, ctx.assignable(0));
+			return Suit.ERROR;
+		}
+
+		if (rightHandSuit.isConstant) {
+			String errorMessage = ctx.assignable(1).getText() + " is a constant variable. Only non-constant variables can be swapped.";
+			reportError(errorMessage, ctx.assignable(1));
 			return Suit.ERROR;
 		}
 
@@ -1800,9 +1874,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a universal-equals-to-expression.
+	 * Handles the context checking of a universal-Equals-to-Expression.
 	 * 
-	 * A universal-equals-to-expression is confined to the following context rules:
+	 * A universal-Equals-to-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1813,9 +1887,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this universal-equals-to-expression.
-	 * @return The suit of the universal-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this universal-Equals-to-Expression.
+	 * @return The suit of the universal-Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
+	@Override
 	public Suit visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
 		Suit leftSuit = visit(ctx.expression(0));
 		Suit rightSuit = visit(ctx.expression(1));
@@ -1833,9 +1908,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a universal-not-equals-to-expression.
+	 * Handles the context checking of a universal-Not-equals-to-Expression.
 	 * 
-	 * A universal-not-equals-to-expression is confined to the following context rules:
+	 * A universal-Not-equals-to-Expression is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1846,8 +1921,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this universal-not-equals-to-expression.
-	 * @return The suit of the universal-not-equals-to-expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this universal-Not-equals-to-Expression.
+	 * @return The suit of the universal-Not-equals-to-Expression or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
 	public Suit visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
@@ -1868,12 +1943,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a while-structure.
+	 * Handles the context checking of a While-Structure.
 	 * 
-	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method of the block-structure.
+	 * Checks if the condition-expression yields a <i>boolean</i> value and then calls the visit-method of the succeeding Block-Structure.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this while-structure.
+	 *            The context object associated with the parse tree node of this While-Structure.
 	 * @return A while-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
