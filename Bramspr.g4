@@ -12,26 +12,26 @@ blockStructure:     LEFT_BRACE statement* RIGHT_BRACE;                          
 ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure (ELSE blockStructure)?; // done
 whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;                     // done
 
-statement : structure
-          | declaration SEMICOLON
-          | assignment SEMICOLON
-          | swap SEMICOLON
+statement : structure                   // (implicit)
+          | declaration SEMICOLON       // (implicit)
+          | assignment SEMICOLON        //
+          | swap SEMICOLON              //
           | functionCall SEMICOLON
           ;
 
 declaration: compositeDeclaration
-           | functionDeclaration
-           | enumerationDeclaration
-           | variableDeclaration
+           | functionDeclaration        //
+           | enumerationDeclaration     // (does not produce JBC)
+           | variableDeclaration        //
            ;
 
-variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureDeclaration
-           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration
+variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureDeclaration           //
+           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration  //
            ; 
 
 enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;   // (no ASM needed) 
 
-functionDeclaration:    FUNCTION IDENTIFIER 
+functionDeclaration:    FUNCTION IDENTIFIER                                                                // (JBC produced by calling function)
                         LEFT_PARENTHESIS 
                            (IDENTIFIER COLON typeDenoter (COMMA IDENTIFIER COLON typeDenoter)*)? 
                         RIGHT_PARENTHESIS 
@@ -58,9 +58,9 @@ swap:       assignable SWAP assignable;                                         
 expression: NOT expression                                                  # notExpression                 //
           | arithmetic                                                      # arithmeticExpression          // (impliciet)
           | arithmetic (EQUALS_TO arithmetic)+                              # equalsToExpression            //
-          | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression
-          | expression EQUALS_TO expression                                 # universalEqualsToExpression
-          | expression NOT_EQUALS_TO expression                             # universalNotEqualsToExpression
+          | arithmetic (NOT_EQUALS_TO arithmetic)+                          # notEqualsToExpression         //
+          | expression EQUALS_TO expression                                 # universalEqualsToExpression    //
+          | expression NOT_EQUALS_TO expression                             # universalNotEqualsToExpression //
           | arithmetic EQUALS_TO arithmetic PLUSMINUS arithmetic            # plusMinusExpression           //       
           | arithmetic (GREATER_THAN arithmetic)+                           # greaterThanExpression         //
           | arithmetic (GREATER_THAN_EQUALS_TO arithmetic)+                 # greaterThanEqualsToExpression //          
