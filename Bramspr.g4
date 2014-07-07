@@ -25,8 +25,8 @@ declaration: compositeDeclaration
            | variableDeclaration        //
            ;
 
-variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureDeclaration           //
-           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration  //
+variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureVariableDeclaration           //
+           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingVariableDeclaration  //
            ; 
 
 enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;   // (no ASM needed) 

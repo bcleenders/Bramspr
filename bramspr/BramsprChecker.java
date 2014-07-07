@@ -36,7 +36,7 @@ import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
 import bramspr.BramsprParser.BasicAssignableContext;
 import bramspr.BramsprParser.IfStructureContext;
-import bramspr.BramsprParser.InstantiatingDeclarationContext;
+import bramspr.BramsprParser.InstantiatingVariableDeclarationContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
 import bramspr.BramsprParser.NotEqualsToExpressionContext;
 import bramspr.BramsprParser.NotExpressionContext;
@@ -47,7 +47,7 @@ import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PotentialEnumerationLiteralContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
-import bramspr.BramsprParser.PureDeclarationContext;
+import bramspr.BramsprParser.PureVariableDeclarationContext;
 import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
@@ -1236,9 +1236,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Instantiating-Declaration.
+	 * Handles the context checking of an instantiating-Variable-Declaration.
 	 * 
-	 * An Instantiating-Declaration is confined to the following context rules:
+	 * An instantiating-Variable-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1254,11 +1254,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Instantiating-Declaration.
-	 * @return An Instantiating-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this instantiating-Variable-Declaration.
+	 * @return An instantiating-Variable-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
-	public Suit visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+	public Suit visitInstantiatingVariableDeclaration(InstantiatingVariableDeclarationContext ctx) {
 		boolean isConstant = (ctx.CONSTANT() != null);
 
 		// Even kijken wat wordt teruggegeven door de expression
@@ -1679,9 +1679,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a Pure-Declaration.
+	 * Handles the context checking of a pure-Variable-Declaration.
 	 * 
-	 * A Pure-Declaration is confined to the following context rules:
+	 * A pure-Variable-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -1695,11 +1695,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Pure-Declaration.
-	 * @return A Pure-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this pure-Variable-Declaration.
+	 * @return A pure-Variable-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
-	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
+	public Suit visitPureVariableDeclaration(PureVariableDeclarationContext ctx) {
 		// Get a list of all the names of the variables
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 

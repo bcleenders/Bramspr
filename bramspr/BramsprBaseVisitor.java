@@ -34,7 +34,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPureVariableDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -186,7 +186,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInstantiatingVariableDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

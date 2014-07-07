@@ -34,12 +34,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#pureDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx);
+	void enterPureDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#pureDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx);
+	void exitPureDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#additionExpression}.
@@ -243,12 +243,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#instantiatingDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
+	void enterInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#instantiatingDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
+	void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#universalNotEqualsToExpression}.

@@ -30,7 +30,7 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx);
+	T visitPureVariableDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#additionExpression}.
@@ -163,7 +163,7 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx);
+	T visitInstantiatingVariableDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#universalNotEqualsToExpression}.

@@ -43,13 +43,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
+	@Override public void enterPureDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitPureDeclaration(@NotNull BramsprParser.PureDeclarationContext ctx) { }
+	@Override public void exitPureDeclaration(@NotNull BramsprParser.PureVariableDeclarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -290,13 +290,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx) { }
+	@Override public void enterInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingDeclarationContext ctx) { }
+	@Override public void exitInstantiatingDeclaration(@NotNull BramsprParser.InstantiatingVariableDeclarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

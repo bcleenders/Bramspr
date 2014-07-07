@@ -211,7 +211,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * @param ctx
 	 *            the node in the parsetree representing the pureDeclaration
 	 */
-	public Symbol visitPureDeclaration(PureDeclarationContext ctx) {
+	public Symbol visitPureVariableDeclaration(PureVariableDeclarationContext ctx) {
 		// Alle IDENTIFIER's binnen deze declaration komen in de parsetreeproperty voor, en ze bevatten de VariableSymbol's
 
 		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
@@ -248,7 +248,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * Produces the JBC to declare a variable and immediately assign it a value. Does not leave anything on the stack.
 	 * @param ctx the node in the parsetree representing the instantiatingDeclaration
 	 */
-	public Symbol visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+	public Symbol visitInstantiatingVariableDeclaration(InstantiatingVariableDeclarationContext ctx) {
 		Label openingLabel = new Label();
 		Label closingLabel = this.closingScopeLabels.peek();
 

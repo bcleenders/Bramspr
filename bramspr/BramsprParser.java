@@ -554,7 +554,7 @@ public class BramsprParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class PureDeclarationContext extends VariableDeclarationContext {
+	public static class PureVariableDeclarationContext extends VariableDeclarationContext {
 		public TypeDenoterContext typeDenoter() {
 			return getRuleContext(TypeDenoterContext.class,0);
 		}
@@ -567,7 +567,7 @@ public class BramsprParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(BramsprParser.COMMA, i);
 		}
-		public PureDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
+		public PureVariableDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPureDeclaration(this);
@@ -578,11 +578,11 @@ public class BramsprParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPureDeclaration(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPureVariableDeclaration(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class InstantiatingDeclarationContext extends VariableDeclarationContext {
+	public static class InstantiatingVariableDeclarationContext extends VariableDeclarationContext {
 		public TypeDenoterContext typeDenoter() {
 			return getRuleContext(TypeDenoterContext.class,0);
 		}
@@ -600,7 +600,7 @@ public class BramsprParser extends Parser {
 			return getToken(BramsprParser.COMMA, i);
 		}
 		public TerminalNode CONSTANT() { return getToken(BramsprParser.CONSTANT, 0); }
-		public InstantiatingDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
+		public InstantiatingVariableDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterInstantiatingDeclaration(this);
@@ -611,7 +611,7 @@ public class BramsprParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitInstantiatingDeclaration(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitInstantiatingVariableDeclaration(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -624,7 +624,7 @@ public class BramsprParser extends Parser {
 			setState(126);
 			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
 			case 1:
-				_localctx = new PureDeclarationContext(_localctx);
+				_localctx = new PureVariableDeclarationContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(100); match(IDENTIFIER);
@@ -648,7 +648,7 @@ public class BramsprParser extends Parser {
 				break;
 
 			case 2:
-				_localctx = new InstantiatingDeclarationContext(_localctx);
+				_localctx = new InstantiatingVariableDeclarationContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(111);
