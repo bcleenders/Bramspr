@@ -353,12 +353,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#numberLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
+	void enterNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#numberLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
+	void exitNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#andExpression}.

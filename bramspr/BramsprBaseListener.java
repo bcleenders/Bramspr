@@ -420,13 +420,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
+	@Override public void enterNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { }
+	@Override public void exitNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

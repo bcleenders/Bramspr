@@ -233,7 +233,7 @@ public interface BramsprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx);
+	T visitIntegerLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link BramsprParser#andExpression}.

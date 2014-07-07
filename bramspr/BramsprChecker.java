@@ -40,7 +40,7 @@ import bramspr.BramsprParser.InstantiatingDeclarationContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
 import bramspr.BramsprParser.NotEqualsToExpressionContext;
 import bramspr.BramsprParser.NotExpressionContext;
-import bramspr.BramsprParser.NumberLiteralContext;
+import bramspr.BramsprParser.IntegerLiteralContext;
 import bramspr.BramsprParser.OrExpressionContext;
 import bramspr.BramsprParser.ParenthesisExpressionContext;
 import bramspr.BramsprParser.PlusMinusExpressionContext;
@@ -1401,14 +1401,14 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a Number-Literal by returning a constant <i>integer</i>-suit.
+	 * Handles the context checking of a Integer-Literal by returning a constant <i>integer</i>-suit.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Number-Literal.
+	 *            The context object associated with the parse tree node of this Integer-Literal.
 	 * @return A constant <i>integer</i>-suit.
 	 */
 	@Override
-	public Suit visitNumberLiteral(NumberLiteralContext ctx) {
+	public Suit visitIntegerLiteral(IntegerLiteralContext ctx) {
 		return new Suit(INTEGER, true);
 	}
 

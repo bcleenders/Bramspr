@@ -266,7 +266,7 @@ public class BramsprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitNumberLiteral(@NotNull BramsprParser.NumberLiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIntegerLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

@@ -101,7 +101,7 @@ accessExpression : DOT IDENTIFIER                                           # fi
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS
             ;
 
-literal : NUMBER                                                                                                          # numberLiteral                   //
+literal : NUMBER                                                                                                          # integerLiteral                   //
         | CHARACTER                                                                                                       # characterLiteral                //
         | STRING                                                                                                          # stringLiteral                   //
         | BOOLEAN                                                                                                         # booleanLiteral                  //

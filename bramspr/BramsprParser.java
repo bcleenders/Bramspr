@@ -2842,9 +2842,9 @@ public class BramsprParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class NumberLiteralContext extends LiteralContext {
+	public static class IntegerLiteralContext extends LiteralContext {
 		public TerminalNode NUMBER() { return getToken(BramsprParser.NUMBER, 0); }
-		public NumberLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
+		public IntegerLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNumberLiteral(this);
@@ -2855,7 +2855,7 @@ public class BramsprParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNumberLiteral(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIntegerLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2868,7 +2868,7 @@ public class BramsprParser extends Parser {
 			setState(403);
 			switch (_input.LA(1)) {
 			case NUMBER:
-				_localctx = new NumberLiteralContext(_localctx);
+				_localctx = new IntegerLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(366); match(NUMBER);

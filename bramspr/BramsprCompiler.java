@@ -539,7 +539,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	public Symbol visitNumberLiteral(NumberLiteralContext ctx) {
+	public Symbol visitIntegerLiteral(IntegerLiteralContext ctx) {
 		int value = Integer.parseInt(ctx.getText());
 		mv.visitIntInsn(BIPUSH, value);
 		return null;
