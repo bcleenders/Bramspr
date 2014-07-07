@@ -31,7 +31,7 @@ public class Bramspr {
 	 *            The filename of the Bramspr-file that is to be compiled.
 	 */
 	public static void main(String[] args) {
-		System.out.println("**** Bramspr Compiler v0.1.0 ****");
+		System.out.println("**** Bramspr Compiler ****");
 
 		InputStream is = System.in;
 		String outputFile = "Bramspr.class";
@@ -110,6 +110,6 @@ public class Bramspr {
 			System.exit(1);
 		}
 
-		System.out.println("Finished compiling, execute 'java " + outputFile.replace(".class", "") + "' to run the compiled file.");
+		System.out.println("Finished compiling, execute 'java " + className + "' to run the compiled file.");
 	}
 }
