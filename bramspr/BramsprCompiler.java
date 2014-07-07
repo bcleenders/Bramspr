@@ -314,6 +314,32 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
+	
+	@Override
+	public Symbol visitEqualsToExpression(EqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPEQ, arithmeticContexts);
+
+		return null;
+	}
+	
+	@Override
+	public Symbol visitNotEqualsToExpression(NotEqualsToExpressionContext ctx) {
+		// Maak een lijstje met alle "parameters"
+		ArithmeticContext[] arithmeticContexts = new ArithmeticContext[ctx.arithmetic().size()];
+		for (int i = 0; i < ctx.arithmetic().size(); i++) {
+			arithmeticContexts[i] = ctx.arithmetic(i);
+		}
+
+		visitMultipleComparisonExpression(IF_ICMPNE, arithmeticContexts);
+
+		return null;
+	}
 
 	@Override
 	public Symbol visitGreaterThanExpression(GreaterThanExpressionContext ctx) {
@@ -437,6 +463,80 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitLabel(endOfExpression);
 		mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Opcodes.INTEGER });
 
+	}
+	
+	/**
+	 * Produces the JBC for comparing two non-int types (i.e. char, bool, enum or composite).
+	 * Leaves one boolean value on the stack.
+	 * @param ctx
+	 * @return
+	 */
+	public Symbol visitUniversalEqualsToExpression(UniversalEqualsToExpressionContext ctx) {
+		TypeSymbol type = (TypeSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Put both expressions on the stack.
+		visit(ctx.expression(0));
+		visit(ctx.expression(1));
+		
+		if(this.isJBCPrimitive(type)) {
+			Label foundTrue = new Label();
+			mv.visitJumpInsn(IF_ICMPEQ, foundTrue);
+			// We didn't jump, so the values are not equal. Put false on the stack.
+			mv.visitInsn(ICONST_0);
+			Label end = new Label();
+			// Avoid putting both false and true on the stack: jump to the end.
+			mv.visitJumpInsn(GOTO, end);
+			mv.visitLabel(foundTrue);
+			// This is where we jump to if the values were equal!
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+			mv.visitInsn(ICONST_1);
+			mv.visitLabel(end);
+			mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
+		} else {
+			// Compare using the default Java libraries...
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Produces the JBC for comparing two non-int types (i.e. char, bool, enum or composite).
+	 * Leaves one boolean value on the stack.
+	 * @param ctx
+	 * @return
+	 */
+	public Symbol visitUniversalNotEqualsToExpression(UniversalNotEqualsToExpressionContext ctx) {
+		TypeSymbol type = (TypeSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Put both expressions on the stack.
+		visit(ctx.expression(0));
+		visit(ctx.expression(1));
+		
+		if(this.isJBCPrimitive(type)) {
+			Label foundTrue = new Label();
+			mv.visitJumpInsn(IF_ICMPNE, foundTrue);
+			// We didn't jump, so the values are equal. Put false on the stack.
+			mv.visitInsn(ICONST_0);
+			Label end = new Label();
+			// Avoid putting both false and true on the stack: jump to the end.
+			mv.visitJumpInsn(GOTO, end);
+			mv.visitLabel(foundTrue);
+			// This is where we jump to if the values were unequal!
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
+			mv.visitInsn(ICONST_1);
+			mv.visitLabel(end);
+			mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
+		} else {
+			// Compare using the default Java libraries...
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+			// Zet 1 (true) op de stack
+			mv.visitInsn(ICONST_1);
+			// XOR -> (true XOR a) == NOT a
+			mv.visitInsn(IXOR);
+		}
+		
+		return null;
 	}
 
 	public Symbol visitNumberLiteral(NumberLiteralContext ctx) {

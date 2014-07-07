@@ -223,4 +223,27 @@
     putString(".\n");
 }
 
+{
+    putString("*** Testing universal equals ***\n");
+    b1, b2: boolean := true;
+    b3: boolean := false;
+
+    if(b1 = b2) { putString("works 1\n"); } else { putString("FAILS 1\n"); }
+    if(b1 =/= b3) { putString("works 2\n"); } else { putString("FAILS 2\n"); }
+
+    if(b1 =/= b2) { putString("FAILS 3\n"); } else { putString("works 3\n"); }
+    if(b1 = b3) { putString("FAILS 4\n"); } else { putString("works 4\n"); }
+
+    s1, s2: string := "foo";
+    s3: string := "foo";
+    s4: string := "bar";
+
+    if(s1 = s2) { putString("works 1\n"); } else { putString("FAILS 1\n"); }
+    if(s1 = s3) { putString("works 2\n"); } else { putString("FAILS 2\n"); }
+    if(s1 =/= s4) { putString("works 3\n"); } else { putString("FAILS 3\n"); }
+
+    if(s1 =/= s2) { putString("FAILS 4\n"); } else { putString("works 4\n"); }
+    if(s1 = s4) { putString("FAILS 5\n"); } else { putString("works 5\n"); }
+}
+
 putString("\n\n");
