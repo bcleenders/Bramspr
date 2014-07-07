@@ -13,8 +13,6 @@ public abstract class Symbol {
 	/** This symbol's identifier. */
 	private String identifier;
 	
-	private int scopeId;
-	
 	/** This symbol's id (size of the symboltable at the time of declaration) */
 	private int number;
 	

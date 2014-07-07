@@ -80,13 +80,13 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		System.out.println("*** FINISHED DUMP ***");
 	}
 
-	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp) throws Exception {
+	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp, String className) {
 		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 		this.parseTreeproperty = ptp;
 
-		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, "Bramspr", null, "java/lang/Object", null);
+		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
 
 		{
 			mv = this.tcw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -100,7 +100,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			mv.visitInsn(RETURN);
 			Label endLabel = new Label();
 			mv.visitLabel(endLabel);
-			mv.visitLocalVariable("this", "LBramspr;", null, startLabel, endLabel, 0);
+			mv.visitLocalVariable("this", "L"+className+";", null, startLabel, endLabel, 0);
 			mv.visitMaxs(2, 1);
 			mv.visitEnd();
 		}
@@ -540,8 +540,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	public Symbol visitIntegerLiteral(IntegerLiteralContext ctx) {
-		int value = Integer.parseInt(ctx.getText());
-		mv.visitIntInsn(BIPUSH, value);
+			int value = Integer.parseInt(ctx.getText());
+		mv.visitLdcInsn(new Integer(value));
 		return null;
 	}
 

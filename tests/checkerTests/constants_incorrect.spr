@@ -1,0 +1,22 @@
+// Should give six errors
+
+// Some constants
+constant PI: integer := 3;
+constant TAU: integer := 2*PI; // This is still correct
+
+{
+    // Let's try to do some bad assignments
+    PI := 10; // Can't change the value, only hide it!
+
+    // Looks like a constant, but can't be sure on compiletime
+    constant ILikeIcecream: boolean := getBool(); // Ooooow userinput isn't constant! There could be a hater!
+
+    // Owwww, conflicts!
+    constant BESTCONSTANT: integer := PI;
+    constant BESTCONSTANT: integer := TAU;
+
+    // Incorrect types!
+    constant ONE: integer := '1';
+    constant HELLO: string := 42;
+    constant INITIAL: character := 3; // Yeah right, if you're 3CPO perhaps... but even that should be a character!
+}

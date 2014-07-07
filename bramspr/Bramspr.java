@@ -12,7 +12,9 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import bramspr.symboltable.Symbol;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,42 +30,86 @@ public class Bramspr {
 	 * @param args
 	 *            The filename of the Bramspr-file that is to be compiled.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		System.out.println("**** Bramspr Compiler v0.1.0 ****");
 
-		String inputFile = null;
-		if (args.length > 0) {
-			inputFile = args[0];
-		}
 		InputStream is = System.in;
-		if (inputFile != null) {
-			is = new FileInputStream(inputFile);
+		String outputFile = "Bramspr.class";
+
+		if (args.length > 0) {
+			String inputFile = args[0];
+			try {
+				is = new FileInputStream(inputFile);
+			} catch (FileNotFoundException e) {
+				System.out.println("The Bramspr compiler could not find this file ('" + inputFile + "').");
+				System.out.println("Please ensure that this is a valid path, and that the compiler has read access.");
+				System.exit(1);
+			}
+			
+			if(inputFile.endsWith(".spr")) {
+				outputFile = inputFile.replace(".spr", ".class");
+			}
 		}
+
+		// If the user specified an output file, let's see what it is... (.class is optional)
+		if (args.length > 1) {
+			outputFile = args[1];
+			if (!outputFile.endsWith(".class")) {
+				outputFile = outputFile + ".class";
+			}
+		}
+		
+		// Now let's see what the classname will be...
+		String className = outputFile.replace(".class", "");
+		className = className.contains("/") ? className.substring(className.lastIndexOf('/') + 1) : className;
+		className = className.contains("\\") ? className.substring(className.lastIndexOf('\\') + 1) : className;
+
 		CharStream input = new UnbufferedCharStream(is);
 
-		System.out.println("Start lexing...");
-		BramsprLexer lex = new BramsprLexer(input);
-		lex.setTokenFactory(new CommonTokenFactory(true));
-		TokenStream tokens = new UnbufferedTokenStream<CommonToken>(lex);
+		// Start lexing
+		BramsprLexer lexer = new BramsprLexer(input);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
+		lexer.setTokenFactory(new CommonTokenFactory(true));
+		TokenStream tokens = new UnbufferedTokenStream<CommonToken>(lexer);
+		
+		// Stop after seeing an error
+		if(DescriptiveErrorListener.INSTANCE.errorCount > 0) {
+			System.err.println("Found " + DescriptiveErrorListener.INSTANCE.errorCount + " errors: stopped compiling.");
+			System.exit(1);
+		}
 
-		System.out.println("Start parsing...");
+		// Start parsing
 		BramsprParser parser = new BramsprParser(tokens);
+		parser.removeErrorListeners();
+		parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
 		ParseTree tree = parser.program();
+		
+		// Stop after seeing an error
+		if(DescriptiveErrorListener.INSTANCE.errorCount > 0) {
+			System.err.println("Found " + DescriptiveErrorListener.INSTANCE.errorCount + " errors: stopped compiling.");
+			System.exit(1);
+		}
+		
 
-		System.out.println("Start checking...");
+		// Start context checking
 		BramsprChecker checker = new BramsprChecker();
 		ParseTreeProperty<Symbol> ptp = checker.check(tree);
-		System.out.println("Finished checking.");
 
-		System.out.println("Start compiling...");
+		// Start code generation
 		BramsprCompiler compiler = new BramsprCompiler();
-		byte[] code = compiler.compile(tree, ptp);
-		System.out.println("Finished compiling.");
+		byte[] code = compiler.compile(tree, ptp, className);
 
-		String filename = "Bramspr.class";
-		System.out.println("Writing code to file '" + filename + "'.");
-		FileOutputStream fos = new FileOutputStream(filename);
-		fos.write(code);
-		fos.close();
+		try {
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			fos.write(code);
+			fos.close();
+		} catch (IOException e) {
+			System.out.println("Could not write output to file '" + outputFile + "'.");
+			System.out.println("Exiting.");
+			System.exit(1);
+		}
+
+		System.out.println("Finished compiling, execute 'java " + outputFile.replace(".class", "") + "' to run the compiled file.");
 	}
 }
