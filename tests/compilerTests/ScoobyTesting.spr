@@ -67,5 +67,13 @@ test(2^3, 8, "2^3 = 8");
 
 test(true | false, true, "true | false = true");
 
+{
+    x, y, z: integer;
+    z := y := (x:= 5) * 10; // = 15
+    test(x, 5, "x, after 'z := y := (x:= 5) * 10;'");
+    test(y, 50, "y, after 'z := y := (x:= 5) * 10;'");
+    test(z, 50, "z, after 'z := y := (x:= 5) * 10;'");
+}
+
 // Let's round it up:
 end();
