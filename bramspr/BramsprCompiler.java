@@ -130,7 +130,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				System.exit(1);
 			}
 
-			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getNumber());
+			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getMemAddr());
 		}
 
 		mv.visitInsn(RETURN);
@@ -159,19 +159,19 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			if (type.equals(BramsprChecker.INTEGER)) {
 				// Integers beginnen bij 0
 				mv.visitInsn(ICONST_0);
-				mv.visitIntInsn(ISTORE, symbol.getNumber());
+				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
 			} else if (type.equals(BramsprChecker.BOOLEAN)) {
 				// Booleans beginnen als false
 				mv.visitInsn(ICONST_0);
-				mv.visitIntInsn(ISTORE, symbol.getNumber());
+				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
 			} else if (type.equals(BramsprChecker.CHARACTER)) {
 				// Characters beginnen als a
 				int charCode = (int) 'a';
 				mv.visitIntInsn(BIPUSH, charCode);
-				mv.visitIntInsn(ISTORE, symbol.getNumber());
+				mv.visitIntInsn(ISTORE, symbol.getMemAddr());
 			} else if (type.equals(BramsprChecker.STRING)) {
 				mv.visitLdcInsn("");
-				mv.visitVarInsn(ASTORE, symbol.getNumber());
+				mv.visitVarInsn(ASTORE, symbol.getMemAddr());
 			}
 		}
 
@@ -195,7 +195,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			this.variables.add(symbol);
 
 			TypeSymbol type = symbol.getReturnType();
-			int memAddr = symbol.getNumber();
+			int memAddr = symbol.getMemAddr();
 
 			// Even kopiëren, anders zijn we het zo kwijt!
 			mv.visitInsn(DUP);
@@ -256,7 +256,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			mv.visitInsn(DUP); // Stack: a a ->
 
 			VariableSymbol assignable = (VariableSymbol) visit(ctx.assignable(i));
-			int memaddr = assignable.getNumber();
+			int memaddr = assignable.getMemAddr();
 
 			TypeSymbol type = assignable.getReturnType();
 
@@ -278,9 +278,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		TypeSymbol type = variable.getReturnType();
 
 		if (this.isJBCPrimitive(type)) {
-			mv.visitIntInsn(ILOAD, variable.getNumber());
+			mv.visitIntInsn(ILOAD, variable.getMemAddr());
 		} else if (variable.getReturnType().equals(BramsprChecker.STRING)) {
-			mv.visitIntInsn(ALOAD, variable.getNumber());
+			mv.visitIntInsn(ALOAD, variable.getMemAddr());
 		}
 
 		return null;
@@ -296,8 +296,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		VariableSymbol y = (VariableSymbol) visit(ctx.assignable(1));
 		TypeSymbol type = x.getReturnType();
 
-		int memAddrX = x.getNumber();
-		int memAddrY = y.getNumber();
+		int memAddrX = x.getMemAddr();
+		int memAddrY = y.getMemAddr();
 
 		if (this.isJBCPrimitive(type)) { // Het is een int/bool/char/enum!
 			mv.visitIntInsn(ILOAD, memAddrX); // Stack: x ->
@@ -897,7 +897,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			for (int i = 1; i < ctx.expression().size(); i++) {
 				// Copied from assignmentExpression
 				VariableSymbol varsymbol = (VariableSymbol) this.parseTreeproperty.get(declaration.IDENTIFIER(i));
-				int memAddr = varsymbol.getNumber();
+				int memAddr = varsymbol.getMemAddr();
 				visit(ctx.expression(i));
 				TypeSymbol type = function.parameters[i];
 				if (type.equals(BramsprChecker.INTEGER)) {

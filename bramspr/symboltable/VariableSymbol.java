@@ -19,19 +19,17 @@ public class VariableSymbol extends ValueYielderSymbol {
 		return this.getIdentifier();
 	}
 	
-	/** This symbol's id (size of the symboltable at the time of declaration) */
-	private int number;
+	/** This symbol's memory address (set on declaration, in Compiler) */
+	private int memAddr;
 	
-	/** Set the number of this symbol (should be done by SymbolTable only) */
-	public void setNumber(int symNumber) {
-		this.number = symNumber;
+	/** Set the memory location of this symbol */
+	public void setMemAddr(int memAddr) {
+		this.memAddr = memAddr;
 	}
 	
-	/** Set the scope id of this symbol (should be done by SymbolTable only) */
-	
-	/** @return {@link #number} */
-	public int getNumber() {
-		return this.number;
+	/** Get the memory location of this symbol */
+	public int getMemAddr() {
+		return this.memAddr;
 	}
 	
 	/**
