@@ -1,17 +1,13 @@
 lexer grammar BramsprLexer;
 
-/* Assigners. */
+/* Operators. */
 BECOMES:                ':=';
 SWAP:                   '<>';
-
-/* Operators. */
 PLUS:                   '+';
 MINUS:                  '-';
 MULTIPLICATION:         '*';
 DIVISION:               '/';
 MODULUS:                '%';
-
-/* Comparators. */
 SMALLER_THAN:           '<';
 SMALLER_THAN_EQUALS_TO: '<=';
 GREATER_THAN:           '>';
@@ -20,17 +16,9 @@ EQUALS_TO:              '=';
 NOT_EQUALS_TO:          '=/=';
 PLUSMINUS:              '+-';
 POWER:                  '^';
-
-/* Logic. */
 NOT:                    '!';
-
 AND:                    '&' ;
 OR:                     '|' ;
-XOR:                    '!&' ;
-
-LOGIC: AND
-     | OR
-     | XOR;
 
 /* Keywords. */
 IF:                     'if';
@@ -43,7 +31,7 @@ ENUMERATION:            'enumeration';
 RETURN:                 'return';
 CONSTANT:               'constant';
 
-/* Symbols. */
+/* Interpunction. */
 COLON:                  ':'     ;
 SEMICOLON:              ';'     ;
 LEFT_PARENTHESIS:       '('     ;
@@ -55,7 +43,6 @@ RIGHT_BLOCKBRACE:       ']'     ;
 COMMA:                  ','     ;
 DOT:                    '.'     ;
 
-/* Literals. */
 // Een apostrof, gevolgd door geescapete apostrofes en niet-specialchars. 
 // De *? (i.t.t. *) maakt hem niet-greedy, dus bij de eerste " stopt hij.
 BOOLEAN: 'true' | 'false';
@@ -64,9 +51,10 @@ CHARACTER : '\''  ( '\\\'' | ~('\n'|'\r') )*? '\'';
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 NUMBER: DIGIT+;
 
-/* Miscellaneous. */
-COMMENT: '//' ~[\r\n]* -> skip; // Matcht alles wat na // komt
+/* Annotations. */
+COMMENT: '//' ~[\r\n\u000C]* -> skip; // Matcht alles wat na // komt
 BLOCKCOMMENT: '/*' .*? '*/' -> skip; // Matcht alles (op een non-greedy manier) tussen /* en */
+
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 
 /* Fragments. */
