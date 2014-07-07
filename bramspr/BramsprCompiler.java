@@ -40,7 +40,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * {@link #variables} as closing scopes.
 	 */
 	private Stack<Label> closingScopeLabels = new Stack<Label>();
-
+	
 	/**
 	 * Opens a new scope (reserves a closing label)
 	 * 
@@ -65,7 +65,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		this.variablesDeclaredNow++;
 		int declaredInCurrentLevel = this.variablesDeclaredInLevel.pop();
 		this.variablesDeclaredInLevel.push(declaredInCurrentLevel + 1);
-		this.variables.add(variable);
+		
+		// Create a copy of the VariableSymbol, to make sure it won't be changed accidentally later or in the program.
+		VariableSymbol copy = new VariableSymbol(variable.getIdentifier(), variable.getReturnType(), variable.isConstant());
+		copy.setMemAddr(variable.getMemAddr());
+		this.variables.add(copy);
 		
 		// This denotes the start of this variable's visibility.
 		Label openingLabel = new Label();
@@ -73,7 +77,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		
 		// And this will denote the end of this variable's visibility.
 		Label closingLabel = this.closingScopeLabels.peek();
-		variable.setOpenCloseLabels(openingLabel, closingLabel);
+		copy.setOpenCloseLabels(openingLabel, closingLabel);
 		
 		return variable.getMemAddr();
 	}
@@ -183,9 +187,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 */
 	public Symbol visitPureDeclaration(PureDeclarationContext ctx) {
 		// Alle IDENTIFIER's binnen deze declaration komen in de parsetreeproperty voor, en ze bevatten de VariableSymbol's
-
-		
-		
 
 		for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
 			VariableSymbol symbol = (VariableSymbol) this.parseTreeproperty.get(ctx.IDENTIFIER(i));
@@ -871,6 +872,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 */
 	public Symbol visitFunctionCall(FunctionCallContext ctx) {
 		FunctionSymbol function = (FunctionSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Open a new scope
+		this.openScope();
 
 		// The "primitive" functions have a null context!
 		if (function.declarationContext == null) {
@@ -916,22 +920,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 					System.exit(1);
 				}
 			}
-
-			// Done: we can return now!
-			return null;
-		}
+			
+		} else {
 
 		// This contains the function code!
 		FunctionDeclarationContext declaration = function.declarationContext;
 
 		// @formatter:off
-		// Open a new scope
-		this.openScope();
 		
 			// Hier kan een identifier gezien worden als variabele, de eerste IDENTIFIER is de naam van de functie.
-			for (int i = 1; i < ctx.expression().size(); i++) {
+			for (int i = 0; i < ctx.expression().size(); i++) {
 				// Copied from assignmentExpression
-				VariableSymbol varsymbol = (VariableSymbol) this.parseTreeproperty.get(declaration.IDENTIFIER(i));
+				VariableSymbol varsymbol = (VariableSymbol) this.parseTreeproperty.get(declaration.IDENTIFIER(i + 1));
 				int memAddr = this.claimMemAddr(varsymbol);
 				visit(ctx.expression(i));
 				TypeSymbol type = function.parameters[i];
@@ -961,6 +961,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				// Dit is het return statement; laat een waarde achter op de stack
 				visit(declaration.expression());
 			}
+		}
 		
 		this.closeScope();
 		// @formatter:on
