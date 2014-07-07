@@ -669,8 +669,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	/**
-	 * Produces the JBC code for pushing a character on the stack.
-	 * It also unescapes \n, \\ (an escaped backslash) and \' before pushing them onto the stack.
+	 * Produces the JBC code for pushing a character on the stack. It also unescapes \n, \\ (an escaped backslash) and \' before pushing them onto the stack.
 	 */
 	public Symbol visitCharacterLiteral(CharacterLiteralContext ctx) {
 		String character = ctx.CHARACTER().getText();
@@ -688,8 +687,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	/**
-	 * Produces the JBC that pushes a reference to a String literal onto the stack.
-	 * It also unescapes \\, \n and \".
+	 * Produces the JBC that pushes a reference to a String literal onto the stack. It also unescapes \\, \n and \".
 	 */
 	public Symbol visitStringLiteral(StringLiteralContext ctx) {
 		String s = ctx.getText();
@@ -847,10 +845,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return null;
 	}
-	
-	// TODO tot hier gekomen met javadoc
 
 	@Override
+	/**
+	 * Opens a new scope for the block structure, and generates the JBC for that block.
+	 */
 	public Symbol visitBlockStructure(BlockStructureContext ctx) {
 		this.openScope();
 		for (int i = 0; i < ctx.statement().size(); i++) {
@@ -860,6 +859,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
+	/**
+	 * Generates JBC for the ifStructure. It evaluates an expression, if the expression yields false it jumps to the else block. If there is no else block
+	 * specified in the Bramspr code, then it isn't generated either.
+	 */
 	public Symbol visitIfStructure(IfStructureContext ctx) {
 		boolean hasElseBlock = (ctx.ELSE() != null);
 
@@ -867,30 +870,34 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		visit(ctx.expression()); // Stack: b ->
 
 		// Als e false is, springen we hier naartoe.
-		Label startElse = new Label();
+		Label enfIfCode = new Label();
 		// Als e true is, springen we na het uitvoeren van het if block hier naartoe
 		Label endElse = new Label();
 
 		// IFEQ zet ICONST_0 op de stack, en vergelijkt daarmee.
 		// Eigenlijk is IFEQ dus IFNOTTRUE
-		mv.visitJumpInsn(IFEQ, startElse); // Stack: <empty>
+		mv.visitJumpInsn(IFEQ, enfIfCode); // Stack: <empty>
 
-		// Hier komt het if block
+		this.openScope();
+		// Here is the if block
 		visit(ctx.blockStructure(0));
+		this.closeScope();
 
-		// Als er geen else block is, hoeven we er ook niet overheen te springen. Spaart een GOTO!
+		// If there is no else block, then we don't have to make this jump either!
 		if (hasElseBlock) {
-			mv.visitJumpInsn(GOTO, endElse); // Spring over het else blok heen
+			mv.visitJumpInsn(GOTO, endElse); // Jump over the else block.
 		}
 
-		mv.visitLabel(startElse);
+		mv.visitLabel(enfIfCode);
 		mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { Opcodes.INTEGER }, 0, null);
 
-		// Als er geen else block is, dan was het startElse label het laatste dat tot deze structuur behoort!
+		// If there is no else specified, just skip generating the labels etc.
 		if (hasElseBlock) {
-			// Hier komt het else block
+			this.openScope();
+			// This is the else block
 			visit(ctx.blockStructure(1));
-			// Dit is het eind van de if/else structuur!
+			// This is the end of the else block
+			this.closeScope();
 			mv.visitLabel(endElse);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		}
@@ -899,11 +906,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
+	/**
+	 * Generates the JBC for a while structure. A while loop makes a jump back up every time the expression is evaluated and yields true.
+	 * It leaves nothing on the stack.
+	 */
 	public Symbol visitWhileStructure(WhileStructureContext ctx) {
 		// First iteration, we jump over the code to first evaluate the expression
 		Label beforeExpression = new Label();
 		mv.visitJumpInsn(GOTO, beforeExpression);
-
+		
+		// The while block is its own scope.
+		this.openScope();
+		
 		// Jump back to this label at the end of every iteration
 		Label beforeCode = new Label();
 		mv.visitLabel(beforeCode);
@@ -915,7 +929,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Hier wordt de allereerste keer naartoe gesprongen.
 		mv.visitLabel(beforeExpression);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-
+		
+		// You can't use variables declared inside the scope in the expression! Close scope!
+		this.closeScope();
+		
 		// Execute the control expression
 		visit(ctx.expression());
 
@@ -925,12 +942,22 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
+	/**
+	 * Generates the JBC for a plusMinusExpression (7 = 10 +- 4). It evaluates three expressions, and leaves a single boolean value on the stack.
+	 * 
+	 * @param ctx
+	 *            the node representing the plusMinusExpression
+	 */
 	public Symbol visitPlusMinusExpression(PlusMinusExpressionContext ctx) {
 		Label earlyJump = new Label();
 		Label midwayJump = new Label();
 		Label finalJump = new Label();
 
 		// @formatter:off
+		/*
+		 * This function performs some complicated operations because it is not allowed to evaluate an argument twice.
+		 * The comments on the right show what the stack looks like after execution of the command on the line.
+		 */
 		// ASM code								       Stack (rechts is top)
 		visit(ctx.arithmetic(1));					// e1
 		visit(ctx.arithmetic(2));					// e1 e2
@@ -970,7 +997,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	@Override
 	/**
 	 * Produces the JBC for a function declaration. Because all functions are inlined for maximum performance, the declaration does not produce any JBC.
-	 * @return null for any input
 	 */
 	public Symbol visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 		// Functions are inlined, so the declaration does not produce new ASM code.
@@ -978,7 +1004,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	/**
-	 * Produces the JBC for a functioncall. Because functions are inlined, it uses the declaration for code generation.
+	 * Produces the JBC for a functioncall. Because functions are inlined, it uses the declaration for code generation. Thus, the produced JBC is effectively a
+	 * new block with some default variables and a return value. Note that the bindings still refer to the bindings as they were during the declaration of the
+	 * function.
 	 */
 	public Symbol visitFunctionCall(FunctionCallContext ctx) {
 		FunctionSymbol function = (FunctionSymbol) this.parseTreeproperty.get(ctx);
@@ -1085,7 +1113,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * 
 	 * @param ctx
 	 *            either a field access or an enumeration.
-	 * @return
 	 */
 	@Override
 	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
