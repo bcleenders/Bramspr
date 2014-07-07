@@ -16,6 +16,10 @@ function multiply(x: integer, y:integer) {
     return x*y;
 };
 
+function square(x: integer) {
+    return multiply(x,x);
+};
+
 function factorial(x: integer) {
     result: integer := 1;
 
@@ -33,7 +37,7 @@ function factorial(x: integer) {
         }
     }
 
-    return x;
+    return result;
 };
 
 function powMod(base: integer, exp: integer, mod: integer) {
@@ -49,13 +53,12 @@ function powMod(base: integer, exp: integer, mod: integer) {
             result := 1;
         } else {
             while(exp > 0) {
-                if(exp%2 = 0) {
-                    result := result*result % mod;
-                    exp := exp / 2;
-                } else {
-                    result := (result*result % mod) * base % mod;
-                    exp := (exp - 1) / 2;
+                if(exp%2 = 1) {
+                    result := result*base % mod;
+                    exp := exp - 1;
                 }
+                exp := exp / 2;
+                base := square(base) % mod;
             }
         }
     }
@@ -79,3 +82,44 @@ function printResults(expected: integer, real: integer, calculation: string) {
 
 printResults(1, powMod(1, 10, 20), "powMod(1, 10, 20)");
 printResults(977, powMod(22137, 345345, 20780), "powMod(22137, 345345, 20780)");
+
+printResults(3628800, factorial(10), "10!");
+printResults(39916800, factorial(11), "11!");
+printResults(479001600, factorial(12), "12!");
+
+{
+    // Jup; we allow string comparisons
+    constant TRUE: boolean := ("Hello, world!" = "Hello, world!");
+    constant FALSE: boolean := !TRUE;
+
+    {   // Wonderland
+        constant TRUE: boolean := FALSE;
+        constant FALSE: boolean := TRUE; // We set TRUE := FALSE, thus when setting FALSE := TRUE, we change nothing...
+
+        if(TRUE = FALSE) {
+            println("Success! Magic happened!");
+        }
+    }
+}
+
+{
+    // Yeah... functions can be hidden!
+    function getTrue() {
+        return true;
+    };
+
+    {
+        // This one hides the previous one...
+        function getTrue() {
+            return false;
+        };
+
+        if(getTrue()) {
+            putString("FAIL: getTrue() { return true; } was not hidden");
+        }
+    }
+
+    if(! getTrue()) {
+        putString("FAIL: getTrue() { return false; } is still visible");
+    }
+}

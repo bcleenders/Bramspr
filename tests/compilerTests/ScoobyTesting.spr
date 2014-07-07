@@ -1,0 +1,71 @@
+function println()                  { putChar('\n');                 };
+function println(toPrint: string)   { putString(toPrint); println(); };
+function println(toPrint: integer)  { putInt(toPrint);    println(); };
+function println(toPrint: character){ putChar(toPrint);   println(); };
+function println(toPrint: boolean)  { putBool(toPrint);   println(); };
+
+errorCount: integer := 0;
+
+function test(expected: integer, encountered: integer, description: string) {
+    if(expected =/= encountered) {
+        errorCount := errorCount + 1;
+        println(description);
+        putString("   Expected: "); putInt(expected);
+        putString(", but encountered: "); putInt(encountered);
+        println();
+    }
+};
+
+function test(expected: character, encountered: character, description: string) {
+    if(expected =/= encountered) {
+        errorCount := errorCount + 1;
+        println(description);
+        putString("   Expected: "); putChar(expected);
+        putString(", but encountered: "); putChar(encountered);
+        println();
+    }
+};
+
+function test(expected: boolean, encountered: boolean, description: string) {
+    if(expected =/= encountered) {
+        errorCount := errorCount + 1;
+        println(description);
+        putString("   Expected: "); putBool(expected);
+        putString(", but encountered: "); putBool(encountered);
+        println();
+    }
+};
+
+function test(expected: string, encountered: string, description: string) {
+    if(expected =/= encountered) {
+        errorCount := errorCount + 1;
+        println(description);
+        putString("   Expected: "); putString(expected);
+        putString(", but encountered: "); putString(encountered);
+        println();
+    }
+};
+
+function end() {
+    putString("Fail-O-Meter: "); println(errorCount);
+
+    if (errorCount = 0) {
+        println("Nice work Scoob!");
+    }
+    if (0 < errorCount < 5) {
+        println("No Shaggy, we're going to Solve this mystery!");
+    }
+    if (5 <= errorCount) {
+        println("This place makes me so nervous, all I can think of is food!");
+    }
+};
+
+// From here on you can test
+test(1+1, 2, "1+1 = 2");
+test(2^0, 1, "2^0 = 1");
+test(2^3, 8, "2^3 = 8");
+
+test(true | false, true, "true | false = true");
+
+// Let's round it up:
+end();
