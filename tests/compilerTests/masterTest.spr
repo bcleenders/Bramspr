@@ -1,0 +1,81 @@
+function println(s: string) {
+    putString(s);
+    putChar('\n');
+};
+
+function println(x: integer) {
+    putInt(x);
+    putChar('\n');
+};
+
+function println() {
+    putChar('\n');
+};
+
+function multiply(x: integer, y:integer) {
+    return x*y;
+};
+
+function factorial(x: integer) {
+    result: integer := 1;
+
+    constant MAXINPUT: integer := 12;
+
+    if(x > MAXINPUT) {
+        putString("Overflow: cannot take factorial of ");
+        putInt(x);
+        putString(". Returning -1 instead.");
+        result := -result; // Geef maar -1 terug...
+    } else {
+        while(x>1) {
+            result := result * x;
+            x := x-1;
+        }
+    }
+
+    return x;
+};
+
+function powMod(base: integer, exp: integer, mod: integer) {
+    result: integer := 1;
+
+    base := base % mod;
+
+    if(base = 0) {
+        result := 0;
+    }
+    else {
+        if(base = 1) {
+            result := 1;
+        } else {
+            while(exp > 0) {
+                if(exp%2 = 0) {
+                    result := result*result % mod;
+                    exp := exp / 2;
+                } else {
+                    result := (result*result % mod) * base % mod;
+                    exp := (exp - 1) / 2;
+                }
+            }
+        }
+    }
+
+    return result;
+};
+
+function printResults(expected: integer, real: integer, calculation: string) {
+    putString(calculation);
+    putString(" = ");
+    putInt(real);
+
+    if (expected = real) {
+        putString("  (success)\n");
+    } else {
+        putString(", but expected ");
+        putInt(expected);
+        println();
+    }
+};
+
+printResults(1, powMod(1, 10, 20), "powMod(1, 10, 20)");
+printResults(977, powMod(22137, 345345, 20780), "powMod(22137, 345345, 20780)");

@@ -19,6 +19,19 @@ public class VariableSymbol extends ValueYielderSymbol {
 		return this.getIdentifier();
 	}
 	
+	/** This symbol's memory address (set on declaration, in Compiler) */
+	private int memAddr;
+	
+	/** Set the memory location of this symbol */
+	public void setMemAddr(int memAddr) {
+		this.memAddr = memAddr;
+	}
+	
+	/** Get the memory location of this symbol */
+	public int getMemAddr() {
+		return this.memAddr;
+	}
+	
 	/**
 	 * A label marking the start of this variable's scope.
 	 * This label is unique; if a variable is declared halfway a scope, the variable's scope is only half the surrounding scope.

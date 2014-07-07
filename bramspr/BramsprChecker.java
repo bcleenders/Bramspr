@@ -1098,12 +1098,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		// Controleren of de (impliciete) declaratie van de variabelen wel goed gaat
 		// (ze moeten in de symboltable staan, anders kunnen we de code in de functie niet valideren)
 		for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
-			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i).getText(), argumentTypes[i], false);
+			VariableSymbol parameter = new VariableSymbol(ctx.IDENTIFIER(i).getText(), argumentTypes[i - 1], false);
 			try {
 				this.variableSymbolTable.declare(parameter);
 			} catch (SymbolTableException e) {
 				this.reportError(e.getMessage(), ctx);
 			}
+			this.parseTreeDecoration.put(ctx.IDENTIFIER(i), parameter);
 		}
 
 		// Controleren of de code binnen deze functie wel geldig is:
