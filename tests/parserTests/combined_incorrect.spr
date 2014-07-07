@@ -1,0 +1,19 @@
+/*
+    This file is mainly intended to see whether the errors are displayed nicely.
+    Just about any parser/lexer will know that this is incorrect.
+*/
+
+// Appears we have some random text here!
+hello world
+
+x:integer;
+// Misses one number
+x := 2 + * 2;
+
+// enumeration only occurs as enumeration.IDENTIFIER.IDENTIFIER
+x := enumeration.hello;
+
+y:integer:integer;
+
+// What is that? A random }????
+}

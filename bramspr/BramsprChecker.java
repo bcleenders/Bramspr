@@ -1409,6 +1409,13 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 */
 	@Override
 	public Suit visitIntegerLiteral(IntegerLiteralContext ctx) {
+		try {
+			Integer.parseInt(ctx.getText());
+		}
+		catch(NumberFormatException e) {
+			this.reportError("Invalid number format (overflow?)", ctx);
+		}
+		
 		return new Suit(INTEGER, true);
 	}
 

@@ -1,0 +1,14 @@
+b0:boolean := 2^10 = 1024; // true
+b1:boolean := 2^0 <= 2^1 <= 2^2 <= 2^3 <= 2^4;
+
+
+overflow: integer := 1000000000000000000000000000;
+putInt(overflow);
+
+if(b0 & b1) {
+    putString("Success (0)");
+} else {
+    putString("Fail (0)");
+}
+
+putString("hi");
