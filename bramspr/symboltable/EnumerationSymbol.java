@@ -34,6 +34,9 @@ public class EnumerationSymbol extends TypeSymbol {
 		return values.indexOf(identifier);
 	}
 	
+	/**
+	 * Returns the descriptor. Since enums are stored as integers, that descriptor is "I"
+	 */
 	public String getDescriptor() {
 		// Stored as integer values
 		return "I";

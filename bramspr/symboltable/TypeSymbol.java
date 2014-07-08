@@ -15,4 +15,8 @@ public abstract class TypeSymbol extends Symbol {
 	}
 	
 	abstract public String getDescriptor();
+	
+	public String getSignature() {
+		return getDescriptor();
+	}
 }

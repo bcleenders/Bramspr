@@ -10,12 +10,21 @@ type Tafel {
     type Tafel {
         aantalPoten: integer
     };
-
 }
+
+type Keuken {
+    aantalStoelen: integer,
+    aantalTafels: integer,
+    mooisteStoel: Stoel
+};
 
 count: integer := 3;
 
 t: Tafel;
-t:= Tafel{ aantalPoten:= count };
+t:= Tafel{ aantalPoten := count };
+
+s: Stoel := Stoel{ aantalPoten := 3 };
+
+k: Keuken := Keuken{ aantalStoelen := 6, aantalTafels := 8, mooisteStoel := s };
 
 putString("Survived the program!");
