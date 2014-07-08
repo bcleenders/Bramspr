@@ -891,10 +891,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Eigenlijk is IFEQ dus IFNOTTRUE
 		mv.visitJumpInsn(IFEQ, enfIfCode); // Stack: <empty>
 
-		this.openScope();
 		// Here is the if block
 		visit(ctx.blockStructure(0));
-		this.closeScope();
 
 		// If there is no else block, then we don't have to make this jump either!
 		if (hasElseBlock) {
@@ -906,11 +904,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		// If there is no else specified, just skip generating the labels etc.
 		if (hasElseBlock) {
-			this.openScope();
-			// This is the else block
 			visit(ctx.blockStructure(1));
-			// This is the end of the else block
-			this.closeScope();
 			mv.visitLabel(endElse);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		}
