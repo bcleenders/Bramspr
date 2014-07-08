@@ -665,6 +665,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		} catch (SymbolTableException e) {
 			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
 		}
+		
+		// Let's store the type in the parseTreeProperty!
+		this.parseTreeDecoration.put(ctx, symbol);
 
 		return Suit.VOID;
 	}

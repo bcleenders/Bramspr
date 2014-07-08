@@ -1,0 +1,15 @@
+type Stoel {
+    aantalPoten: integer
+};
+
+type Tafel {
+    aantalPoten: integer
+};
+
+{
+    type Tafel {
+        aantalPoten: integer
+    };
+}
+
+putString("Survived the program!");

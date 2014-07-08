@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.UnbufferedTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import bramspr.BramsprCompiler.BramsprClass;
 import bramspr.symboltable.Symbol;
 
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * The driver class for the Bramspr compiler. Contains the main method.
@@ -50,19 +52,19 @@ public class Bramspr {
 				outputFile = inputFile.replace(".spr", ".class");
 			}
 		}
-
+		
 		// If the user specified an output file, let's see what it is... (.class is optional)
 		if (args.length > 1) {
 			outputFile = args[1];
-			if (!outputFile.endsWith(".class")) {
-				outputFile = outputFile + ".class";
-			}
+			outputFile = outputFile.replace(".class", ""); // Remove extension
 		}
+
+		// Now let's see what the classname will be... Remove the .class and anything before the last / or \
+		String mainClassName = outputFile;
+		mainClassName = mainClassName.contains("/") ? mainClassName.substring(mainClassName.lastIndexOf('/') + 1) : mainClassName;
+		mainClassName = mainClassName.contains("\\") ? mainClassName.substring(mainClassName.lastIndexOf('\\') + 1) : mainClassName;
 		
-		// Now let's see what the classname will be...
-		String className = outputFile.replace(".class", "");
-		className = className.contains("/") ? className.substring(className.lastIndexOf('/') + 1) : className;
-		className = className.contains("\\") ? className.substring(className.lastIndexOf('\\') + 1) : className;
+		String pathToFolder = outputFile.substring(0, outputFile.length() - mainClassName.length());
 
 		CharStream input = new UnbufferedCharStream(is);
 
@@ -98,18 +100,31 @@ public class Bramspr {
 
 		// Start code generation
 		BramsprCompiler compiler = new BramsprCompiler();
-		byte[] code = compiler.compile(tree, ptp, className);
+		ArrayList<BramsprClass> classes = compiler.compile(tree, ptp, mainClassName);
+		
+		System.out.println("Writing " + classes.size() + " class files to folder '" + pathToFolder + "'.");
 
-		try {
-			FileOutputStream fos = new FileOutputStream(outputFile);
-			fos.write(code);
-			fos.close();
-		} catch (IOException e) {
-			System.out.println("Could not write output to file '" + outputFile + "'.");
-			System.out.println("Exiting.");
-			System.exit(1);
+		// Process one class at a time (there may be inner classes, which need to be stored in separate files)
+		for(int i = 0; i < classes.size(); i++) {
+			BramsprCompiler.BramsprClass c = classes.get(i);
+			String name = c.className;
+			byte[] code = c.bytecode;
+			
+			String pathToFile = pathToFolder + name + ".class";
+			
+			try {
+				FileOutputStream fos = new FileOutputStream(pathToFile);
+				fos.write(code);
+				fos.close();
+			} catch (IOException e) {
+				System.out.println("Could not write output to file '" + pathToFile + "'.");
+				System.out.println("Exiting.");
+				System.exit(1);
+			}
 		}
 
-		System.out.println("Finished compiling, execute 'java " + className + "' to run the compiled file.");
+		System.out.println("Finished compiling.");
+		System.out.println("To execute compiled code, visit '" + pathToFolder + "' in the console/commandline and run: ");
+		System.out.println("      java " + mainClassName);
 	}
 }

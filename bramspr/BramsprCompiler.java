@@ -24,6 +24,8 @@ import bramspr.symboltable.VariableSymbol;
 
 //public class BramsprCompiler implements BramsprVisitor<Integer> {
 public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcodes {
+	/** The name of the main class this code will compile to, e.g. "Bramspr" or "Math" */
+	private String mainFileName;
 
 	/**
 	 * The "decoration" of our parsetree: maps Contexts to Symbols
@@ -39,6 +41,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	// Memory management!
 	/** The number of variables declared at any given time */
 	private int variablesDeclaredNow = 0;
+	/** The number of variables declared in the current level */
 	private Stack<Integer> variablesDeclaredInLevel = new Stack<Integer>();
 
 	/**
@@ -107,6 +110,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * mv.visitLocalVariable(...) iteration at the end of the class, to declare the variables.
 	 */
 	private ArrayList<VariableSymbol> variables = new ArrayList<VariableSymbol>();
+	
+	/**
+	 * This stores a list of classnames and bytecode. It always stores at least one element; the main class. 
+	 */
+	private ArrayList<BramsprClass> classes = new ArrayList<BramsprClass>();
 
 	/**
 	 * Prints a (somewhat) human-readable dump of the assembly to the standard output.
@@ -140,11 +148,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 *            the name of the file, which corresponds to the name of the class.
 	 * @return Java bytecode array that can be written to a file and executed by calling java className
 	 */
-	public byte[] compile(ParseTree tree, ParseTreeProperty<Symbol> ptp, String className) {
-		// De ClassWriter is niet toegankelijk voor andere functies; werk via de TraceClassVisitor
+	public ArrayList<BramsprClass> compile(ParseTree tree, ParseTreeProperty<Symbol> ptp, String className) {
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		this.tcw = new TraceClassVisitor(cw, new PrintWriter(System.out));
 		this.parseTreeproperty = ptp;
+		this.mainFileName = className;
 
 		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
 
@@ -168,7 +176,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// eval method
 		mv = this.tcw.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
 		mv.visitCode();
-
+		
 		// Open the program scope
 		this.openScope();
 		// Compile the code
@@ -202,7 +210,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		mv.visitEnd();
 
 		byte[] code = cw.toByteArray();
-		return code;
+		
+		this.classes.add(new BramsprClass(className, code));
+		
+		return this.classes;
 	}
 
 	/**
@@ -914,10 +925,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// First iteration, we jump over the code to first evaluate the expression
 		Label beforeExpression = new Label();
 		mv.visitJumpInsn(GOTO, beforeExpression);
-		
+
 		// The while block is its own scope.
 		this.openScope();
-		
+
 		// Jump back to this label at the end of every iteration
 		Label beforeCode = new Label();
 		mv.visitLabel(beforeCode);
@@ -929,10 +940,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Hier wordt de allereerste keer naartoe gesprongen.
 		mv.visitLabel(beforeExpression);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-		
+
 		// You can't use variables declared inside the scope in the expression! Close scope!
 		this.closeScope();
-		
+
 		// Execute the control expression
 		visit(ctx.expression());
 
@@ -1129,6 +1140,68 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
+	/** The number of currently defined types in the program. */
+	int numberOfTypes = 0;
+	
+	@Override
+	/**
+	 * Creates a new inner class to store the information of the composite.
+	 */
+	public Symbol visitCompositeDeclaration(CompositeDeclarationContext ctx) {
+		// What symbol are we declaring?
+		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
+		String compiledName = symbol.getInteralName(this.numberOfTypes);
+		String fileName = symbol.getClassName(this.mainFileName);
+		
+		System.out.print("Encountered type " + symbol.getIdentifier() + " which will be compiled to " + compiledName);
+		System.out.println(" - its name is " + fileName);
+
+
+		ClassWriter innerCW = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		FieldVisitor innerFV;
+		MethodVisitor innerMV;
+
+	    innerCW.visit(V1_7, ACC_SUPER, fileName, null, "java/lang/Object", null);
+	    innerCW.visitInnerClass(fileName, this.mainFileName, compiledName, 0);
+
+	    { // Repeat:
+	        innerFV = innerCW.visitField(ACC_PUBLIC, "b", "Z", null, null);
+	        innerFV.visitEnd();
+	    }
+
+	    {
+	    	// Thanks to AMSifier; 
+	        innerFV = innerCW.visitField(ACC_FINAL + ACC_SYNTHETIC, "this$0", "L" + this.mainFileName + ";", null, null);
+	        innerFV.visitEnd();
+		    innerMV = innerCW.visitMethod(0, "<init>", "(L" + this.mainFileName + ";)V", null, null);
+		    innerMV.visitCode();
+		    Label l0 = new Label();
+		    innerMV.visitLabel(l0);
+		    innerMV.visitLineNumber(4, l0);
+		    innerMV.visitVarInsn(ALOAD, 0);
+		    innerMV.visitVarInsn(ALOAD, 1);
+		    innerMV.visitFieldInsn(PUTFIELD, fileName, "this$0", "L" + this.mainFileName + ";");
+		    innerMV.visitVarInsn(ALOAD, 0);
+		    innerMV.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+		    innerMV.visitInsn(RETURN);
+		    Label l3 = new Label();
+		    innerMV.visitLabel(l3);
+		    innerMV.visitLocalVariable("this", "L" + fileName + ";", null, l0, l3, 0);
+		    innerMV.visitMaxs(2, 2);
+		    innerMV.visitEnd();
+	    }
+	    innerCW.visitEnd();
+
+	    byte[] bytecode = innerCW.toByteArray();
+	    // Save this for later:
+	    BramsprClass newType = new BramsprClass(fileName, bytecode);
+	    this.classes.add(newType);
+		
+		this.numberOfTypes++;
+		
+		return null;
+	}
+
 	/**
 	 * Tests whether a type is a JBC primitive. The JBC primitives are (as far as we're concerned) integer, boolean, character and enumerations. Note that
 	 * doubles etc. are not part of our language. These "primitives" are all stored as int values, and can be handled with the I functions, e.g. ISTORE, IADD,
@@ -1153,5 +1226,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		}
 
 		return false;
+	}
+	
+	/**
+	 * This class is only used to store a classname - bytecode pair, since Java does not have a pair class.
+	 */
+	public class BramsprClass {
+	    public String className;
+	    public byte[] bytecode;
+
+	    public BramsprClass(String className, byte[] bytecode) {
+	    	this.className = className;
+	    	this.bytecode = bytecode;
+	    }
 	}
 }
