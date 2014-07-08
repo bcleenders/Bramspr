@@ -91,7 +91,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("Z", "boolean", null, null);
 
 	/** The symbol for the built-in type <i>string</i>. */
-	public static final CompositeSymbol STRING = new CompositeSymbol("Ljava/lang/String;", "string", null, null);
+	public static final CompositeSymbol STRING = new CompositeSymbol("java/lang/String", "string", null, null);
 
 	/** The symbol table in which declared and built-in functions are administered. */
 	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>();
@@ -774,6 +774,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage, ctx);
 			return Suit.ERROR;
 		}
+		
+		// Add the type to the parseTreeProperty, for usage in the compiler
+		this.parseTreeDecoration.put(ctx, compositeType);
 
 		// Alles klopt. Nu de juiste suit teruggeven.
 		return new Suit(compositeType, isConstant);

@@ -38,17 +38,32 @@ public class CompositeSymbol extends TypeSymbol {
 	}
 
 	/**
-	 * Returns the name of the class as it is called in Java and the filesystem (excl. extension)
+	 * Returns the name of the class as it is called in Java and the filesystem (excl. extension).
+	 * 
+	 * Examples: "composite$CA", or "I"
 	 * 
 	 * @param outerClassName
 	 *            the name of the containing class
 	 */
 	public String getDescriptor() {
-			return this.descriptor;
+		return this.descriptor;
+	}
+	
+	/**
+	 * Returns the signature, e.g. "Ljava/lang/String;", "Lcomposite$CA;", "I" or "Z"
+	 * @return signature as used by the JVM
+	 */
+	public String getSignature() {
+		if(this.descriptor.contains("$")) {
+			return "L" + this.getDescriptor() + ";";
+		} else {
+			// primitive types; int etc.
+			return this.getDescriptor();
+		}
 	}
 
 	/**
-	 * Attempt to set and get the name of the type in the style the compiler refers to it. This is of the format "C[A-Z]+". Only sets the value if no value was
+	 * Attempt to set the descriptor of the type in the style the compiler refers to it. This is of the format outerclass$C[A-Z]+. Only sets the value if no value was
 	 * set yet.
 	 * 
 	 * @param number

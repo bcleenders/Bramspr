@@ -41,8 +41,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	MethodVisitor mv;
 
 	// Memory management!
-	/** The number of variables declared at any given time */
-	private int variablesDeclaredNow = 0;
+	/** 
+	 * The number of variables declared at any given time 
+	 * Starts at 2, to leave room for the arguments (single reference) and $this
+	 */
+	private int variablesDeclaredNow = 2;
 	/** The number of variables declared in the current level */
 	private Stack<Integer> variablesDeclaredInLevel = new Stack<Integer>();
 
@@ -112,9 +115,9 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * mv.visitLocalVariable(...) iteration at the end of the class, to declare the variables.
 	 */
 	private ArrayList<VariableSymbol> variables = new ArrayList<VariableSymbol>();
-	
+
 	/**
-	 * This stores a list of classnames and bytecode. It always stores at least one element; the main class. 
+	 * This stores a list of classnames and bytecode. It always stores at least one element; the main class.
 	 */
 	private ArrayList<BramsprClass> classes = new ArrayList<BramsprClass>();
 
@@ -158,63 +161,87 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		this.tcw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
 
-		{
+		{	// Class initializer of the outerclass
 			mv = this.tcw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 			mv.visitCode();
+			
+			// Set start and end labels
 			Label startLabel = new Label();
-			mv.visitLabel(startLabel);
-			mv.visitLineNumber(0, startLabel);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-
-			mv.visitInsn(RETURN);
 			Label endLabel = new Label();
+
+			mv.visitLabel(startLabel);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+            mv.visitInsn(RETURN);
 			mv.visitLabel(endLabel);
 			mv.visitLocalVariable("this", "L" + className + ";", null, startLabel, endLabel, 0);
-			mv.visitMaxs(2, 1);
+			mv.visitMaxs(1, 1);
 			mv.visitEnd();
 		}
 
-		// eval method
-		mv = this.tcw.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
-		mv.visitCode();
-		
-		// Open the program scope
-		this.openScope();
-		// Compile the code
-		visit(tree);
-		// Close the program scope
-		this.closeScope();
-
-		// Now let's visit all those variables we've been using throughout the program...
-		for (int i = 0; i < this.variables.size(); i++) {
-			VariableSymbol var = this.variables.get(i);
-
-			TypeSymbol type = var.getReturnType();
-			String signature = null;
-
-			if (type instanceof CompositeSymbol) {
-				signature = ((CompositeSymbol) type).getDescriptor();
-			} else if (type instanceof EnumerationSymbol) {
-				signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
-			} else {
-				System.err.println("Unknown type at variable declaration.");
-				System.exit(1);
+		{	// main method
+			mv = this.tcw.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
+            mv.visitCode();
+            
+            // Create an instance of the outerclass
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitLineNumber(11, l0);
+            mv.visitTypeInsn(NEW, this.mainFileName);
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, this.mainFileName, "<init>", "()V");
+            // Put it in the memory, location 1!
+            mv.visitVarInsn(ASTORE, 1);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            
+			// Open the program scope
+			this.openScope();
+			// Compile the code
+			visit(tree);
+			// Close the program scope
+			this.closeScope();
+			
+			mv.visitInsn(RETURN);
+			
+			Label l4 = new Label();
+            mv.visitLabel(l4);
+			mv.visitLocalVariable("args", "[Ljava/lang/String;", null, l0, l4, 0);
+            mv.visitLocalVariable("outerClass", "L" + this.mainFileName + ";", null, l1, l4, 1);
+	
+			// Now let's visit all those variables we've been using throughout the program...
+			for (int i = 0; i < this.variables.size(); i++) {
+				VariableSymbol var = this.variables.get(i);
+	
+				TypeSymbol type = var.getReturnType();
+				String signature = null;
+	
+				if (this.isJBCPrimitive(type)) {
+					signature = type.getDescriptor();
+					System.out.println("composite type with signature " + signature);
+				} else if (type instanceof CompositeSymbol) {
+					signature = "L" + type.getDescriptor() + ";";
+					System.out.println("composite type with signature " + signature);
+				} else if (type instanceof EnumerationSymbol) {
+					signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
+				} else {
+					System.err.println("Unknown type at variable declaration.");
+					System.exit(1);
+				}
+	
+				mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getMemAddr());
 			}
-
-			mv.visitLocalVariable(var.getIdentifier(), signature, null, var.openingLabel, var.closingLabel, var.getMemAddr());
+	
+			// max stack and max locals automatically computed, only needed for Java 8 and above and Java 7 without flags
+			mv.visitMaxs(0, 0);
+			// That's all for now...
+			mv.visitEnd();
 		}
 
-		mv.visitInsn(RETURN);
-		// max stack and max locals automatically computed, only needed for Java 8 and above and Java 7 without flags
-		mv.visitMaxs(0, 0);
-		// That's all for now...
-		mv.visitEnd();
-
 		byte[] code = cw.toByteArray();
-		
+
 		this.classes.add(new BramsprClass(className, code));
-		
+
 		return this.classes;
 	}
 
@@ -345,8 +372,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			TypeSymbol type = assignable.getReturnType();
 
 			if (this.isJBCPrimitive(type)) {
+				// Store the value
 				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
-			} else if (type.equals(BramsprChecker.STRING)) {
+			} else if (type instanceof CompositeSymbol) {
+				// Store the reference
 				mv.visitIntInsn(ASTORE, memaddr); // Stack: a ->
 			} else {
 				System.err.println("Invalid assignment; unimplemented type!");
@@ -1132,65 +1161,112 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	/** The number of currently defined types in the program. */
 	int numberOfTypes = 0;
-	
+
 	@Override
 	/**
 	 * Creates a new inner class to store the information of the composite.
 	 */
 	public Symbol visitCompositeDeclaration(CompositeDeclarationContext ctx) {
-		// What symbol are we declaring?
+		/** Symbol denoting the type we're declaring here */
 		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
-		String className = symbol.setDescriptor(this.mainFileName, this.numberOfTypes);
+		/** e.g. CA */
+		String innerClassName = symbol.setDescriptor(this.mainFileName, this.numberOfTypes);
+		/** e.g. Bramspr$CA */
 		String fileName = symbol.getDescriptor();
 		
-		System.out.print("Encountered type " + symbol.getIdentifier() + " which will be compiled to " + className);
-		System.out.println(" - its name is " + fileName);
+		// Before we create the inner class, we have to visit it first
+        this.tcw.visitInnerClass(symbol.getDescriptor(), this.mainFileName, innerClassName, ACC_PUBLIC);
 
-
+		// Now we can start creating the inner class. Note that this uses new writers!
 		ClassWriter innerCW = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		FieldVisitor innerFV;
 		MethodVisitor innerMV;
 
-	    innerCW.visit(V1_7, ACC_SUPER, fileName, null, "java/lang/Object", null);
-	    innerCW.visitInnerClass(fileName, this.mainFileName, className, 0);
+		innerCW.visit(V1_7, ACC_SUPER | ACC_PUBLIC, fileName, null, "java/lang/Object", null);
+		innerCW.visitInnerClass(fileName, this.mainFileName, innerClassName, ACC_PUBLIC);
 
-	    for(Entry<String, TypeSymbol> field : symbol.fields.entrySet()){ // Repeat:
-	    	String fieldName = field.getKey();
-	    	TypeSymbol fieldType = field.getValue();
-	    	
-	        innerFV = innerCW.visitField(ACC_PUBLIC, fieldName, fieldType.getDescriptor(), null, null);
-	        innerFV.visitEnd();
-	    }
+		for (Entry<String, TypeSymbol> field : symbol.fields.entrySet()) { // Repeat:
+			String fieldName = field.getKey();
+			TypeSymbol fieldType = field.getValue();
 
-	    {
-	    	// Thanks to AMSifier; 
-	        innerFV = innerCW.visitField(ACC_FINAL + ACC_SYNTHETIC, "this$0", "L" + this.mainFileName + ";", null, null);
-	        innerFV.visitEnd();
-		    innerMV = innerCW.visitMethod(0, "<init>", "(L" + this.mainFileName + ";)V", null, null);
-		    innerMV.visitCode();
-		    Label l0 = new Label();
-		    innerMV.visitLabel(l0);
-		    innerMV.visitLineNumber(4, l0);
-		    innerMV.visitVarInsn(ALOAD, 0);
-		    innerMV.visitVarInsn(ALOAD, 1);
-		    innerMV.visitFieldInsn(PUTFIELD, fileName, "this$0", "L" + this.mainFileName + ";");
-		    innerMV.visitVarInsn(ALOAD, 0);
-		    innerMV.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-		    innerMV.visitInsn(RETURN);
-		    Label l3 = new Label();
-		    innerMV.visitLabel(l3);
-		    innerMV.visitLocalVariable("this", "L" + fileName + ";", null, l0, l3, 0);
-		    innerMV.visitMaxs(2, 2);
-		    innerMV.visitEnd();
-	    }
-	    innerCW.visitEnd();
-
-	    byte[] bytecode = innerCW.toByteArray();
-	    // Save this for later:
-	    BramsprClass newType = new BramsprClass(fileName, bytecode);
-	    this.classes.add(newType);
+			innerFV = innerCW.visitField(ACC_PUBLIC, fieldName, fieldType.getDescriptor(), null, null);
+			innerFV.visitEnd();
+		}
 		
+		{
+			innerFV = innerCW.visitField(ACC_FINAL + ACC_SYNTHETIC, "this$0", "L" + this.mainFileName + ";", null, null);
+			innerFV.visitEnd();
+        }
+
+		{
+			// Thanks to AMSifier;
+			innerMV = innerCW.visitMethod(ACC_PUBLIC, "<init>", "(L" + this.mainFileName + ";)V", null, null);
+			innerMV.visitCode();
+			Label l0 = new Label();
+			innerMV.visitLabel(l0);
+			innerMV.visitLineNumber(4, l0);
+			innerMV.visitVarInsn(ALOAD, 0);
+			innerMV.visitVarInsn(ALOAD, 1);
+			innerMV.visitFieldInsn(PUTFIELD, fileName, "this$0", "L" + this.mainFileName + ";");
+			innerMV.visitVarInsn(ALOAD, 0);
+			innerMV.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+			innerMV.visitInsn(RETURN);
+			Label l3 = new Label();
+			innerMV.visitLabel(l3);
+			innerMV.visitLocalVariable("this", "L" + fileName + ";", null, l0, l3, 0);
+			innerMV.visitMaxs(2, 2);
+			innerMV.visitEnd();
+		}
+		innerCW.visitEnd();
+
+		byte[] bytecode = innerCW.toByteArray();
+		// Save this for later:
+		BramsprClass newType = new BramsprClass(fileName, bytecode);
+		this.classes.add(newType);
+
 		this.numberOfTypes++;
+
+		return null;
+	}
+
+	/**
+	 * Generates the JBC for a composite literal. Creates a new instantion of the class belonging to the composite and set
+	 */
+	public Symbol visitCompositeLiteral(CompositeLiteralContext ctx) {
+		CompositeSymbol type = (CompositeSymbol) this.parseTreeproperty.get(ctx);
+		
+		// Create the new object
+		mv.visitTypeInsn(NEW, type.getDescriptor());
+		mv.visitInsn(DUP);	
+		mv.visitVarInsn(ALOAD, 1);
+		mv.visitInsn(DUP);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
+		mv.visitInsn(POP);
+		mv.visitMethodInsn(INVOKESPECIAL, type.getDescriptor(), "<init>", "(L" + this.mainFileName + ";)V");
+		// There now is a reference to the instantiated object on the stack
+
+		// Note: the identifier index is always one ahead of the expression index.
+		for (int i = 0; i < ctx.expression().size(); i++) {
+			// Copy the reference
+			mv.visitInsn(DUP);
+
+			visit(ctx.expression(i));
+			String fieldName = ctx.IDENTIFIER(i + 1).getText();
+			TypeSymbol fieldType = type.getFieldType(fieldName);
+
+			System.out.println("Encountered field of type " + fieldType.getDescriptor());
+
+			// Put the value in the field.
+			if (this.isJBCPrimitive(fieldType)) {
+				mv.visitFieldInsn(PUTFIELD, type.getDescriptor(), fieldName, fieldType.getDescriptor());
+				System.out.println("mv.visitFieldInsn(PUTFIELD, \"" + type.getDescriptor() + "\", \"" + fieldName + "\", \"" + fieldType.getDescriptor()
+						+ "\");");
+			} else {
+				mv.visitFieldInsn(PUTFIELD, type.getDescriptor(), fieldName, "L" + fieldType.getDescriptor() + ";");
+				System.out.println("mv.visitFieldInsn(PUTFIELD, \"" + type.getDescriptor() + "\", \"" + fieldName + "\", \"L" + fieldType.getDescriptor()
+						+ ";\");");
+			}
+		}
 		
 		return null;
 	}
@@ -1220,17 +1296,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 		return false;
 	}
-	
+
 	/**
 	 * This class is only used to store a classname - bytecode pair, since Java does not have a pair class.
 	 */
 	public class BramsprClass {
-	    public String className;
-	    public byte[] bytecode;
+		public String className;
+		public byte[] bytecode;
 
-	    public BramsprClass(String className, byte[] bytecode) {
-	    	this.className = className;
-	    	this.bytecode = bytecode;
-	    }
+		public BramsprClass(String className, byte[] bytecode) {
+			this.className = className;
+			this.bytecode = bytecode;
+		}
 	}
 }

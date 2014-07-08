@@ -10,6 +10,12 @@ type Tafel {
     type Tafel {
         aantalPoten: integer
     };
+
 }
+
+count: integer := 3;
+
+t: Tafel;
+t:= Tafel{ aantalPoten:= count };
 
 putString("Survived the program!");
