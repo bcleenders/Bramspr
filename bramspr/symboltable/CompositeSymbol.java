@@ -3,16 +3,18 @@ package bramspr.symboltable;
 import java.util.HashMap;
 
 public class CompositeSymbol extends TypeSymbol {
-	HashMap<String, TypeSymbol> fields = new HashMap<String, TypeSymbol>();
+	public HashMap<String, TypeSymbol> fields = new HashMap<String, TypeSymbol>();
+	boolean primitive = false;
 
 	/**
 	 * The name of the symbol after compiling. This is something like "CA", "CB", etc.
 	 */
-	public String internalName;
+	public String descriptor;
 
 	public CompositeSymbol(String internalName, String identifier, String[] fieldNames, TypeSymbol[] fieldTypes) {
 		this(identifier, fieldNames, fieldTypes);
-		this.internalName = internalName;
+		this.descriptor = internalName;
+		primitive = true;
 	}
 
 	public CompositeSymbol(String identifier, String[] fieldNames, TypeSymbol[] fieldTypes) {
@@ -21,10 +23,6 @@ public class CompositeSymbol extends TypeSymbol {
 		for (int i = 0; fieldNames != null && i < fieldNames.length; i++) {
 			this.fields.put(fieldNames[i], fieldTypes[i]);
 		}
-	}
-
-	public String getShortIdentifier() {
-		return this.internalName;
 	}
 
 	public boolean hasField(String fieldName) {
@@ -40,28 +38,29 @@ public class CompositeSymbol extends TypeSymbol {
 	}
 
 	/**
-	 * Returns the name of the class as it is called in the filesystem (excl. extension)
+	 * Returns the name of the class as it is called in Java and the filesystem (excl. extension)
 	 * 
 	 * @param outerClassName
 	 *            the name of the containing class
-	 * @return outerClassname + "$" + this.compiledName
 	 */
-	public String getClassName(String outerClassName) {
-		return outerClassName + "$" + this.internalName;
+	public String getDescriptor() {
+			return this.descriptor;
 	}
 
 	/**
-	 * Attempt to set and get the name of the type in the style the compiler refers to it. This is of the format "C[A-Z]+". Only sets the value if no value was set yet.
+	 * Attempt to set and get the name of the type in the style the compiler refers to it. This is of the format "C[A-Z]+". Only sets the value if no value was
+	 * set yet.
 	 * 
 	 * @param number
 	 *            the identifier of the type, must be unique for every type.
-	 * @return the name of this type
+	 * @return the inner class name of this type
 	 */
-	public String getInteralName(int number) {
-		if (this.internalName == null) {
-			this.internalName = this.i2s(number);
+	public String setDescriptor(String outerClassName, int number) {
+		if (this.descriptor == null) {
+			this.descriptor = outerClassName + "$" + this.i2s(number);
+			return this.i2s(number);
 		}
-		return this.internalName;
+		return null;
 	}
 
 	/**

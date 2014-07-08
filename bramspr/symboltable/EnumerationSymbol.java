@@ -33,4 +33,9 @@ public class EnumerationSymbol extends TypeSymbol {
 	public int getFieldId(String identifier) {
 		return values.indexOf(identifier);
 	}
+	
+	public String getDescriptor() {
+		// Stored as integer values
+		return "I";
+	}
 }

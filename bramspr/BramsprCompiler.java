@@ -2,7 +2,9 @@ package bramspr;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -192,7 +194,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 			String signature = null;
 
 			if (type instanceof CompositeSymbol) {
-				signature = ((CompositeSymbol) type).getShortIdentifier();
+				signature = ((CompositeSymbol) type).getDescriptor();
 			} else if (type instanceof EnumerationSymbol) {
 				signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
 			} else {
@@ -1150,10 +1152,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	public Symbol visitCompositeDeclaration(CompositeDeclarationContext ctx) {
 		// What symbol are we declaring?
 		CompositeSymbol symbol = (CompositeSymbol) this.parseTreeproperty.get(ctx);
-		String compiledName = symbol.getInteralName(this.numberOfTypes);
-		String fileName = symbol.getClassName(this.mainFileName);
+		String className = symbol.setDescriptor(this.mainFileName, this.numberOfTypes);
+		String fileName = symbol.getDescriptor();
 		
-		System.out.print("Encountered type " + symbol.getIdentifier() + " which will be compiled to " + compiledName);
+		System.out.print("Encountered type " + symbol.getIdentifier() + " which will be compiled to " + className);
 		System.out.println(" - its name is " + fileName);
 
 
@@ -1162,10 +1164,13 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		MethodVisitor innerMV;
 
 	    innerCW.visit(V1_7, ACC_SUPER, fileName, null, "java/lang/Object", null);
-	    innerCW.visitInnerClass(fileName, this.mainFileName, compiledName, 0);
+	    innerCW.visitInnerClass(fileName, this.mainFileName, className, 0);
 
-	    { // Repeat:
-	        innerFV = innerCW.visitField(ACC_PUBLIC, "b", "Z", null, null);
+	    for(Entry<String, TypeSymbol> field : symbol.fields.entrySet()){ // Repeat:
+	    	String fieldName = field.getKey();
+	    	TypeSymbol fieldType = field.getValue();
+	    	
+	        innerFV = innerCW.visitField(ACC_PUBLIC, fieldName, fieldType.getDescriptor(), null, null);
 	        innerFV.visitEnd();
 	    }
 

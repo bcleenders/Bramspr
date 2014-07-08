@@ -22,4 +22,8 @@ public class ErrorType extends TypeSymbol {
 	public boolean equals(Object s) {
 		return s instanceof TypeSymbol;
 	}
+	
+	public String getDescriptor() {
+		return "ERROR";
+	}
 }
