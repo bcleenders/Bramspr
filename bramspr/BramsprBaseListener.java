@@ -108,13 +108,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx) { }
+	@Override public void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx) { }
+	@Override public void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -329,13 +329,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx) { }
+	@Override public void enterAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx) { }
+	@Override public void exitAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -355,13 +355,13 @@ public class BramsprBaseListener implements BramsprListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx) { }
+	@Override public void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx) { }
+	@Override public void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

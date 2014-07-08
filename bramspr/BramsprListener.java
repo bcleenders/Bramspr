@@ -89,12 +89,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#arrayAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx);
+	void enterArrayAccessExpression(@NotNull BramsprParser.ArrayAccessContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#arrayAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessExpressionContext ctx);
+	void exitArrayAccessExpression(@NotNull BramsprParser.ArrayAccessContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#greaterThanExpression}.
@@ -276,12 +276,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#accessOnAssignableExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx);
+	void enterAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#accessOnAssignableExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableExpressionContext ctx);
+	void exitAccessOnAssignableExpression(@NotNull BramsprParser.AccessOnAssignableContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#compositeLiteral}.
@@ -298,12 +298,12 @@ public interface BramsprListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+	void enterFieldAccessExpression(@NotNull BramsprParser.FieldAccessContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link BramsprParser#fieldAccessExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessExpressionContext ctx);
+	void exitFieldAccessExpression(@NotNull BramsprParser.FieldAccessContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#universalEqualsToExpression}.

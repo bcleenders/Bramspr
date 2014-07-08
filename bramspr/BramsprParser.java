@@ -37,13 +37,13 @@ public class BramsprParser extends Parser {
 		RULE_enumerationDeclaration = 8, RULE_functionDeclaration = 9, RULE_compositeDeclaration = 10, 
 		RULE_typeDenoter = 11, RULE_assignment = 12, RULE_swap = 13, RULE_expression = 14, 
 		RULE_arithmetic = 15, RULE_molecule = 16, RULE_atomic = 17, RULE_assignable = 18, 
-		RULE_accessExpression = 19, RULE_functionCall = 20, RULE_literal = 21;
+		RULE_access = 19, RULE_functionCall = 20, RULE_literal = 21;
 	public static final String[] ruleNames = {
 		"program", "structure", "blockStructure", "ifStructure", "whileStructure", 
 		"statement", "declaration", "variableDeclaration", "enumerationDeclaration", 
 		"functionDeclaration", "compositeDeclaration", "typeDenoter", "assignment", 
 		"swap", "expression", "arithmetic", "molecule", "atomic", "assignable", 
-		"accessExpression", "functionCall", "literal"
+		"access", "functionCall", "literal"
 	};
 
 	@Override
@@ -1963,8 +1963,8 @@ public class BramsprParser extends Parser {
 		public AtomicContext atomic() {
 			return getRuleContext(AtomicContext.class,0);
 		}
-		public AccessExpressionContext accessExpression() {
-			return getRuleContext(AccessExpressionContext.class,0);
+		public AccessContext access() {
+			return getRuleContext(AccessContext.class,0);
 		}
 		public AccessOnAtomicExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
@@ -2051,7 +2051,7 @@ public class BramsprParser extends Parser {
 					pushNewRecursionContext(_localctx, _startState, RULE_atomic);
 					setState(327);
 					if (!(1 >= _localctx._p)) throw new FailedPredicateException(this, "1 >= $_p");
-					setState(328); accessExpression();
+					setState(328); access();
 					}
 					} 
 				}
@@ -2087,26 +2087,26 @@ public class BramsprParser extends Parser {
 			this._p = ctx._p;
 		}
 	}
+	public static class AccessOnAssignableContext extends AssignableContext {
+		public AssignableContext assignable() {
+			return getRuleContext(AssignableContext.class,0);
+		}
+		public AccessContext access() {
+			return getRuleContext(AccessContext.class,0);
+		}
+		public AccessOnAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAccessOnAssignable(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class BasicAssignableContext extends AssignableContext {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public BasicAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBasicAssignable(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class AccessOnAssignableExpressionContext extends AssignableContext {
-		public AccessExpressionContext accessExpression() {
-			return getRuleContext(AccessExpressionContext.class,0);
-		}
-		public AssignableContext assignable() {
-			return getRuleContext(AssignableContext.class,0);
-		}
-		public AccessOnAssignableExpressionContext(AssignableContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAccessOnAssignableExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2139,11 +2139,11 @@ public class BramsprParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new AccessOnAssignableExpressionContext(new AssignableContext(_parentctx, _parentState, _p));
+					_localctx = new AccessOnAssignableContext(new AssignableContext(_parentctx, _parentState, _p));
 					pushNewRecursionContext(_localctx, _startState, RULE_assignable);
 					setState(337);
 					if (!(2 >= _localctx._p)) throw new FailedPredicateException(this, "2 >= $_p");
-					setState(338); accessExpression();
+					setState(338); access();
 					}
 					} 
 				}
@@ -2164,49 +2164,49 @@ public class BramsprParser extends Parser {
 		return _localctx;
 	}
 
-	public static class AccessExpressionContext extends ParserRuleContext {
-		public AccessExpressionContext(ParserRuleContext parent, int invokingState) {
+	public static class AccessContext extends ParserRuleContext {
+		public AccessContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_accessExpression; }
+		@Override public int getRuleIndex() { return RULE_access; }
 	 
-		public AccessExpressionContext() { }
-		public void copyFrom(AccessExpressionContext ctx) {
+		public AccessContext() { }
+		public void copyFrom(AccessContext ctx) {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class ArrayAccessExpressionContext extends AccessExpressionContext {
+	public static class ArrayAccessContext extends AccessContext {
 		public TerminalNode LEFT_BLOCKBRACE() { return getToken(BramsprParser.LEFT_BLOCKBRACE, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
-		public ArrayAccessExpressionContext(AccessExpressionContext ctx) { copyFrom(ctx); }
+		public ArrayAccessContext(AccessContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayAccessExpression(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayAccess(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class FieldAccessExpressionContext extends AccessExpressionContext {
+	public static class FieldAccessContext extends AccessContext {
 		public TerminalNode DOT() { return getToken(BramsprParser.DOT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
-		public FieldAccessExpressionContext(AccessExpressionContext ctx) { copyFrom(ctx); }
+		public FieldAccessContext(AccessContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccessExpression(this);
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccess(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final AccessExpressionContext accessExpression() throws RecognitionException {
-		AccessExpressionContext _localctx = new AccessExpressionContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_accessExpression);
+	public final AccessContext access() throws RecognitionException {
+		AccessContext _localctx = new AccessContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_access);
 		try {
 			setState(350);
 			switch (_input.LA(1)) {
 			case DOT:
-				_localctx = new FieldAccessExpressionContext(_localctx);
+				_localctx = new FieldAccessContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(344); match(DOT);
@@ -2214,7 +2214,7 @@ public class BramsprParser extends Parser {
 				}
 				break;
 			case LEFT_BLOCKBRACE:
-				_localctx = new ArrayAccessExpressionContext(_localctx);
+				_localctx = new ArrayAccessContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(346); match(LEFT_BLOCKBRACE);

@@ -9,11 +9,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import bramspr.BramsprParser.AccessOnAssignableExpressionContext;
+import bramspr.BramsprParser.AccessOnAssignableContext;
 import bramspr.BramsprParser.AccessOnAtomicExpressionContext;
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
-import bramspr.BramsprParser.ArrayAccessExpressionContext;
+import bramspr.BramsprParser.ArrayAccessContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
@@ -29,7 +29,7 @@ import bramspr.BramsprParser.EnumeratedTypeDenoterContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationLiteralContext;
-import bramspr.BramsprParser.FieldAccessExpressionContext;
+import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
 import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
@@ -219,31 +219,31 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Access-on-Assignable-Expression.
+	 * Handles the context checking of an Access-on-Assignable.
 	 * 
-	 * Calls the visit-method for the Access-Expression component, which actually does the context checking.
+	 * Calls the visit-method for the Access component, which actually does the context checking.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Access-on-Assignable-Expression.
-	 * @return The suit of the Access-Expression component.
+	 *            The context object associated with the parse tree node of this Access-on-Assignable.
+	 * @return The suit of the Access component.
 	 */
 	@Override
-	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
-		return visit(ctx.accessExpression());
+	public Suit visitAccessOnAssignable(AccessOnAssignableContext ctx) {
+		return visit(ctx.access());
 	}
 
 	/**
 	 * Handles the context checking of an Access-on-Atomic-Expression.
 	 * 
-	 * Calls the visit-method for the Access-Expression component, which actually does the context checking.
+	 * Calls the visit-method for the Access component, which actually does the context checking.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Access-on-Atomic-Expression.
-	 * @return The suit of the Access-Expression component.
+	 * @return The suit of the Access component.
 	 */
 	@Override
 	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
-		return visit(ctx.accessExpression());
+		return visit(ctx.access());
 	}
 
 	/**
@@ -319,9 +319,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Array-access-Expression.
+	 * Handles the context checking of an Array-access.
 	 * 
-	 * An Array-access-Expression is confined to the following context rules:
+	 * An Array-access is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -333,11 +333,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Array-access-Expression.
-	 * @return The suit of the Array-access-Expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Array-access.
+	 * @return The suit of the Array-access or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+	public Suit visitArrayAccess(ArrayAccessContext ctx) {
 		// Pak het meest linker kind van de parent, en kijk wat voor suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
 		Suit indexSuit = visit(ctx.expression());
@@ -940,9 +940,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a Field-access-Expression.
+	 * Handles the context checking of a Field-access.
 	 * 
-	 * A Field-access-Expression is confined to the following context rules:
+	 * A Field-access is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -954,11 +954,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Field-access-Expression.
-	 * @return The suit of the Field-access-Expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Field-access.
+	 * @return The suit of the Field-access or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+	public Suit visitFieldAccess(FieldAccessContext ctx) {
 		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
 		String fieldName = ctx.IDENTIFIER().getText();
@@ -1520,8 +1520,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * type. This method first tries to resolve the left-hand identifier in {@link #variableSymbolTable}. If that gives no result, it resolves it in
 	 * {@link #enumerationSymbolTable}.
 	 * 
-	 * If the identifier turns out to be declared as a variable, this method checks the context rules for a Field-access-Expression (see
-	 * {@link #visitFieldAccessExpression visitFieldAccessExpression}).
+	 * If the identifier turns out to be declared as a variable, this method checks the context rules for a Field-access (see
+	 * {@link #visitFieldAccess visitFieldAccess}).
 	 * 
 	 * If the identifier matches an enumerated type instead, the method checks the context rules as for an explicit-Enumeration-Literal (see
 	 * {@link #visitExplicitEnumerationLiteral visitExplicitEnumerationLiteral}).
