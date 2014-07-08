@@ -922,9 +922,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		Label beforeExpression = new Label();
 		mv.visitJumpInsn(GOTO, beforeExpression);
 
-		// The while block is its own scope.
-		this.openScope();
-
 		// Jump back to this label at the end of every iteration
 		Label beforeCode = new Label();
 		mv.visitLabel(beforeCode);
@@ -936,9 +933,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Hier wordt de allereerste keer naartoe gesprongen.
 		mv.visitLabel(beforeExpression);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-
-		// You can't use variables declared inside the scope in the expression! Close scope!
-		this.closeScope();
 
 		// Execute the control expression
 		visit(ctx.expression());
