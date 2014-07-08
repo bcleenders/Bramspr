@@ -13,11 +13,14 @@ ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStruct
 whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;                     // done
 
 statement : structure                   // (implicit)
-          | declaration SEMICOLON       // (implicit)
-          | assignment SEMICOLON        //
-          | swap SEMICOLON              //
-          | functionCall SEMICOLON
+          | declaration     SEMICOLON       // (implicit)
+          | command         SEMICOLON        //
+          | functionCall    SEMICOLON
           ;
+
+command : assignment
+        | swap
+        ;
 
 declaration: compositeDeclaration
            | functionDeclaration        //

@@ -379,15 +379,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>all elements must have an existing type;
 	 * <li>all elements must have the same type;
-	 * <li>the Array-Literal is constant if all of its elements are constant;
 	 * <li>the Array-Literal is of type <i>[n]type</i>, where <i>n</i> is the amount of elements and <i>type</i> is the type of the elements, or void when there
-	 * are no elements.
+	 * are no elements;
+	 * <li>the Array-Literal is constant if all of its elements are constant;
 	 * </ol>
 	 * <br>
-	 * 
-	 * This method only implements the last three. Rule 1 is already governed by the visit-methods for the individual elements, which get called by this method.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Array-Literal.
@@ -451,15 +448,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>the assignable(s) must exist (the identifier(s) must be declared as variable(s) / the reffered field(s) must exist);
 	 * <li>the assignable(s) must not be constant;
 	 * <li>the assignable(s) and the expression should be of the same type;
 	 * <li>the suit of the Assignment is the suit of the expression.
 	 * </ol>
 	 * <br>
-	 * 
-	 * Rule 1 is checked in the visit-method(s) of the individual assignable(s), which get called by this method. This method therefore only checks the last two
-	 * rules.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Assignment.

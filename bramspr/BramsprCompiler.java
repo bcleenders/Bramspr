@@ -288,8 +288,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * @param ctx the node in the parsetree representing the statement.
 	 */
 	public Symbol visitStatement(StatementContext ctx) {
-		if (ctx.assignment() != null) {
-			visitAssignment(ctx.assignment());
+		if (ctx.command().assignment() != null) {
+			visitAssignment(ctx.command().assignment());
 			// Assignments leave something on the stack; statements should not do that so we have to POP it.
 			mv.visitInsn(POP);
 			return null;
