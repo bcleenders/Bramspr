@@ -1,7 +1,8 @@
 /*
-    LET OP!
-    Dit bestand test de checker en haalt deze,
-    Het kan echter niet worden gecompileerd, omdat arrays niet geïmplementeerd zijn in de code generator.
+    Dit bestand test of arrays (i.c.m. composites) goed geparset en gecheckt worden.
+    Echter, de code generator ondersteunt arrays niet...
+
+    Om te voorkomen dat het bestand toch (incorrect) gecompiled wordt, eindigt dit programma met een context foutje.
 */
 
 { // Test sequence 1
@@ -51,4 +52,8 @@
     } else {
         putChar('n');
     }
+}
+
+{   // Nog even een foutje, zodat hij niet gaat code-generaten:
+    x: boolean := 10; // Dag, dag!
 }

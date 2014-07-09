@@ -1,0 +1,101 @@
+{   // Variables testing
+    x: nonExistent; // Type does not exist yet
+
+    i: boolean;
+    i: boolean; // Already declared
+    i: integer; // Already declared (type doesn't matter)
+    i: boolean := 2; // Already declared (instantiation does not matter)
+
+    a: boolean := i; // Incorrect type; a was first declared as integer
+    a: boolean; // Although a was declared incorrectly, it's still declared!
+
+    b: boolean := a; // Errors do not propagate; this is correct!
+
+    {
+        hidden: integer;
+    }
+    searcher: integer := hidden; // Can't see hidden; it's hidden
+}
+
+{   // Constants testing
+    constant PI: integer := 3;
+    constant TAU: integer := 2*PI; // This is still correct
+
+    {
+        // Let's try to do some bad assignments
+        PI := 10; // Can't change the value, only hide it!
+
+        // Looks like a constant, but can't be sure on compiletime
+        constant ILikeIcecream: boolean := getBool(); // Ooooow userinput isn't constant! There could be a hater!
+
+        // Owwww, conflicts!
+        constant BESTCONSTANT: integer := PI;
+        constant BESTCONSTANT: integer := TAU;
+
+        // Incorrect types!
+        constant ONE: integer := '1';
+        constant HELLO: string := 42;
+        constant INITIAL: character := 3; // Yeah right, if you're 3CPO perhaps... but even that should be a character!
+    }
+}
+
+{   // Enumerations testing
+    {
+        enumeration relatieStatussen{scharrel, kwarrel, prela, relatie}; // Geldig
+        enumeration relatieStatussen{verliefd, verloofd, getrouwd}; // Name collision
+        enumeration talenMetDeNaamBramspr{Bramspr, Bramspr, Bramspr}; // Mag geen dubbele waardes hebben (twee maal)
+        enumeration dingenDieWaarEnOnwaarTegelijkertijdZijn{}; // Geldig
+    }
+
+    {
+        enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+        enumeration color { RED, WHITE, BLUE };
+
+        // Naming conflicts!
+        type color {
+            R: integer,
+            B: integer,
+            G: integer
+        };
+
+        d : day;
+        c : color; // Not an enum; enum type is hidden by composite type!
+
+        c := color.RED; // No such field in composite color
+        c := enumeration.color.RED; // Cannot assign enum to composite
+
+        // More collisions: variable <-> enum collision!
+        day : integer := 6;
+        d := day.TUESDAY; // No longer works; needs explicit reference
+
+        // Field does not exist
+        d := enumeration.day.BIRTHDAY;
+    }
+}
+
+{   // Testing the if structure
+    if(1) {
+        putString("hello world");
+    }
+
+    if('a') {
+        putString("hello world");
+    }
+
+    if("hello world") {
+        putString("hello world");
+    }
+}
+
+{   // Testing functions
+    function bereken(moetIkDitEchtDoen: boolean, hoeVaakDan: integer){
+        return true;
+    };
+
+    // All functioncalls have incorrect signatures
+    bereken(true, 5);
+    bereken();
+    bereken(false);
+    bereken("Onee", 15);
+    bereken("Hahaha", 15, true, 'x');
+}

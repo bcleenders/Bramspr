@@ -86,6 +86,8 @@ function end() {
         test(4^3^2, 262144, "4^3^2 = 4^(3^2)");
         test((4^3)^2, 4096, "(4^3)^2");
         test(10^10^10, 2147483647, "Googleplex is replaced by 2^31-1");
+        test(10-5, 5, "10-5");
+        test(10-50, -40, "10-50");
     }
 
     {   // Logic
@@ -113,10 +115,39 @@ function end() {
             test(1 <= 1 <= 4 <= 10, true, "1 <= 1 <= 4 <= 10");
             test(1 <= 4 <= 4 <= 10 <= 2, false, "1 <= 4 <= 4 <= 10 <= 2");
         }
+        { // > operator
+            test(2 > 1, true, "2>1");
+            test(1 > 1, false, "1>1");
+            test(2 > 1 > -10, true, "2>1>-10");
+        }
+        { // >= operator
+            test(2 >= 1, true, "2>=1");
+            test(1 >= 1, true, "1>=1");
+            test(2 >= 1 >= -10, true, "2>=1>=-10");
+            test(-2 >= 1 >= -10, false, "-2>=1>=-10");
+            test(2 >= 1 >= 10, false, "2>=1>=10");
+        }
     }
 
+    {
+        // Declare various types as constants
+        constant ONE: integer := 1;
+        constant ILikeIcecream: boolean := true;
+        constant HELLO: string := "Hello, world!";
+        constant INITIAL: character := 'B';
 
-    { // Assignments and stuff
+        test(ONE, 1, "ONE");
+        test(ILikeIcecream, true, "ILikeIcecream");
+        test(HELLO, "Hello, world!", "HELLO");
+        test(INITIAL, 'B', "INITIAL");
+    }
+
+    { // Exponentiation overflow test
+        constant MAXINT: integer := 2147483647; // 2^31 - 1
+        test(2^30 - 1 + 2^30, MAXINT, "MAXINT");
+    }
+
+    { // Simple assignments
         x, y, z: integer;
         z := y := (x:= 5) * 10; // = 15
         test(x, 5, "x, after 'z := y := (x:= 5) * 10;'");
@@ -124,9 +155,28 @@ function end() {
         test(z, 50, "z, after 'z := y := (x:= 5) * 10;'");
 
         constant X: integer := 123;
-        constant MAXINT: integer := 2147483647; // 2^31 - 1
+    }
 
-        test(2^30 - 1 + 2^30, MAXINT, "MAXINT");
+    { // Fancy assignments
+        w, x, y, z: integer;
+
+        w := (x := y := (z := 10 * 2) + 1)*2;
+        test(w, 42, "w in fancy assignment");
+        test(x, 21, "x in fancy assignment");
+        test(y, 21, "y in fancy assignment");
+        test(z, 20, "z in fancy assignment");
+    }
+
+    { // While statement
+        x: integer := 10;
+        i: integer := 0;
+
+        while(i < x) {
+            i := i + 1;
+        }
+
+        // Now they are equal!
+        test(i, x, "i = x after while loop");
     }
 
     {   // More complicated testing; lazy evaluation!
@@ -144,6 +194,135 @@ function end() {
         isExecuted := false;
         sinkhole := 1 < 10 < setTrue() < 10000 < 10;
         test(isExecuted, true, "setTrue() was not evaluated (but should hav been)");
+    }
+
+    { // Advanced function testing: hide functions!
+        function getTrue() {
+            return true;
+        };
+
+        test(getTrue(), true, "calling the original getTrue()");
+
+        {
+            // This one hides the previous one...
+            function getTrue() {
+                // But we can still access the previous one, for this one is not yet declared.
+                inverse: boolean := !getTrue();
+                return false;
+            };
+
+            test(getTrue(), false, "calling getTrue(), hiding the original");
+
+            { // We can even change the return type:
+                function getTrue() {
+                    return 42;
+                };
+                test(getTrue(), 42, "getTrue() hidden twice!");
+            }
+        }
+
+        test(getTrue(), true, "calling the original getTrue() again");
+    }
+
+    { // Asking user input (not using Scooby framework)
+        putString("Please enter a boolean (true/false): ");
+        b: boolean := getBool();
+        putString("You entered: "); println(b);
+        
+        putString("Please enter a character: ");
+        c: character := getChar();
+        putString("You entered: "); println(c);
+
+        putString("Please enter a number: ");
+        i: integer := getInt();
+        putString("You entered: "); println(i);
+
+        putString("Please enter a string: ");
+        s: string := getString();
+        putString("You entered: "); println(s);
+    }
+
+    { // This is quite a large test... It has multiple types and tests setting/getting fields
+        type Stoel {
+            aantalPoten: integer
+        };
+
+        {   /*
+                Simpele read/write test met composite en int:
+            */
+            s: Stoel := Stoel{ aantalPoten := 4 };
+            i:integer := 2;
+            test(s.aantalPoten, 4, "s.aantalPoten (before swap)");
+            test(i, 2, "i (before swap)");
+            s.aantalPoten <> i; // Keert de waardes om!
+            test(s.aantalPoten, 2, "s.aantalPoten (after swap)");
+            test(i, 4, "i (after swap)");
+        }
+
+        type Tafel {
+            aantalZitPlaatsen: integer
+        };
+
+        {
+            // No errors caused: we can hide the outside type
+            type Tafel {
+                isOranje: boolean
+            };
+
+            t: Tafel := Tafel{ isOranje:= true };
+
+            test(t.isOranje, true, "t.isOranje (we just set it, now accessing its field)");
+        }
+
+        type EetKamer {
+            eetTafel: Tafel,
+            mooisteStoel: Stoel
+        };
+
+        type BadKamer {
+            heeftBad: boolean
+        };
+
+        type Huis {
+            eetKamer: EetKamer,
+            badKamer: BadKamer
+        };
+
+        t1: Tafel := Tafel{ aantalZitPlaatsen := 3 };
+        k: EetKamer := EetKamer{ eetTafel := t1, mooisteStoel := Stoel{ aantalPoten := 1 } };
+        b: BadKamer;
+        h: Huis := Huis {
+            badKamer := (b := BadKamer{ heeftBad := true }),
+            eetKamer := k
+        };
+
+        // De oude stoel heeft maar één poot:
+        test(h.eetKamer.mooisteStoel.aantalPoten, 1, "h.eetKamer.mooisteStoel.aantalPoten (oude stoel)");
+
+        // Nieuwe stoel kopen!
+        nieuweStoel: Stoel := Stoel{ aantalPoten := 4 };
+        h.eetKamer.mooisteStoel <> nieuweStoel;
+
+        // De nieuwe stoel heeft wel gewoon vier poten:
+        test(h.eetKamer.mooisteStoel.aantalPoten, 4, "h.eetKamer.mooisteStoel.aantalPoten (nieuwe stoel)");
+
+        // Nu even testen of we waarden uit literals kunnen opvragen:
+        aantalZitPlaatsen: integer := 
+            EetKamer{
+                eetTafel := Tafel{ aantalZitPlaatsen := 10 },
+                mooisteStoel := Stoel{ aantalPoten := 4 }
+            }.eetTafel.aantalZitPlaatsen;
+
+        test(aantalZitPlaatsen, 10, "double field access on composite literal (aantalZitPlaatsen)");
+
+        // Speciale aanbieding! 9 poten voor de prijs van vier!
+        function buyChair() {
+            return Stoel{ aantalPoten:= 9 }; // Composites returnen kan ook gewoon!
+        };
+        gekochtAantalPoten: integer := (((((buyChair()))))).aantalPoten;
+        test(gekochtAantalPoten, 9, "field access on return value of buyChair()");
+        // Bij de IKEA kan je nu stoelen met negen poten kopen.
+        // (ramp om in elkaar te moeten zetten...
     }
 }
 
