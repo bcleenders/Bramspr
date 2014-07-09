@@ -1,12 +1,13 @@
 package bramspr.symboltable;
 
-/**
- * This class implements a symbol table. It is used to keep track of declared variables, enumerated types, composite types and functions.
- */
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
+/**
+ * This class implements a symbol table. It is used to keep track of declared variables, enumerated types, composite types and functions.
+ */
 public class SymbolTable<S extends Symbol> {
 	/** A collection containing all declared symbols. */
 	private HashMap<String, Stack<S>> symbols;

@@ -112,4 +112,3 @@ literal : NUMBER                                                                
         | IDENTIFIER LEFT_BRACE IDENTIFIER BECOMES expression (COMMA IDENTIFIER BECOMES expression)* RIGHT_BRACE          # compositeLiteral
         | ENUMERATION DOT IDENTIFIER DOT IDENTIFIER                                                                       # explicitEnumerationLiteral
         ;
-

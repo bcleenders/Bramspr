@@ -1,4 +1,4 @@
-// Generated from D:\studie\Compilerbouw\bramspr\bramspr\src\Bramspr.g4 by ANTLR 4.1
+// Generated from C:\Users\Jasper\eclipse_workspace\Bramspr\src\Bramspr.g4 by ANTLR 4.1
 package bramspr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -75,14 +75,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterProgram(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitProgram(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitProgram(this);
 			else return visitor.visitChildren(this);
@@ -136,14 +128,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_structure; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStructure(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStructure(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStructure(this);
@@ -203,14 +187,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_blockStructure; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBlockStructure(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBlockStructure(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBlockStructure(this);
@@ -272,14 +248,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ifStructure; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIfStructure(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIfStructure(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIfStructure(this);
 			else return visitor.visitChildren(this);
@@ -335,14 +303,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_whileStructure; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterWhileStructure(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitWhileStructure(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitWhileStructure(this);
 			else return visitor.visitChildren(this);
@@ -391,14 +351,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStatement(this);
@@ -467,14 +419,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_command; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCommand(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCommand(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCommand(this);
 			else return visitor.visitChildren(this);
@@ -530,14 +474,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitDeclaration(this);
@@ -622,14 +558,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode CONSTANT() { return getToken(BramsprParser.CONSTANT, 0); }
 		public InstantiatingVariableDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterInstantiatingVariableDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitInstantiatingVariableDeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitInstantiatingVariableDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -649,14 +577,6 @@ public class BramsprParser extends Parser {
 			return getToken(BramsprParser.COMMA, i);
 		}
 		public PureVariableDeclarationContext(VariableDeclarationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPureVariableDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPureVariableDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPureVariableDeclaration(this);
@@ -758,14 +678,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_enumerationDeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumerationDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumerationDeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumerationDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -857,14 +769,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionDeclaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionDeclaration(this);
@@ -974,14 +878,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_compositeDeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCompositeDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCompositeDeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCompositeDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -1046,14 +942,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public BaseTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBaseTypeDenoter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBaseTypeDenoter(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBaseTypeDenoter(this);
 			else return visitor.visitChildren(this);
@@ -1068,14 +956,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayTypeDenoter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayTypeDenoter(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayTypeDenoter(this);
 			else return visitor.visitChildren(this);
@@ -1086,14 +966,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public TerminalNode ENUMERATION() { return getToken(BramsprParser.ENUMERATION, 0); }
 		public EnumeratedTypeDenoterContext(TypeDenoterContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEnumeratedTypeDenoter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEnumeratedTypeDenoter(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEnumeratedTypeDenoter(this);
@@ -1167,14 +1039,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_assignment; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignment(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignment(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignment(this);
 			else return visitor.visitChildren(this);
@@ -1235,14 +1099,6 @@ public class BramsprParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_swap; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSwap(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSwap(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSwap(this);
 			else return visitor.visitChildren(this);
@@ -1286,6 +1142,32 @@ public class BramsprParser extends Parser {
 			this._p = ctx._p;
 		}
 	}
+	public static class AndExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode AND() { return getToken(BramsprParser.AND, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public AndExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAndExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ArithmeticExpressionContext extends ExpressionContext {
+		public ArithmeticContext arithmetic() {
+			return getRuleContext(ArithmeticContext.class,0);
+		}
+		public ArithmeticExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArithmeticExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class GreaterThanEqualsToExpressionContext extends ExpressionContext {
 		public List<TerminalNode> GREATER_THAN_EQUALS_TO() { return getTokens(BramsprParser.GREATER_THAN_EQUALS_TO); }
 		public List<ArithmeticContext> arithmetic() {
@@ -1299,176 +1181,8 @@ public class BramsprParser extends Parser {
 		}
 		public GreaterThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanEqualsToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanEqualsToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class UniversalEqualsToExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode EQUALS_TO() { return getToken(BramsprParser.EQUALS_TO, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public UniversalEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterUniversalEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitUniversalEqualsToExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitUniversalEqualsToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class NotExpressionContext extends ExpressionContext {
-		public TerminalNode NOT() { return getToken(BramsprParser.NOT, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public NotExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNotExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNotExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class OrExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode OR() { return getToken(BramsprParser.OR, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterOrExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitOrExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitOrExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class NotEqualsToExpressionContext extends ExpressionContext {
-		public List<TerminalNode> NOT_EQUALS_TO() { return getTokens(BramsprParser.NOT_EQUALS_TO); }
-		public TerminalNode NOT_EQUALS_TO(int i) {
-			return getToken(BramsprParser.NOT_EQUALS_TO, i);
-		}
-		public List<ArithmeticContext> arithmetic() {
-			return getRuleContexts(ArithmeticContext.class);
-		}
-		public ArithmeticContext arithmetic(int i) {
-			return getRuleContext(ArithmeticContext.class,i);
-		}
-		public NotEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterNotEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitNotEqualsToExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotEqualsToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class SmallerThanEqualsToExpressionContext extends ExpressionContext {
-		public List<TerminalNode> SMALLER_THAN_EQUALS_TO() { return getTokens(BramsprParser.SMALLER_THAN_EQUALS_TO); }
-		public List<ArithmeticContext> arithmetic() {
-			return getRuleContexts(ArithmeticContext.class);
-		}
-		public ArithmeticContext arithmetic(int i) {
-			return getRuleContext(ArithmeticContext.class,i);
-		}
-		public TerminalNode SMALLER_THAN_EQUALS_TO(int i) {
-			return getToken(BramsprParser.SMALLER_THAN_EQUALS_TO, i);
-		}
-		public SmallerThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanEqualsToExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanEqualsToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class AndExpressionContext extends ExpressionContext {
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode AND() { return getToken(BramsprParser.AND, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public AndExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAndExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAndExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAndExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ArithmeticExpressionContext extends ExpressionContext {
-		public ArithmeticContext arithmetic() {
-			return getRuleContext(ArithmeticContext.class,0);
-		}
-		public ArithmeticExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArithmeticExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArithmeticExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArithmeticExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1484,14 +1198,6 @@ public class BramsprParser extends Parser {
 			return getToken(BramsprParser.EQUALS_TO, i);
 		}
 		public EqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitEqualsToExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitEqualsToExpression(this);
@@ -1511,14 +1217,6 @@ public class BramsprParser extends Parser {
 		public List<TerminalNode> GREATER_THAN() { return getTokens(BramsprParser.GREATER_THAN); }
 		public GreaterThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterGreaterThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitGreaterThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitGreaterThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -1537,16 +1235,35 @@ public class BramsprParser extends Parser {
 		}
 		public SmallerThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSmallerThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSmallerThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class UniversalEqualsToExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode EQUALS_TO() { return getToken(BramsprParser.EQUALS_TO, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public UniversalEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitUniversalEqualsToExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class NotExpressionContext extends ExpressionContext {
+		public TerminalNode NOT() { return getToken(BramsprParser.NOT, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public NotExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1560,16 +1277,23 @@ public class BramsprParser extends Parser {
 		}
 		public UniversalNotEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterUniversalNotEqualsToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitUniversalNotEqualsToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitUniversalNotEqualsToExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class OrExpressionContext extends ExpressionContext {
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(BramsprParser.OR, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitOrExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1584,16 +1308,44 @@ public class BramsprParser extends Parser {
 		}
 		public PlusMinusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPlusMinusExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPlusMinusExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPlusMinusExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class NotEqualsToExpressionContext extends ExpressionContext {
+		public List<TerminalNode> NOT_EQUALS_TO() { return getTokens(BramsprParser.NOT_EQUALS_TO); }
+		public TerminalNode NOT_EQUALS_TO(int i) {
+			return getToken(BramsprParser.NOT_EQUALS_TO, i);
+		}
+		public List<ArithmeticContext> arithmetic() {
+			return getRuleContexts(ArithmeticContext.class);
+		}
+		public ArithmeticContext arithmetic(int i) {
+			return getRuleContext(ArithmeticContext.class,i);
+		}
+		public NotEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitNotEqualsToExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SmallerThanEqualsToExpressionContext extends ExpressionContext {
+		public List<TerminalNode> SMALLER_THAN_EQUALS_TO() { return getTokens(BramsprParser.SMALLER_THAN_EQUALS_TO); }
+		public List<ArithmeticContext> arithmetic() {
+			return getRuleContexts(ArithmeticContext.class);
+		}
+		public ArithmeticContext arithmetic(int i) {
+			return getRuleContext(ArithmeticContext.class,i);
+		}
+		public TerminalNode SMALLER_THAN_EQUALS_TO(int i) {
+			return getToken(BramsprParser.SMALLER_THAN_EQUALS_TO, i);
+		}
+		public SmallerThanEqualsToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSmallerThanEqualsToExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1915,14 +1667,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public SignExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterSignExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitSignExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitSignExpression(this);
 			else return visitor.visitChildren(this);
@@ -1933,14 +1677,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(MoleculeContext.class,0);
 		}
 		public MoleculeExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterMoleculeExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitMoleculeExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitMoleculeExpression(this);
@@ -1958,14 +1694,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode PLUS() { return getToken(BramsprParser.PLUS, 0); }
 		public AdditionExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAdditionExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAdditionExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAdditionExpression(this);
 			else return visitor.visitChildren(this);
@@ -1980,14 +1708,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(ArithmeticContext.class,i);
 		}
 		public PowerExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPowerExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPowerExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPowerExpression(this);
@@ -2005,14 +1725,6 @@ public class BramsprParser extends Parser {
 		}
 		public TerminalNode MODULUS() { return getToken(BramsprParser.MODULUS, 0); }
 		public MultiplicationExpressionContext(ArithmeticContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterMultiplicationExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitMultiplicationExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitMultiplicationExpression(this);
@@ -2158,14 +1870,6 @@ public class BramsprParser extends Parser {
 		}
 		public AtomicExpressionContext(MoleculeContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAtomicExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAtomicExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAtomicExpression(this);
 			else return visitor.visitChildren(this);
@@ -2178,14 +1882,6 @@ public class BramsprParser extends Parser {
 		}
 		public List<TerminalNode> IDENTIFIER() { return getTokens(BramsprParser.IDENTIFIER); }
 		public PotentialEnumerationLiteralContext(MoleculeContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterPotentialEnumerationLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitPotentialEnumerationLiteral(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitPotentialEnumerationLiteral(this);
@@ -2252,14 +1948,6 @@ public class BramsprParser extends Parser {
 		}
 		public ParenthesisExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterParenthesisExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitParenthesisExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitParenthesisExpression(this);
 			else return visitor.visitChildren(this);
@@ -2271,14 +1959,6 @@ public class BramsprParser extends Parser {
 		}
 		public AssignableExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignableExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignableExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignableExpression(this);
 			else return visitor.visitChildren(this);
@@ -2289,14 +1969,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(LiteralContext.class,0);
 		}
 		public LiteralExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterLiteralExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitLiteralExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitLiteralExpression(this);
@@ -2311,14 +1983,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(BramsprParser.RIGHT_PARENTHESIS, 0); }
 		public AssignmentExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAssignmentExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAssignmentExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAssignmentExpression(this);
 			else return visitor.visitChildren(this);
@@ -2329,14 +1993,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public FunctionCallExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionCallExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionCallExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
@@ -2351,14 +2007,6 @@ public class BramsprParser extends Parser {
 			return getRuleContext(AccessContext.class,0);
 		}
 		public AccessOnAtomicExpressionContext(AtomicContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAccessOnAtomicExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAccessOnAtomicExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAccessOnAtomicExpression(this);
@@ -2488,14 +2136,6 @@ public class BramsprParser extends Parser {
 		}
 		public AccessOnAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterAccessOnAssignable(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitAccessOnAssignable(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitAccessOnAssignable(this);
 			else return visitor.visitChildren(this);
@@ -2504,14 +2144,6 @@ public class BramsprParser extends Parser {
 	public static class BasicAssignableContext extends AssignableContext {
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public BasicAssignableContext(AssignableContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBasicAssignable(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBasicAssignable(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBasicAssignable(this);
@@ -2591,14 +2223,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayAccessContext(AccessContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayAccess(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayAccess(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayAccess(this);
 			else return visitor.visitChildren(this);
@@ -2608,14 +2232,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode DOT() { return getToken(BramsprParser.DOT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(BramsprParser.IDENTIFIER, 0); }
 		public FieldAccessContext(AccessContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFieldAccess(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFieldAccess(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFieldAccess(this);
@@ -2679,14 +2295,6 @@ public class BramsprParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionCall; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterFunctionCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitFunctionCall(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitFunctionCall(this);
@@ -2762,14 +2370,6 @@ public class BramsprParser extends Parser {
 		}
 		public ExplicitEnumerationLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterExplicitEnumerationLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitExplicitEnumerationLiteral(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitExplicitEnumerationLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2790,14 +2390,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode RIGHT_BLOCKBRACE() { return getToken(BramsprParser.RIGHT_BLOCKBRACE, 0); }
 		public ArrayLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterArrayLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitArrayLiteral(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitArrayLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2806,14 +2398,6 @@ public class BramsprParser extends Parser {
 	public static class CharacterLiteralContext extends LiteralContext {
 		public TerminalNode CHARACTER() { return getToken(BramsprParser.CHARACTER, 0); }
 		public CharacterLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCharacterLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCharacterLiteral(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCharacterLiteral(this);
@@ -2824,14 +2408,6 @@ public class BramsprParser extends Parser {
 		public TerminalNode STRING() { return getToken(BramsprParser.STRING, 0); }
 		public StringLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterStringLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitStringLiteral(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitStringLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2840,14 +2416,6 @@ public class BramsprParser extends Parser {
 	public static class BooleanLiteralContext extends LiteralContext {
 		public TerminalNode BOOLEAN() { return getToken(BramsprParser.BOOLEAN, 0); }
 		public BooleanLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterBooleanLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitBooleanLiteral(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitBooleanLiteral(this);
@@ -2877,14 +2445,6 @@ public class BramsprParser extends Parser {
 		}
 		public CompositeLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterCompositeLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitCompositeLiteral(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitCompositeLiteral(this);
 			else return visitor.visitChildren(this);
@@ -2893,14 +2453,6 @@ public class BramsprParser extends Parser {
 	public static class IntegerLiteralContext extends LiteralContext {
 		public TerminalNode NUMBER() { return getToken(BramsprParser.NUMBER, 0); }
 		public IntegerLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).enterIntegerLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof BramsprListener ) ((BramsprListener)listener).exitIntegerLiteral(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BramsprVisitor ) return ((BramsprVisitor<? extends T>)visitor).visitIntegerLiteral(this);
