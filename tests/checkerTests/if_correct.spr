@@ -10,5 +10,16 @@ if(true) {
 if(b0 & b1) {
     putString("Success (1)\n");
 } else {
+    putString("Fail (1)\n");
+}
+
+if(b0 & b1) {
+    putString("Success (2)\n");
+    if(b0 & b1) {
+        putString("Success (3)\n");
+    } else {
+        putString("Fail (3)\n");
+    }
+} else {
     putString("Fail (2)\n");
 }

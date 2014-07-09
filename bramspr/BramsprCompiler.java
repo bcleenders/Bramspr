@@ -2,7 +2,6 @@ package bramspr;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -347,7 +346,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
-	// TODO javadoc
+	/**
+	 * Generates the JBC for a (field) access on an assignable, e.g. car.brand.<br />
+	 * Puts one value on the stack: either the value of the field or a reference to the object the field belongs to (depending on the value of {@link #inReadAccessToField}) 
+	 */
 	public Symbol visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
 		if (this.inReadAccessToField) {
 			// Get the field (leaves reference to object on the stack)
@@ -443,12 +445,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	// TODO improve javadoc
 	/**
 	 * Stores a value on the stack in an assignable, either by setting the reference or by setting a field.
 	 * 
-	 * @param assignable
-	 * @param assignableType
+	 * @param assignable what (variable or variable field) we are assigning to
+	 * @param assignableType what type we are assigning to it (INTEGER, STRING, PERSON, etc.)
 	 */
 	private void storeValue(AssignableContext assignable, TypeSymbol assignableType) {
 		// Do we store a primitive type or a reference to an object?
@@ -1128,7 +1129,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V");
 
 				if (ctx.IDENTIFIER().getText().equals("getString")) {
-					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;");
 				} else if (ctx.IDENTIFIER().getText().equals("getInt")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I");
 				} else if (ctx.IDENTIFIER().getText().equals("getChar")) {
@@ -1298,7 +1299,10 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	// TODO javadoc
+	/**
+	 * Generates the JBC for a (field) access on an atomic, e.g. foo().numerOfWheels.<br />
+	 * Puts one value on the stack: either the value of the field or a reference to the object the field belongs to (depending on the value of {@link #inReadAccessToField}) 
+	 */
 	public Symbol visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
 		if (this.inReadAccessToField) {
 			// Get the field (leaves reference to object on the stack)

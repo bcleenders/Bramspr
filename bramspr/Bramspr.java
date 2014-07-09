@@ -48,9 +48,8 @@ public class Bramspr {
 				System.exit(1);
 			}
 			
-			if(inputFile.endsWith(".spr")) {
-				outputFile = inputFile.replace(".spr", ".class");
-			}
+			// Remove extension; automatically added when writing the class
+			outputFile = inputFile.replace(".spr", "");
 		}
 		
 		// If the user specified an output file, let's see what it is... (.class is optional)

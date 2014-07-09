@@ -1,22 +1,31 @@
-enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
-enumeration color { RED, WHITE, BLUE };
+{
+    enumeration relatieStatussen{scharrel, kwarrel, prela, relatie}; // Geldig
+    enumeration relatieStatussen{verliefd, verloofd, getrouwd}; // Name collision
+    enumeration talenMetDeNaamBramspr{Bramspr, Bramspr, Bramspr}; // Mag geen dubbele waardes hebben (twee maal)
+    enumeration dingenDieWaarEnOnwaarTegelijkertijdZijn{}; // Geldig
+}
 
-// Naming conflicts!
-type color {
-    R: integer,
-    B: integer,
-    G: integer
-};
+{
+    enumeration day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+    enumeration color { RED, WHITE, BLUE };
 
-d : day;
-c : color; // Not an enum; enum type is hidden by composite type!
+    // Naming conflicts!
+    type color {
+        R: integer,
+        B: integer,
+        G: integer
+    };
 
-c := color.RED; // No such field in composite color
-c := enumeration.color.RED; // Cannot assign enum to composite
+    d : day;
+    c : color; // Not an enum; enum type is hidden by composite type!
 
-// More collisions: variable <-> enum collision!
-day : integer := 6;
-d := day.TUESDAY; // No longer works; needs explicit reference
+    c := color.RED; // No such field in composite color
+    c := enumeration.color.RED; // Cannot assign enum to composite
 
-// Field does not exist
-d := enumeration.day.BIRTHDAY;
+    // More collisions: variable <-> enum collision!
+    day : integer := 6;
+    d := day.TUESDAY; // No longer works; needs explicit reference
+
+    // Field does not exist
+    d := enumeration.day.BIRTHDAY;
+}

@@ -1,7 +1,7 @@
 /*
-    Dit bestand bevat testcode voor access expressions zoals
-    stoel.aantalPoten = a[0]
-    foo()[stoel.aantalPoten].bar := Day.MONDAY
+    LET OP!
+    Dit bestand test de checker en haalt deze,
+    Het kan echter niet worden gecompileerd, omdat arrays niet geïmplementeerd zijn in de code generator.
 */
 
 { // Test sequence 1
