@@ -29,7 +29,7 @@ declaration: compositeDeclaration
            ;
 
 
-variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureVariableDeclaration           //
+variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureVariableDeclaration           
            |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingVariableDeclaration
            ; 
 
