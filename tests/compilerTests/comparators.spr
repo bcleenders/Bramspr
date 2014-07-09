@@ -1,5 +1,3 @@
-// Move to ScoobyTesting.spr
-
 x, y, z : integer;
 constant X: integer := 1;
 constant Y: integer := 2;

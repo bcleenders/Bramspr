@@ -2,7 +2,6 @@ package bramspr;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -16,7 +15,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import bramspr.BramsprParser.AccessOnAssignableContext;
 import bramspr.BramsprParser.BasicAssignableContext;
+import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.*;
 import bramspr.symboltable.CompositeSymbol;
 import bramspr.symboltable.EnumerationSymbol;
@@ -335,7 +336,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * @param ctx the node in the parsetree representing the statement.
 	 */
 	public Symbol visitStatement(StatementContext ctx) {
-		if (ctx.command().assignment() != null) {
+		if (ctx.command() != null && ctx.command().assignment() != null) {
 			visitAssignment(ctx.command().assignment());
 			// Assignments leave something on the stack; statements should not do that so we have to POP it.
 			mv.visitInsn(POP);
@@ -347,14 +348,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	}
 
 	@Override
-	// TODO javadoc
-	public Symbol visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
+	/**
+	 * Generates the JBC for a (field) access on an assignable, e.g. car.brand.<br />
+	 * Puts one value on the stack: either the value of the field or a reference to the object the field belongs to (depending on the value of {@link #inReadAccessToField}) 
+	 */
+	public Symbol visitAccessOnAssignable(AccessOnAssignableContext ctx) {
 		if (this.inReadAccessToField) {
 			// Get the field (leaves reference to object on the stack)
 			visit(ctx.assignable());
 
 			// Get the fieldAccessExpression node in the parsetree (it can't be an arrayAccess, cause that's not implemented yet)
-			FieldAccessExpressionContext fieldAccess = (FieldAccessExpressionContext) ctx.accessExpression();
+			FieldAccessContext fieldAccess = (FieldAccessContext) ctx.access();
 
 			// Get the type of object that is being accessed (so the type resulting from our left tree
 			CompositeSymbol accessedObjectType = (CompositeSymbol) this.parseTreeproperty.get(fieldAccess);
@@ -443,12 +447,11 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	// TODO improve javadoc
 	/**
 	 * Stores a value on the stack in an assignable, either by setting the reference or by setting a field.
 	 * 
-	 * @param assignable
-	 * @param assignableType
+	 * @param assignable what (variable or variable field) we are assigning to
+	 * @param assignableType what type we are assigning to it (INTEGER, STRING, PERSON, etc.)
 	 */
 	private void storeValue(AssignableContext assignable, TypeSymbol assignableType) {
 		// Do we store a primitive type or a reference to an object?
@@ -1128,7 +1131,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 				mv.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V");
 
 				if (ctx.IDENTIFIER().getText().equals("getString")) {
-					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "next", "()Ljava/lang/String;");
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;");
 				} else if (ctx.IDENTIFIER().getText().equals("getInt")) {
 					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I");
 				} else if (ctx.IDENTIFIER().getText().equals("getChar")) {
@@ -1298,14 +1301,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		return null;
 	}
 
-	// TODO javadoc
+	/**
+	 * Generates the JBC for a (field) access on an atomic, e.g. foo().numerOfWheels.<br />
+	 * Puts one value on the stack: either the value of the field or a reference to the object the field belongs to (depending on the value of {@link #inReadAccessToField}) 
+	 */
+	@Override
 	public Symbol visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
 		if (this.inReadAccessToField) {
 			// Get the field (leaves reference to object on the stack)
 			visit(ctx.atomic());
 
 			// Get the fieldAccessExpression node in the parsetree (it can't be an arrayAccess, cause that's not implemented yet)
-			FieldAccessExpressionContext fieldAccess = (FieldAccessExpressionContext) ctx.accessExpression();
+			FieldAccessContext fieldAccess = (FieldAccessContext) ctx.access();
 
 			// Get the type of object that is being accessed (so the type resulting from our left tree
 			CompositeSymbol accessedObjectType = (CompositeSymbol) this.parseTreeproperty.get(fieldAccess);

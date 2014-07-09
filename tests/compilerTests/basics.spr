@@ -206,8 +206,7 @@
     putString("*** Testing user input ***\n");
     x: integer;
     putString("Please enter a number: ");
-    // x := getInt();
-    x := 10;
+    x := getInt();
     putString("\n");
     putString("You entered: ");
     putInt(x);
@@ -215,11 +214,26 @@
 
     b: boolean;
     putString("Please enter a boolean (true/false): ");
-    // b := getBool();
-    b := true;
+    b := getBool();
     putString("\n");
     putString("You entered: ");
     putBool(b);
+    putString(".\n");
+
+    c: character;
+    putString("Please enter a character: ");
+    c := getChar();
+    putString("\n");
+    putString("You entered: ");
+    putChar(c);
+    putString(".\n");
+
+    s: string;
+    putString("Please enter a string: ");
+    s := getString();
+    putString("\n");
+    putString("You entered: ");
+    putString(s);
     putString(".\n");
 }
 
@@ -244,6 +258,21 @@
 
     if(s1 =/= s2) { putString("FAILS 4\n"); } else { putString("works 4\n"); }
     if(s1 = s4) { putString("FAILS 5\n"); } else { putString("works 5\n"); }
+}
+
+{
+    putString("*** Testing chain of constancy (no output) ***\n");
+    x, y: integer;
+    z: integer := 3;
+    constant X: integer := 5;
+
+    x := 2;
+    y := x;
+    z := X;
+
+    // Nu zijn x, y en z allemaal niet constant, maar X wel.
+    // constant Z: integer := z + X; // Dit mag dus niet
+    constant Z: integer := (X*X) + X^(X+X); // Dit mag wel; alleen constantes gebruikt
 }
 
 putString("\n\n");

@@ -1,4 +1,0 @@
-enumeration relatieStatussen{scharrel, kwarrel, prela, relatie};
-enumeration relatieStatussen{verliefd, verloofd, getrouwd};
-enumeration mensenMetDeNaamBram{bram, bram, bram};
-enumeration dingenDieWaarEnOnwaarTegelijkertijdZijn{};

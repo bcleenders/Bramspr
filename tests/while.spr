@@ -4,6 +4,10 @@ y, z: integer;
 x := 1;
 z := 10;
 
+function print() {
+    putInt(y);
+}
+
 while (x <= y <= z) {
 	y := y+1;
 	print(); // 1,2,...11
