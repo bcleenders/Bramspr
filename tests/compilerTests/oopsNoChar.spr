@@ -1,0 +1,8 @@
+/*
+    getChar is pretty nice; if you enter incorrect things, it will just use the first character you entered...
+*/
+putString("Please enter a character: ");
+c: character := getChar();
+putString("You entered: ");
+putChar(c);
+putChar('\n');

@@ -1,0 +1,17 @@
+/*
+    Run, enter a non-integer value and look how it crashes!
+    Example inputs that are correct;
+        10
+        -10
+        5
+    Example inputs that cause errors;
+        a
+        hello, world
+        200000000000000000000   (overflow)
+        - 10                    (space)
+*/
+putString("Please enter an integer value: ");
+x: integer := getInt();
+putString("You entered: ");
+putInt(x);
+putChar('\n');
