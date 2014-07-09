@@ -13,11 +13,14 @@ ifStructure:        IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStruct
 whileStructure:     WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS blockStructure;
 
 statement : structure
-          | declaration SEMICOLON
-          | assignment SEMICOLON
-          | swap SEMICOLON
-          | functionCall SEMICOLON
+          | declaration     SEMICOLON
+          | command         SEMICOLON
+          | functionCall    SEMICOLON
           ;
+
+command : assignment
+        | swap
+        ;
 
 declaration: compositeDeclaration
            | functionDeclaration
@@ -25,8 +28,9 @@ declaration: compositeDeclaration
            | variableDeclaration
            ;
 
-variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureDeclaration
-           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingDeclaration
+
+variableDeclaration:    IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter                                # pureVariableDeclaration           //
+           |            CONSTANT? IDENTIFIER (COMMA IDENTIFIER)* COLON typeDenoter BECOMES expression   # instantiatingVariableDeclaration
            ; 
 
 enumerationDeclaration: ENUMERATION IDENTIFIER LEFT_BRACE (IDENTIFIER (COMMA IDENTIFIER)*)? RIGHT_BRACE;
@@ -77,7 +81,6 @@ arithmetic: molecule                                                        # mo
           | arithmetic ( PLUS | MINUS ) arithmetic                          # additionExpression
           ;
 
-
 molecule : IDENTIFIER DOT IDENTIFIER                                          # potentialEnumerationLiteral
          | atomic                                                             # atomicExpression
          ;
@@ -87,15 +90,15 @@ atomic : LEFT_PARENTHESIS assignment RIGHT_PARENTHESIS                      # as
        | assignable                                                         # assignableExpression
        | functionCall                                                       # functionCallExpression
        | literal                                                            # literalExpression
-       | atomic accessExpression                                            # accessOnAtomicExpression
+       | atomic access                                                      # accessOnAtomicExpression
        ;
 
-assignable: assignable accessExpression                                     # accessOnAssignableExpression
+assignable: assignable access                                               # accessOnAssignable
           | IDENTIFIER                                                      # basicAssignable
           ;
 
-accessExpression : DOT IDENTIFIER                                           # fieldAccessExpression
-                 | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE              # arrayAccessExpression
+access : DOT IDENTIFIER                                                     # fieldAccess
+                 | LEFT_BLOCKBRACE expression RIGHT_BLOCKBRACE              # arrayAccess
                  ;
 
 functionCall: IDENTIFIER LEFT_PARENTHESIS (expression ( COMMA expression)*)? RIGHT_PARENTHESIS

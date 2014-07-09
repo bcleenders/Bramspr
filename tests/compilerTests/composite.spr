@@ -5,7 +5,7 @@ type Stoel {
 {   /*
         Simpele read/write test met composite en int:
     */
-    s: Stoel := Stoel{ aantalPoten := 3 };
+    s: Stoel := Stoel{ aantalPoten := 4 };
     i:integer := 2;
     putString("Expected: 4 2, result: "); putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
     s.aantalPoten <> i; // Keert de waardes om!

@@ -9,11 +9,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import bramspr.BramsprParser.AccessOnAssignableExpressionContext;
+import bramspr.BramsprParser.AccessOnAssignableContext;
 import bramspr.BramsprParser.AccessOnAtomicExpressionContext;
 import bramspr.BramsprParser.AdditionExpressionContext;
 import bramspr.BramsprParser.AndExpressionContext;
-import bramspr.BramsprParser.ArrayAccessExpressionContext;
+import bramspr.BramsprParser.ArrayAccessContext;
 import bramspr.BramsprParser.ArrayLiteralContext;
 import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
@@ -30,14 +30,14 @@ import bramspr.BramsprParser.EnumeratedTypeDenoterContext;
 import bramspr.BramsprParser.EnumerationDeclarationContext;
 import bramspr.BramsprParser.EqualsToExpressionContext;
 import bramspr.BramsprParser.ExplicitEnumerationLiteralContext;
-import bramspr.BramsprParser.FieldAccessExpressionContext;
+import bramspr.BramsprParser.FieldAccessContext;
 import bramspr.BramsprParser.FunctionCallContext;
 import bramspr.BramsprParser.FunctionDeclarationContext;
 import bramspr.BramsprParser.GreaterThanEqualsToExpressionContext;
 import bramspr.BramsprParser.GreaterThanExpressionContext;
 import bramspr.BramsprParser.BasicAssignableContext;
 import bramspr.BramsprParser.IfStructureContext;
-import bramspr.BramsprParser.InstantiatingDeclarationContext;
+import bramspr.BramsprParser.InstantiatingVariableDeclarationContext;
 import bramspr.BramsprParser.MultiplicationExpressionContext;
 import bramspr.BramsprParser.NotEqualsToExpressionContext;
 import bramspr.BramsprParser.NotExpressionContext;
@@ -48,7 +48,7 @@ import bramspr.BramsprParser.PlusMinusExpressionContext;
 import bramspr.BramsprParser.PotentialEnumerationLiteralContext;
 import bramspr.BramsprParser.PowerExpressionContext;
 import bramspr.BramsprParser.ProgramContext;
-import bramspr.BramsprParser.PureDeclarationContext;
+import bramspr.BramsprParser.PureVariableDeclarationContext;
 import bramspr.BramsprParser.SignExpressionContext;
 import bramspr.BramsprParser.SmallerThanEqualsToExpressionContext;
 import bramspr.BramsprParser.SmallerThanExpressionContext;
@@ -220,31 +220,31 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Access-on-Assignable-Expression.
+	 * Handles the context checking of an Access-on-Assignable.
 	 * 
-	 * Calls the visit-method for the Access-Expression component, which actually does the context checking.
+	 * Calls the visit-method for the Access component, which actually does the context checking.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Access-on-Assignable-Expression.
-	 * @return The suit of the Access-Expression component.
+	 *            The context object associated with the parse tree node of this Access-on-Assignable.
+	 * @return The suit of the Access component.
 	 */
 	@Override
-	public Suit visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
-		return visit(ctx.accessExpression());
+	public Suit visitAccessOnAssignable(AccessOnAssignableContext ctx) {
+		return visit(ctx.access());
 	}
 
 	/**
 	 * Handles the context checking of an Access-on-Atomic-Expression.
 	 * 
-	 * Calls the visit-method for the Access-Expression component, which actually does the context checking.
+	 * Calls the visit-method for the Access component, which actually does the context checking.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Access-on-Atomic-Expression.
-	 * @return The suit of the Access-Expression component.
+	 * @return The suit of the Access component.
 	 */
 	@Override
 	public Suit visitAccessOnAtomicExpression(AccessOnAtomicExpressionContext ctx) {
-		return visit(ctx.accessExpression());
+		return visit(ctx.access());
 	}
 
 	/**
@@ -320,9 +320,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Array-access-Expression.
+	 * Handles the context checking of an Array-access.
 	 * 
-	 * An Array-access-Expression is confined to the following context rules:
+	 * An Array-access is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -334,11 +334,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Array-access-Expression.
-	 * @return The suit of the Array-access-Expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Array-access.
+	 * @return The suit of the Array-access or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitArrayAccessExpression(ArrayAccessExpressionContext ctx) {
+	public Suit visitArrayAccess(ArrayAccessContext ctx) {
 		// Pak het meest linker kind van de parent, en kijk wat voor suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
 		Suit indexSuit = visit(ctx.expression());
@@ -380,15 +380,12 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>all elements must have an existing type;
 	 * <li>all elements must have the same type;
-	 * <li>the Array-Literal is constant if all of its elements are constant;
 	 * <li>the Array-Literal is of type <i>[n]type</i>, where <i>n</i> is the amount of elements and <i>type</i> is the type of the elements, or void when there
-	 * are no elements.
+	 * are no elements;
+	 * <li>the Array-Literal is constant if all of its elements are constant;
 	 * </ol>
 	 * <br>
-	 * 
-	 * This method only implements the last three. Rule 1 is already governed by the visit-methods for the individual elements, which get called by this method.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Array-Literal.
@@ -452,15 +449,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>the assignable(s) must exist (the identifier(s) must be declared as variable(s) / the reffered field(s) must exist);
 	 * <li>the assignable(s) must not be constant;
 	 * <li>the assignable(s) and the expression should be of the same type;
 	 * <li>the suit of the Assignment is the suit of the expression.
 	 * </ol>
 	 * <br>
-	 * 
-	 * Rule 1 is checked in the visit-method(s) of the individual assignable(s), which get called by this method. This method therefore only checks the last two
-	 * rules.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Assignment.
@@ -627,13 +620,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <ol>
 	 * <li>a composite type with the same identifier must have not already been declared in this scope;
-	 * <li>all fields must have a unique identifier;
-	 * <li>the types of all fields must have been declared.
+	 * <li>all fields must have a unique identifier.
 	 * </ol>
 	 * <br>
 	 * 
-	 * Rule 3 is already checked by the visit-method(s) of the type-denoter(s), which this method calls. This method checks thus checks the other rules and then
-	 * declares the composite type to {@link #typeSymbolTable}.
+	 * This method checks these rules and then declares the composite type to {@link #typeSymbolTable}.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Composite-Declaration.
@@ -687,8 +678,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <li>the denoted composite type must have been declared;
 	 * <li>assigned fields must be fields of the denoted composite type;
 	 * <li>each of the denoted composite type's fields must be assigned a value;
-	 * <li>each assigned value's type must have the same type as the field it is being assigned to;
 	 * <li>a field must not be assigned a value more than once;
+	 * <li>each assigned value's type must have the same type as the field it is being assigned to;
+	 * <li>the Composite-Literal is of the type that the Identifier denotes;
 	 * <li>the Composite-Literal is constant if all of the assigned values are constant.
 	 * </ol>
 	 * <br>
@@ -850,7 +842,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this Enumerated-Type-denoter.
 	 * @return A suit with the denoted enumerated type as type, or {@link Suit#ERROR} if no declaration was found.
-	 */	@Override
+	 */
+	@Override
 	public Suit visitEnumeratedTypeDenoter(EnumeratedTypeDenoterContext ctx) {
 		String typeName = ctx.IDENTIFIER().getText();
 		TypeSymbol type = this.enumerationSymbolTable.resolve(typeName);
@@ -862,23 +855,23 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		return Suit.ERROR;
 	}
 
-		/**
-		 * Handles the context checking of an Equals-to-Expression.
-		 * 
-		 * An Equals-to-Expression is confined to the following context rules:
-		 * 
-		 * <br>
-		 * <br>
-		 * <ol>
-		 * <li>all operands have to be of type <i>integer</i>;
-		 * <li>the expression yields a value of type <i>boolean</i>;
-		 * <li>the expression yields a constant value if all operands are constant.
-		 * </ol>
-		 * 
-		 * @param ctx
-		 *            The context object associated with the parse tree node of this Equals-to-Expression.
-		 * @return The suit of the Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
-		 */
+	/**
+	 * Handles the context checking of an Equals-to-Expression.
+	 * 
+	 * An Equals-to-Expression is confined to the following context rules:
+	 * 
+	 * <br>
+	 * <br>
+	 * <ol>
+	 * <li>all operands have to be of type <i>integer</i>;
+	 * <li>the expression yields a value of type <i>boolean</i>;
+	 * <li>the expression yields a constant value if all operands are constant.
+	 * </ol>
+	 * 
+	 * @param ctx
+	 *            The context object associated with the parse tree node of this Equals-to-Expression.
+	 * @return The suit of the Equals-to-Expression or {@link Suit#ERROR} in case of a context error.
+	 */
 	@Override
 	public Suit visitEqualsToExpression(EqualsToExpressionContext ctx) {
 		boolean allConstant = true;
@@ -950,9 +943,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of a Field-access-Expression.
+	 * Handles the context checking of a Field-access.
 	 * 
-	 * A Field-access-Expression is confined to the following context rules:
+	 * A Field-access is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
@@ -964,11 +957,11 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * </ol>
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Field-access-Expression.
-	 * @return The suit of the Field-access-Expression or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Field-access.
+	 * @return The suit of the Field-access or {@link Suit#ERROR} in case of a context error.
 	 */
 	@Override
-	public Suit visitFieldAccessExpression(FieldAccessExpressionContext ctx) {
+	public Suit visitFieldAccess(FieldAccessContext ctx) {
 		// Pak het meest linker kind van de parent, en kijk wat voor type/Suit het heeft.
 		Suit expressionSuit = visit(ctx.parent.getChild(0));
 		String fieldName = ctx.IDENTIFIER().getText();
@@ -1004,10 +997,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>the denoted function must have been declared;
-	 * <li>the argument types must correspond to the types of the function parameters;
-	 * <li>the yielded value is of the function's type;
-	 * <li>the yielded value is constant if the function is constant.
+	 * <li>the denoted function (identifier + argument types) must have been declared;
+	 * <li>the yielded value is of the function's return suit.
 	 * </ol>
 	 * 
 	 * @param ctx
@@ -1018,9 +1009,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitFunctionCall(FunctionCallContext ctx) {
 		/*
 		 * We maken van de identifier + de argumenttypes de function signature, 
-		 * en doorzoeken hiermee de symbol table. Het mooie is dat als er een match
-		 * is, we ook gelijk de argumenttypes en -volgorde gecontroleerd hebben. 
-		 * Deze bepalen immers de signature.
+		 * en doorzoeken hiermee de symbol table. 
 		 */
 
 		String functionIdentifier = ctx.IDENTIFIER().getText();
@@ -1077,19 +1066,22 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	/**
 	 * Handles the context checking of a Function-Declaration.
 	 * 
-	 * A Function-call is confined to the following context rules: TODO: deze javadoc zit nog niet helemaal goed. Eerst formele beschrijving van de
-	 * contextbeperkingen verzinnen. <br>
+	 * A Function-Declaration is confined to the following context rules:
+	 * 
+	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>a function with this signature must not have already been declared in this scope;
-	 * <li>the parameter types must have been declared;
-	 * <li>the function's return type becomes the type of the return expression, or {@link Suit#VOID} if there is no return expression;
+	 * <li>a function with this signature (identifier + parameter types) must not have already been declared in this scope;
+	 * <li>each parameter-identifier may only occur once.
 	 * <li>
 	 * </ol>
 	 * 
+	 * After checking these rules, the function is declared to {@link #functionSymbolTable}. The function's return suit becomes the suit of the return
+	 * expression, or {@link Suit#VOID} if there is no return expression.
+	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Function-call.
-	 * @return The suit of the Function-call or {@link Suit#ERROR} in case of a context error.
+	 *            The context object associated with the parse tree node of this Function-Declaration.
+	 * @return An Function-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitFunctionDeclaration(FunctionDeclarationContext ctx) {
@@ -1100,7 +1092,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 
 		/*
 		 * Nu moeten we kijken of de functie signature wel uniek is!
-		 * (dit declareerd de parameter-variabelen ook direct)
+		 * (dit declareert de parameter-variabelen ook direct)
 		 */
 		TypeSymbol[] argumentTypes = new TypeSymbol[ctx.typeDenoter().size()];
 
@@ -1144,7 +1136,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError("duplicate function signature; functions cannot have identical names and argument types.", ctx);
 		}
 
-		return returnSuit;
+		return Suit.VOID;
 	}
 
 	/**
@@ -1249,29 +1241,28 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	}
 
 	/**
-	 * Handles the context checking of an Instantiating-Declaration.
+	 * Handles the context checking of an instantiating-Variable-Declaration.
 	 * 
-	 * An Instantiating-Declaration is confined to the following context rules:
+	 * An instantiating-Variable-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
 	 * <ol>
 	 * <li>the identifier(s) must not be already declared in this scope;
-	 * <li>the denoted type must be declared;
+	 * <li>each identifier must be different than the others;
 	 * <li>the expression should yield the same type as the denoted type;
 	 * <li>if the variable(s) is/are declared as constant, the expression should be constant.
 	 * </ol>
 	 * <br>
 	 * 
-	 * Rule 2 is already checked by the visit-method of the type-denoter, which this method calls. This method checks thus checks the other rules and then
-	 * declares the variable(s) to {@link #variableSymbolTable}.
+	 * This method checks these rules and then declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Instantiating-Declaration.
-	 * @return An Instantiating-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this instantiating-Variable-Declaration.
+	 * @return An instantiating-Variable-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
-	public Suit visitInstantiatingDeclaration(InstantiatingDeclarationContext ctx) {
+	public Suit visitInstantiatingVariableDeclaration(InstantiatingVariableDeclarationContext ctx) {
 		boolean isConstant = (ctx.CONSTANT() != null);
 
 		// Even kijken wat wordt teruggegeven door de expression
@@ -1425,11 +1416,10 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitIntegerLiteral(IntegerLiteralContext ctx) {
 		try {
 			Integer.parseInt(ctx.getText());
-		}
-		catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			this.reportError("Invalid number format (overflow?)", ctx);
 		}
-		
+
 		return new Suit(INTEGER, true);
 	}
 
@@ -1533,8 +1523,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * type. This method first tries to resolve the left-hand identifier in {@link #variableSymbolTable}. If that gives no result, it resolves it in
 	 * {@link #enumerationSymbolTable}.
 	 * 
-	 * If the identifier turns out to be declared as a variable, this method checks the context rules for a Field-access-Expression (see
-	 * {@link #visitFieldAccessExpression visitFieldAccessExpression}).
+	 * If the identifier turns out to be declared as a variable, this method checks the context rules for a Field-access (see {@link #visitFieldAccess
+	 * visitFieldAccess}).
 	 * 
 	 * If the identifier matches an enumerated type instead, the method checks the context rules as for an explicit-Enumeration-Literal (see
 	 * {@link #visitExplicitEnumerationLiteral visitExplicitEnumerationLiteral}).
@@ -1654,7 +1644,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	/**
 	 * Handles the context checking of a Bramspr program.
 	 * 
-	 * Opens the root scope, declares all built-in types and functions, recursively context-checks the program and finally closes the root scope.
+	 * Opens the root scope, declares all built-in types and functions, opens a new scope, recursively context-checks the program and finally closes both scopes.
 	 * 
 	 * @param ctx
 	 *            The context object associated with the top node of the program's parse tree.
@@ -1686,34 +1676,34 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			System.exit(1); // Als het zo erg misgaat, laat dan maar zitten...
 		}
 
+		this.openScope();
 		super.visitProgram(ctx);
-
+		this.closeScope();
 		this.closeScope();
 		return Suit.VOID;
 	}
 
 	/**
-	 * Handles the context checking of a Pure-Declaration.
+	 * Handles the context checking of a pure-Variable-Declaration.
 	 * 
-	 * A Pure-Declaration is confined to the following context rules:
+	 * A pure-Variable-Declaration is confined to the following context rules:
 	 * 
 	 * <br>
 	 * <br>
 	 * <ol>
 	 * <li>the identifier(s) must not be already declared in this scope;
-	 * <li>the denoted type must be declared;
+	 * <li>no identifier may occur twice.
 	 * </ol>
 	 * <br>
 	 * 
-	 * Rule 2 is already checked by the visit-method of the type-denoter, which this method calls. This method checks thus checks the first rule and then
-	 * declares the variable(s) to {@link #variableSymbolTable}.
+	 * This method checks these rules and then declares the variable(s) to {@link #variableSymbolTable}.
 	 * 
 	 * @param ctx
-	 *            The context object associated with the parse tree node of this Pure-Declaration.
-	 * @return A Pure-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 *            The context object associated with the parse tree node of this pure-Variable-Declaration.
+	 * @return A pure-Variable-Declaration has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
-	public Suit visitPureDeclaration(PureDeclarationContext ctx) {
+	public Suit visitPureVariableDeclaration(PureVariableDeclarationContext ctx) {
 		// Get a list of all the names of the variables
 		List<TerminalNode> identifiers = ctx.IDENTIFIER();
 
@@ -1856,7 +1846,6 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * <br>
 	 * <br>
 	 * <ol>
-	 * <li>the assignables must exist (the identifier(s) must be declared as variable(s) / the reffered field(s) must exist);
 	 * <li>the assignables must not be constant;
 	 * <li>the assignables must be of the same type.
 	 * </ol>
@@ -1974,7 +1963,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	 * 
 	 * @param ctx
 	 *            The context object associated with the parse tree node of this While-Structure.
-	 * @return A while-structure has no return suit, so returns a meaningless {@link Suit#VOID}.
+	 * @return A While-Structure has no return suit, so returns a meaningless {@link Suit#VOID}.
 	 */
 	@Override
 	public Suit visitWhileStructure(WhileStructureContext ctx) {
