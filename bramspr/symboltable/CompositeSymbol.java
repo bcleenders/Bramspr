@@ -2,8 +2,22 @@ package bramspr.symboltable;
 
 import java.util.HashMap;
 
+/**
+ * Objects of this class are symbol table entries associated with composite types in a Bramspr-program.
+ * 
+ * On top of the information {@link TypeSymbol} already specifies, a composite type has fields, so this class specifies the properties and methods for this
+ * feature.
+ * 
+ * As built-in types are implemented as composite types, this class also defines the property {@link #primitive}, indicating whether the object in question is
+ * the symbol of such a built-in type.
+ * 
+ * In addition, this class contains some functionality for fixing JVM naming issues.
+ * 
+ */
 public class CompositeSymbol extends TypeSymbol {
 	public HashMap<String, TypeSymbol> fields = new HashMap<String, TypeSymbol>();
+	
+	/** Whether this is a built-in type. */
 	boolean primitive = false;
 
 	/**
@@ -25,14 +39,30 @@ public class CompositeSymbol extends TypeSymbol {
 		}
 	}
 
+	/**
+	 * 
+	 * @param fieldName
+	 *            The field's identifier.
+	 * @return A boolean indicating if this composite type contains a field with this name.
+	 */
 	public boolean hasField(String fieldName) {
 		return this.fields.containsKey(fieldName);
 	}
 
+	/**
+	 * 
+	 * @param fieldName
+	 *            The field's identifier.
+	 * @return This field's type.
+	 */
 	public TypeSymbol getFieldType(String fieldName) {
 		return this.fields.get(fieldName);
 	}
 
+	/**
+	 * 
+	 * @return The number of fields this composite type contains.
+	 */
 	public int getNumberOfFields() {
 		return fields.size();
 	}
@@ -48,13 +78,14 @@ public class CompositeSymbol extends TypeSymbol {
 	public String getDescriptor() {
 		return this.descriptor;
 	}
-	
+
 	/**
 	 * Returns the signature, e.g. "Ljava/lang/String;", "Lcomposite$CA;", "I" or "Z"
+	 * 
 	 * @return signature as used by the JVM
 	 */
 	public String getSignature() {
-		if(this.descriptor.contains("$")) {
+		if (this.descriptor.contains("$")) {
 			return "L" + this.getDescriptor() + ";";
 		} else {
 			// primitive types; int etc.
@@ -63,8 +94,8 @@ public class CompositeSymbol extends TypeSymbol {
 	}
 
 	/**
-	 * Attempt to set the descriptor of the type in the style the compiler refers to it. This is of the format outerclass$C[A-Z]+. Only sets the value if no value was
-	 * set yet.
+	 * Attempt to set the descriptor of the type in the style the compiler refers to it. This is of the format outerclass$C[A-Z]+. Only sets the value if no
+	 * value was set yet.
 	 * 
 	 * @param number
 	 *            the identifier of the type, must be unique for every type.

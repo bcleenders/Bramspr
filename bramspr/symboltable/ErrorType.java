@@ -1,28 +1,32 @@
 package bramspr.symboltable;
 
+import bramspr.Suit;
 
 /**
- * Error type
- * @author bram
- * Bij een foutieve expressie waarbij het type niet achterhaald kan worden, kan dit object terug worden gegeven.
- * Dit object lijkt gelijk aan alle andere TypeSymbol's, dus een volgende functie die dit object binnenkrijgt zal dit als geldig argument zien.
+ * This is the type of {@link Suit#ERROR}.
  * 
- * Doordat het ErrorType een soort generiek TypeSymbol is, zal het nooit zo zijn dat één foutieve expression een kettingreactie veroorzaakt.
+ * When compared to another type symbol, this type will always return {@code true}. This way, context errors don't start a chain of error reports.
  */
 public class ErrorType extends TypeSymbol {
-	
+
 	public ErrorType() {
 		super("<error type>");
 	}
-	
+
 	/**
-	 * @param s het object waarmee vergeleken wordt.
-	 * @ensure this.equals(s) is true als s een TypeSymbol (i.e. RecordSymbol, ArraySymbol of EnumSymbol) is.
+	 * 
+	 * @param comparable
+	 *            The symbol to compare this error type to.
+	 * @return Whether this error type equal to the compared symbol. This is always the case if the compared symbol is a type symbol.
 	 */
 	public boolean equals(Object s) {
 		return s instanceof TypeSymbol;
 	}
-	
+
+	/**
+	 * 
+	 * @return The JVM-descriptor of this array-type.
+	 */
 	public String getDescriptor() {
 		return "ERROR";
 	}

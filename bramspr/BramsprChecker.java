@@ -19,7 +19,6 @@ import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
-import bramspr.BramsprParser.AtomicContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
 import bramspr.BramsprParser.BooleanLiteralContext;
