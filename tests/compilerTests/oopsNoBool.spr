@@ -1,0 +1,8 @@
+/*
+    getBool causes an error if the input is not "true" or "false"
+*/
+putString("Please enter a boolean (true/false): ");
+b: boolean := getBool();
+putString("You entered: ");
+putBool(b);
+putChar('\n');

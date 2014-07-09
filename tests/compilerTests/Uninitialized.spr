@@ -1,0 +1,12 @@
+type Stoel{
+    aantalPoten: integer
+};
+
+s: Stoel;
+
+// Runtime error (1)
+// s.aantalPoten := 2;
+
+x: integer;
+// Runtime error (2)
+// x := s.aantalPoten;
