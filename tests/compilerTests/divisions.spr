@@ -1,0 +1,12 @@
+function println(x: integer) {
+    putInt(x);
+    putChar('\n');
+};
+
+putString("100/10 = "); println(100/10);
+putString("100/2 = "); println(100/2);
+putString("0/2 = "); println(0/2);
+putString("100/1000 = "); println(100/1000);
+
+// Runtime error:
+putString("100/0 = "); println(100/0);

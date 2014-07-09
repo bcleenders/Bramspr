@@ -851,6 +851,17 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		} else if (ctx.MODULUS() != null) {
 			mv.visitInsn(IREM);
 		} else if (ctx.DIVISION() != null) {
+			Label divide = new Label();
+			mv.visitInsn(DUP);
+			mv.visitJumpInsn(IFNE, divide); // If arithmetic(1) is not null, jump to the division.
+			// If it is null; give an error message, then exit.
+			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+			mv.visitLdcInsn("Divide by zero error: " + ctx.getText() + ".\nExiting program.\n");
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
+			mv.visitInsn(ICONST_1); // Exit code 1
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "exit", "(I)V");
+			mv.visitInsn(RETURN);
+			mv.visitLabel(divide);
 			mv.visitInsn(IDIV);
 		}
 
