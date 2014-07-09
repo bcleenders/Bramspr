@@ -65,3 +65,11 @@ aantalZitPlaatsen: integer :=
     }.eetTafel.aantalZitPlaatsen;
 
 putString("Het aantal zitplaatsen in de eetkamer is tien ("); putInt(aantalZitPlaatsen); putString(").\n");
+
+// Speciale aanbieding! 9 poten voor de prijs van vier!
+function buyChair() {
+    return Stoel{ aantalPoten:= 9 }; // Composites returnen kan ook gewoon!
+};
+gekochtAantalPoten: integer := (((((buyChair()))))).aantalPoten;
+putString("Bij de IKEA kan je nu stoelen met negen ("); putInt(gekochtAantalPoten); putString(") poten kopen.\n");
+putString("(ramp om in elkaar te moeten zetten...");

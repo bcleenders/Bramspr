@@ -227,10 +227,8 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 				if (this.isJBCPrimitive(type)) {
 					signature = type.getDescriptor();
-					System.out.println("composite type with signature " + signature);
 				} else if (type instanceof CompositeSymbol) {
 					signature = "L" + type.getDescriptor() + ";";
-					System.out.println("composite type with signature " + signature);
 				} else if (type instanceof EnumerationSymbol) {
 					signature = "I"; // Enums are represented as integer values, allowing easy comparisons.
 				} else {
@@ -1358,7 +1356,6 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 			// Put the value in the field.
 			mv.visitFieldInsn(PUTFIELD, type.getDescriptor(), fieldName, fieldType.getSignature());
-			System.out.println("mv.visitFieldInsn(PUTFIELD, \"" + type.getDescriptor() + "\", \"" + fieldName + "\", \"" + fieldType.getSignature() + "\");");
 		}
 
 		return null;
