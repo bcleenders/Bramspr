@@ -19,6 +19,7 @@ import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
+import bramspr.BramsprParser.AtomicContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
 import bramspr.BramsprParser.BooleanLiteralContext;
@@ -91,7 +92,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public static final CompositeSymbol BOOLEAN = new CompositeSymbol("Z", "boolean", null, null);
 
 	/** The symbol for the built-in type <i>string</i>. */
-	public static final CompositeSymbol STRING = new CompositeSymbol("Ljava/lang/String;", "string", null, null);
+	public static final CompositeSymbol STRING = new CompositeSymbol("java/lang/String", "string", null, null);
 
 	/** The symbol table in which declared and built-in functions are administered. */
 	private SymbolTable<FunctionSymbol> functionSymbolTable = new SymbolTable<FunctionSymbol>();
@@ -487,6 +488,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 			}
 		}
+		
+		// Let the compiler know what type we're processing here!
+		this.parseTreeDecoration.put(ctx, expressionType);
 
 		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
 		return expressionSuit;
@@ -656,6 +660,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 		} catch (SymbolTableException e) {
 			this.reportError("could not declare type; duplicate name", ctx, typeNaam, null);
 		}
+		
+		// Let's store the type in the parseTreeProperty!
+		this.parseTreeDecoration.put(ctx, symbol);
 
 		return Suit.VOID;
 	}
@@ -763,6 +770,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			this.reportError(errorMessage, ctx);
 			return Suit.ERROR;
 		}
+		
+		// Add the type to the parseTreeProperty, for usage in the compiler
+		this.parseTreeDecoration.put(ctx, compositeType);
 
 		// Alles klopt. Nu de juiste suit teruggeven.
 		return new Suit(compositeType, isConstant);
@@ -891,7 +901,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitErrorNode(ErrorNode node) {
 		return Suit.ERROR;
 	}
-
+	
 	/**
 	 * Handles the context checking of an explicit-Enumeration-Literal.
 	 * 
@@ -966,6 +976,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 
 			} else {
+				// Store the type (CompositeSymbol) of the variable that is accessed here. So if it is car.seatCount, the Car type is added to the parseTreeProperty
+				this.parseTreeDecoration.put(ctx, compositeType);
+				
 				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
 				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
 			}
@@ -1570,6 +1583,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 
 			} else {
+				this.parseTreeDecoration.put(ctx, prefix);
 				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
 				return new Suit(compositeType.getFieldType(fieldName), prefix.isConstant());
 			}
@@ -1866,6 +1880,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			reportError(errorMessage, ctx.assignable(1));
 			return Suit.ERROR;
 		}
+		
+		// Add assignables to the decoration!
+		this.parseTreeDecoration.put(ctx, leftHandSuit.type);
 
 		return Suit.VOID;
 	}

@@ -26,4 +26,8 @@ public class ArraySymbol extends TypeSymbol {
 		
 		return (comp.amount == this.amount) && (this.type.equals(comp.type));
 	}
+	
+	public String getDescriptor() {
+		return "[" + type.getDescriptor();
+	}
 }

@@ -1,0 +1,75 @@
+type Stoel {
+    aantalPoten: integer
+};
+
+{   /*
+        Simpele read/write test met composite en int:
+    */
+    s: Stoel := Stoel{ aantalPoten := 3 };
+    i:integer := 2;
+    putString("Expected: 4 2, result: "); putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+    s.aantalPoten <> i; // Keert de waardes om!
+    putString("Expected: 2 4, result: "); putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+
+    putChar('\n'); putChar('\n');
+}
+
+type Tafel {
+    aantalZitPlaatsen: integer
+};
+
+{
+    // No errors caused: we can hide the outside type
+    type Tafel {
+        isOranje: boolean
+    };
+
+    t: Tafel := Tafel{ isOranje:= true };
+}
+
+type EetKamer {
+    eetTafel: Tafel,
+    mooisteStoel: Stoel
+};
+
+type BadKamer {
+    heeftBad: boolean
+};
+
+type Huis {
+    eetKamer: EetKamer,
+    badKamer: BadKamer
+};
+
+t1: Tafel := Tafel{ aantalZitPlaatsen := 3 };
+k: EetKamer := EetKamer{ eetTafel := t1, mooisteStoel := Stoel{ aantalPoten := 1 } };
+b: BadKamer;
+h: Huis := Huis {
+    badKamer := (b := BadKamer{ heeftBad := true }),
+    eetKamer := k
+};
+
+putString("De oude stoel heeft maar een ("); putInt(h.eetKamer.mooisteStoel.aantalPoten); putString(") poot.\n");
+
+// Nieuwe stoel kopen!
+nieuweStoel: Stoel := Stoel{ aantalPoten := 4 };
+h.eetKamer.mooisteStoel <> nieuweStoel;
+
+putString("De nieuwe stoel heeft vier ("); putInt(h.eetKamer.mooisteStoel.aantalPoten); putString(") poten.\n");
+
+// Nu even testen of we waarden uit literals kunnen opvragen:
+aantalZitPlaatsen: integer := 
+    EetKamer{
+        eetTafel := Tafel{ aantalZitPlaatsen := 10 },
+        mooisteStoel := Stoel{ aantalPoten := 4 }
+    }.eetTafel.aantalZitPlaatsen;
+
+putString("Het aantal zitplaatsen in de eetkamer is tien ("); putInt(aantalZitPlaatsen); putString(").\n");
+
+// Speciale aanbieding! 9 poten voor de prijs van vier!
+function buyChair() {
+    return Stoel{ aantalPoten:= 9 }; // Composites returnen kan ook gewoon!
+};
+gekochtAantalPoten: integer := (((((buyChair()))))).aantalPoten;
+putString("Bij de IKEA kan je nu stoelen met negen ("); putInt(gekochtAantalPoten); putString(") poten kopen.\n");
+putString("(ramp om in elkaar te moeten zetten...");
