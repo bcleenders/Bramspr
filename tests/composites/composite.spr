@@ -25,6 +25,21 @@ t:= Tafel{ aantalPoten := count };
 
 s: Stoel := Stoel{ aantalPoten := 3 };
 
-k: Keuken := Keuken{ aantalStoelen := 6, aantalTafels := 8, mooisteStoel := s };
+
+s1: Stoel := Stoel{ aantalPoten := 9 };
+k: Keuken := Keuken{ aantalStoelen := 6, aantalTafels := 2^4, mooisteStoel := s1 };
+
+i:integer := 2;
+
+putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+s.aantalPoten <> i; // Keert de waardes om!
+putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+
+putChar('\n'); putChar('\n');
+
+k.mooisteStoel.aantalPoten := 400 + s.aantalPoten;
+putInt(s.aantalPoten); putChar(' '); putInt(k.mooisteStoel.aantalPoten); putChar('\n');
+s.aantalPoten <> k.mooisteStoel.aantalPoten;
+putInt(s.aantalPoten); putChar(' '); putInt(k.mooisteStoel.aantalPoten); putChar('\n');
 
 putString("Survived the program!");

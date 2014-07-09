@@ -14,8 +14,16 @@ public abstract class TypeSymbol extends Symbol {
 		super(identifier);
 	}
 	
+	/**
+	 * Returns the descriptor of this type. Is often the same as the signature, but for JVM Objects the signature starts with L and ends with ;. The descriptor does not.
+	 * @return String representation of descriptor.
+	 */
 	abstract public String getDescriptor();
 	
+	/**
+	 * Returns the signature of a type. E.g. "Z" (boolean), "[I" (integer array), "Ljava/lang/String;" (string) or "Bramspr$CA" (user defined type)
+	 * @return String representation of the type.
+	 */
 	public String getSignature() {
 		return getDescriptor();
 	}

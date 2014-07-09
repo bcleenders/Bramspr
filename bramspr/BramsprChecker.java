@@ -494,6 +494,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 			}
 		}
+		
+		// Let the compiler know what type we're processing here!
+		this.parseTreeDecoration.put(ctx, expressionType);
 
 		// Alles klopt! Nu als suit de suit van de expressie teruggeven.
 		return expressionSuit;
@@ -979,6 +982,8 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 
 			} else {
+				// Store the type (CompositeSymbol) of the variable that is accessed here. So if it is car.seatCount, the Car type is added to the parseTreeProperty
+				this.parseTreeDecoration.put(ctx, compositeType);
 				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
 				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
 			}
@@ -1586,6 +1591,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 				return Suit.ERROR;
 
 			} else {
+				this.parseTreeDecoration.put(ctx, prefix);
 				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
 				return new Suit(compositeType.getFieldType(fieldName), prefix.isConstant());
 			}
@@ -1883,6 +1889,9 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			reportError(errorMessage, ctx.assignable(1));
 			return Suit.ERROR;
 		}
+		
+		// Add assignables to the decoration!
+		this.parseTreeDecoration.put(ctx, leftHandSuit.type);
 
 		return Suit.VOID;
 	}

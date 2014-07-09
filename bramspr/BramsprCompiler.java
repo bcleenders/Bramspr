@@ -16,6 +16,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import bramspr.BramsprParser.BasicAssignableContext;
 import bramspr.BramsprParser.*;
 import bramspr.symboltable.CompositeSymbol;
 import bramspr.symboltable.EnumerationSymbol;
@@ -28,6 +29,15 @@ import bramspr.symboltable.VariableSymbol;
 public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcodes {
 	/** The name of the main class this code will compile to, e.g. "Bramspr" or "Math" */
 	private String mainFileName;
+
+	/**
+	 * Whether the compiler is in a "read" state, or in a "write" state. <br />
+	 * 
+	 * If it's in a write state, field access should put a reference on the stack. <br />
+	 * 
+	 * If it's in read access, the value of the field should be put on the stack.
+	 */
+	private boolean inReadAccessToField = true;
 
 	/**
 	 * The "decoration" of our parsetree: maps Contexts to Symbols
@@ -338,6 +348,38 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		}
 	}
 
+	@Override
+	public Symbol visitAccessOnAssignableExpression(AccessOnAssignableExpressionContext ctx) {
+		if(this.inReadAccessToField) {
+			// Get the field (leaves reference to object on the stack)
+			visit(ctx.assignable());
+			
+			// Get the fieldAccessExpression node in the parsetree (it can't be an arrayAccess, cause that's not implemented yet)
+			FieldAccessExpressionContext fieldAccess = (FieldAccessExpressionContext) ctx.accessExpression();
+			
+			// Get the type of object that is being accessed (so the type resulting from our left tree
+			CompositeSymbol accessedObjectType = (CompositeSymbol) this.parseTreeproperty.get(fieldAccess);
+			
+			// Get the descriptor of that type
+			String typeDescriptor = accessedObjectType.getDescriptor();
+			
+			// The name of the field that we are accessing
+			String fieldName = fieldAccess.IDENTIFIER().getText();
+
+			// Get the signature of the type resulting from the accessExpression
+			String fieldTypeSignature = accessedObjectType.getFieldType(fieldName).getSignature();
+			
+			mv.visitFieldInsn(GETFIELD, typeDescriptor, fieldName, fieldTypeSignature);
+		} else {
+			// Give a reference to the object that contains the field (and that we're accessing right now)
+			this.inReadAccessToField = true;
+			visit(ctx.assignable()); // Leaves a reference to the object on the stack.
+			this.inReadAccessToField = false;
+		}
+		
+		return null;
+	}
+
 	/**
 	 * Returns the VariableSymbol of the assignable (e.g. "x") visited, but does not produce JBC.
 	 * 
@@ -348,7 +390,20 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	public Symbol visitBasicAssignable(BasicAssignableContext ctx) {
 		VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(ctx);
 
-		return variable;
+		if(this.inReadAccessToField) {
+			// We want the value
+			if(this.isJBCPrimitive(variable.getReturnType())) {
+				mv.visitIntInsn(ILOAD, variable.getMemAddr()); // Load the (primitive typed) value onto the stack
+			} else {
+				mv.visitIntInsn(ALOAD, variable.getMemAddr()); // Load the value onto the stack
+			}
+		} else {
+			// We want the reference on the stack
+			mv.visitIntInsn(ASTORE, variable.getMemAddr());
+		}
+		
+
+		return null;
 	}
 
 	/**
@@ -362,26 +417,13 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 		// Zet de waarde van de expression op de stack (kunnen we zo gaan toewijzen)
 		visit(ctx.expression()); // Stack: a ->
 
-		for (int i = 0; i < ctx.assignable().size(); i++) {
+		for (int i = 0; i < ctx.assignable().size(); i++) { // Stack: a ->
 			mv.visitInsn(DUP); // Stack: a a ->
 
-			VariableSymbol assignable = (VariableSymbol) visit(ctx.assignable(i));
-			int memaddr = assignable.getMemAddr();
-
-			TypeSymbol type = assignable.getReturnType();
-
-			if (this.isJBCPrimitive(type)) {
-				// Store the value
-				mv.visitIntInsn(ISTORE, memaddr); // Stack: a ->
-			} else if (type instanceof CompositeSymbol) {
-				// Store the reference
-				mv.visitIntInsn(ASTORE, memaddr); // Stack: a ->
-			} else {
-				System.err.println("Invalid assignment; unimplemented type!");
-				System.exit(1);
-			}
+			TypeSymbol type = (TypeSymbol) this.parseTreeproperty.get(ctx);
+			this.storeValue(ctx.assignable(i), type);
 		}
-
+		
 		return null;
 	}
 
@@ -393,16 +435,18 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * 
 	 */
 	public Symbol visitAssignableExpression(AssignableExpressionContext ctx) {
-		VariableSymbol variable = (VariableSymbol) visit(ctx.assignable());
-		TypeSymbol type = variable.getReturnType();
-
-		if (this.isJBCPrimitive(type)) {
-			mv.visitIntInsn(ILOAD, variable.getMemAddr());
-		} else if (variable.getReturnType() instanceof CompositeSymbol) {
-			mv.visitIntInsn(ALOAD, variable.getMemAddr());
-		} else {
-			System.err.println("Unimplemented type at assignableExpression.");
-		}
+//		VariableSymbol variable = (VariableSymbol) visit(ctx.assignable());
+//		TypeSymbol type = variable.getReturnType();
+//
+//		if (this.isJBCPrimitive(type)) {
+//			mv.visitIntInsn(ILOAD, variable.getMemAddr());
+//		} else if (variable.getReturnType() instanceof CompositeSymbol) {
+//			mv.visitIntInsn(ALOAD, variable.getMemAddr());
+//		} else {
+//			System.err.println("Unimplemented type at assignableExpression.");
+//		}
+		
+		visit(ctx.assignable());
 
 		return null;
 	}
@@ -414,27 +458,57 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	 * @param ctx the node in the parsetree representing the swap
 	 */
 	public Symbol visitSwap(SwapContext ctx) {
-		VariableSymbol x = (VariableSymbol) visit(ctx.assignable(0));
-		VariableSymbol y = (VariableSymbol) visit(ctx.assignable(1));
-		TypeSymbol type = x.getReturnType();
+		TypeSymbol assignableType = (TypeSymbol) this.parseTreeproperty.get(ctx);
 
-		int memAddrX = x.getMemAddr();
-		int memAddrY = y.getMemAddr();
+		visit(ctx.assignable(0)); // 			Stack:	val1
+		visit(ctx.assignable(1)); //			Stack:	val1	val2
 
-		if (this.isJBCPrimitive(type)) { // Het is een int/bool/char/enum!
-			mv.visitIntInsn(ILOAD, memAddrX); // Stack: x ->
-			mv.visitIntInsn(ILOAD, memAddrY); // Stack: x y ->
-			mv.visitIntInsn(ISTORE, memAddrX); // Stack: x ->
-			mv.visitIntInsn(ISTORE, memAddrY); // Stack: ->
-		} else { // Het is een object (-achtig iets)
-			// Helaas, we kunnen niet gewoon de waarde pakken. Gelukkig kunnen we wel de referentie wisselen!
-			mv.visitIntInsn(ALOAD, memAddrX); // Stack: x ->
-			mv.visitIntInsn(ALOAD, memAddrY); // Stack: x y ->
-			mv.visitIntInsn(ASTORE, memAddrX); // Stack: x ->
-			mv.visitIntInsn(ASTORE, memAddrY); // Stack: ->
-		}
+		this.storeValue(ctx.assignable(0), assignableType);
+		this.storeValue(ctx.assignable(1), assignableType);
 
 		return null;
+	}
+	
+	private void storeValue(AssignableContext assignable, TypeSymbol assignableType) {
+		// Do we store a primitive type or a reference to an object?
+		int storeOpCode = this.isJBCPrimitive(assignableType) ? ISTORE : ASTORE;
+
+		// Let's check what the signature of the type is
+		String fieldTypeSignature = assignableType.getSignature();
+		
+		if(assignable.children.size() == 1) { // It's a basicAssignable (no field access etc.)
+			// Get the context
+			BasicAssignableContext basicAssignableContext = (BasicAssignableContext) assignable;
+			// Get the variable represented by the context
+			VariableSymbol variable = (VariableSymbol) this.parseTreeproperty.get(basicAssignableContext);
+			// Get the memory address of that variable
+			int memAddr = variable.getMemAddr();
+			// Store the value in that memory address
+			mv.visitIntInsn(storeOpCode, memAddr);// Stack: val1
+		} else {
+			
+			/* child 0 is an assignable, child 1 is an accessExpression. Child 1 of child 1 is an IDENTIFIER.
+			 * 			assignable
+			 * 	   (0) /          \ (1)
+			 * assignable		accessExpression
+			 *             (0) /                \ (1)
+			 *               DOT		    IDENTIFIER
+			 * 				
+			 */
+			// Get the type of whatever we're accessing
+			CompositeSymbol type = (CompositeSymbol) this.parseTreeproperty.get(assignable.getChild(1));
+			String compositeTypeDescriptor = type.getDescriptor();
+			
+			// Get the name of the field we're accessing
+			String fieldName = assignable.getChild(1).getChild(1).getText();
+			
+			// Switch state to write access: we want the reference to the field instead!
+			this.inReadAccessToField = false;
+			visit(assignable); //		 	Stack: 	val1	val2	ref1
+			mv.visitInsn(SWAP);	//					Stack:	val1	ref1	val2
+			mv.visitFieldInsn(PUTFIELD, compositeTypeDescriptor, fieldName, fieldTypeSignature); // Stack: val1
+			this.inReadAccessToField = true;
+		}
 	}
 
 	@Override
@@ -1140,7 +1214,7 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 
 	/**
 	 * Visits a possible enumeration; this is either an fieldaccess or an enumeration. If it is an enumeration, this function puts one int value on the stack.
-	 * If it is a field access <NOT IMPLEMENTED YET>
+	 * If it is a field access, the value of the field is put on the stack (since a potentialEnumerationLiteral is always read access, never write access).
 	 * 
 	 * @param ctx
 	 *            either a field access or an enumeration.
@@ -1148,13 +1222,26 @@ public class BramsprCompiler extends BramsprBaseVisitor<Symbol> implements Opcod
 	@Override
 	public Symbol visitPotentialEnumerationLiteral(PotentialEnumerationLiteralContext ctx) {
 		Symbol symbol = this.parseTreeproperty.get(ctx);
+		String fieldName = ctx.IDENTIFIER(1).getText();
 
 		if (symbol instanceof EnumerationSymbol) {
 			EnumerationSymbol es = (EnumerationSymbol) this.parseTreeproperty.get(ctx);
 			// in the format "day.MONDAY", monday is the second IDENTIFIER (thus index 1)
-			int fieldId = es.getFieldId(ctx.IDENTIFIER(1).getText());
+			int fieldId = es.getFieldId(fieldName);
 
 			mv.visitIntInsn(BIPUSH, fieldId);
+		} else {
+			// It's not an enumeration, so it has to be a field access on a variable of a user-defined type (it has fields)
+			VariableSymbol variable = (VariableSymbol) symbol;
+			int memAddr = variable.getMemAddr();
+			mv.visitIntInsn(ALOAD, memAddr); // Puts the reference to this variable on the stack
+
+			// We have the reference to the composite, now read the field!
+			CompositeSymbol returnType = (CompositeSymbol) variable.getReturnType();
+			String typeClassDescriptor = returnType.getDescriptor();
+			String returnTypeSignature = returnType.getFieldType(fieldName).getSignature();
+			// Awesome! Now that we know that, put the value on the stack:
+			mv.visitFieldInsn(GETFIELD, typeClassDescriptor, fieldName, returnTypeSignature);
 		}
 
 		return null;
