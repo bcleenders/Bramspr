@@ -1,0 +1,20 @@
+{
+    type Stoel{
+        aantalPoten: integer
+    };
+
+    s: Stoel := Stoel{ aantalPoten:= 4 };
+
+    // All good so far...
+    s.aantalPoten: integer;
+    s.aantalPoten: integer := 90;
+
+    nieuweVariable1.veld: integer;
+    nieuweVariable2.veld: integer := 10;
+}
+
+{
+    function hello()) { // One ) to much
+        putString("hello") // Forgot the ;
+    } // Forgot the ; again
+}; // No ; needed here
