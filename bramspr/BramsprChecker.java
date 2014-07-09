@@ -19,6 +19,7 @@ import bramspr.BramsprParser.ArrayTypeDenoterContext;
 import bramspr.BramsprParser.AssignableContext;
 import bramspr.BramsprParser.AssignmentContext;
 import bramspr.BramsprParser.AssignmentExpressionContext;
+import bramspr.BramsprParser.AtomicContext;
 import bramspr.BramsprParser.BaseTypeDenoterContext;
 import bramspr.BramsprParser.BlockStructureContext;
 import bramspr.BramsprParser.BooleanLiteralContext;
@@ -907,7 +908,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 	public Suit visitErrorNode(ErrorNode node) {
 		return Suit.ERROR;
 	}
-
+	
 	/**
 	 * Handles the context checking of an explicit-Enumeration-Literal.
 	 * 
@@ -984,6 +985,7 @@ public class BramsprChecker extends BramsprBaseVisitor<Suit> {
 			} else {
 				// Store the type (CompositeSymbol) of the variable that is accessed here. So if it is car.seatCount, the Car type is added to the parseTreeProperty
 				this.parseTreeDecoration.put(ctx, compositeType);
+				
 				// Dit veld bestaat! Return suit aanpassen aan type (#1.2), en de mutability volgens de 'chain of mutability' doen (#1.3).
 				return new Suit(compositeType.getFieldType(fieldName), expressionSuit.isConstant);
 			}

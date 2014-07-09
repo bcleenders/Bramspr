@@ -2,44 +2,66 @@ type Stoel {
     aantalPoten: integer
 };
 
+{   /*
+        Simpele read/write test met composite en int:
+    */
+    s: Stoel := Stoel{ aantalPoten := 3 };
+    i:integer := 2;
+    putString("Expected: 4 2, result: "); putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+    s.aantalPoten <> i; // Keert de waardes om!
+    putString("Expected: 2 4, result: "); putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+
+    putChar('\n'); putChar('\n');
+}
+
 type Tafel {
-    aantalPoten: integer
+    aantalZitPlaatsen: integer
 };
 
 {
+    // No errors caused: we can hide the outside type
     type Tafel {
-        aantalPoten: integer
+        isOranje: boolean
     };
+
+    t: Tafel := Tafel{ isOranje:= true };
 }
 
-type Keuken {
-    aantalStoelen: integer,
-    aantalTafels: integer,
+type EetKamer {
+    eetTafel: Tafel,
     mooisteStoel: Stoel
 };
 
-count: integer := 3;
+type BadKamer {
+    heeftBad: boolean
+};
 
-t: Tafel;
-t:= Tafel{ aantalPoten := count };
+type Huis {
+    eetKamer: EetKamer,
+    badKamer: BadKamer
+};
 
-s: Stoel := Stoel{ aantalPoten := 3 };
+t1: Tafel := Tafel{ aantalZitPlaatsen := 3 };
+k: EetKamer := EetKamer{ eetTafel := t1, mooisteStoel := Stoel{ aantalPoten := 1 } };
+b: BadKamer;
+h: Huis := Huis {
+    badKamer := (b := BadKamer{ heeftBad := true }),
+    eetKamer := k
+};
 
+putString("De oude stoel heeft maar een ("); putInt(h.eetKamer.mooisteStoel.aantalPoten); putString(") poot.\n");
 
-s1: Stoel := Stoel{ aantalPoten := 9 };
-k: Keuken := Keuken{ aantalStoelen := 6, aantalTafels := 2^4, mooisteStoel := s1 };
+// Nieuwe stoel kopen!
+nieuweStoel: Stoel := Stoel{ aantalPoten := 4 };
+h.eetKamer.mooisteStoel <> nieuweStoel;
 
-i:integer := 2;
+putString("De nieuwe stoel heeft vier ("); putInt(h.eetKamer.mooisteStoel.aantalPoten); putString(") poten.\n");
 
-putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
-s.aantalPoten <> i; // Keert de waardes om!
-putInt(s.aantalPoten); putChar(' '); putInt(i); putChar('\n');
+// Nu even testen of we waarden uit literals kunnen opvragen:
+aantalZitPlaatsen: integer := 
+    EetKamer{
+        eetTafel := Tafel{ aantalZitPlaatsen := 10 },
+        mooisteStoel := Stoel{ aantalPoten := 4 }
+    }.eetTafel.aantalZitPlaatsen;
 
-putChar('\n'); putChar('\n');
-
-k.mooisteStoel.aantalPoten := 400 + s.aantalPoten;
-putInt(s.aantalPoten); putChar(' '); putInt(k.mooisteStoel.aantalPoten); putChar('\n');
-s.aantalPoten <> k.mooisteStoel.aantalPoten;
-putInt(s.aantalPoten); putChar(' '); putInt(k.mooisteStoel.aantalPoten); putChar('\n');
-
-putString("Survived the program!");
+putString("Het aantal zitplaatsen in de eetkamer is tien ("); putInt(aantalZitPlaatsen); putString(").\n");
