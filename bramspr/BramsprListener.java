@@ -350,15 +350,15 @@ public interface BramsprListener extends ParseTreeListener {
 	void exitWhileStructure(@NotNull BramsprParser.WhileStructureContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link BramsprParser#numberLiteral}.
+	 * Enter a parse tree produced by {@link BramsprParser#integerLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
+	void enterIntegerLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link BramsprParser#numberLiteral}.
+	 * Exit a parse tree produced by {@link BramsprParser#integerLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumberLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
+	void exitIntegerLiteral(@NotNull BramsprParser.IntegerLiteralContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link BramsprParser#andExpression}.
