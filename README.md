@@ -5,13 +5,14 @@ Bramspr Compiler
 Bramspr is a simple language that can be compiled to JBC (.class files) using the Bramspr compiler.
 
 ###Directory structure
-
+```
     /   antlr/              grammar files for ANTLR4
-        docs/               the Javadoc html files of the         documentation.pdf         report discussing the Bramspr language and compiler
-Bramspr compiler
+        docs/               the Javadoc html files of the Bramspr compiler
+        documentation.pdf   report discussing the Bramspr language and compiler
         README.md           this file
         src/                Bramspr compiler source
         tests/              Bramspr sourcecode to test the compile levels. The compilerTests folder contains the most interesting (runnable) tests.
+```
 
 Note that the /source/ map also contains the ASM source in /org/objectweb/asm/, as downloaded from the [ASM download page](http://forge.ow2.org/projects/asm/)  (version 4.2).
 
